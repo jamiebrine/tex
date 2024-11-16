@@ -1,0 +1,10 @@
+.vscode
+.DS_Store
+proof.aux
+proof.log
+proof.bbl
+proof.blg
+proof.fdb_latexmk
+proof.fls
+proof.synctex.gz
+proof.log

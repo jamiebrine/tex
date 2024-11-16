@@ -1,0 +1,52 @@
+\documentclass[12pt, oneside]{article}
+
+\usepackage[noxy, goodsyntax]{macros/virginialake}
+\usepackage{xcolor}
+\usepackage{amsthm}
+\usepackage{titlesec}
+
+\titleformat{\section}[block]{\normalfont\bfseries\fontsize{1.3em}{1.3em}\selectfont}{\thesection}{1em}{}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section] 
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma} 
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+
+\begin{document}
+
+\section{System ???}
+
+\begin{defn}
+\textit{Structures} in ??? contain countably many \textit{atoms}, denoted a,b,c,d,.. \cite{example_reference}
+\end{defn}
+
+\begin{thm}
+Socrates is mortal.
+\end{thm}
+
+\begin{proof}
+Socrates is a man.
+All men are mortal.
+Therefore Socrates is mortal.
+\end{proof}
+
+\section{Permutability of Rules}
+Trust me bro
+
+\section{Cut elimination for ???}
+
+\[
+\vlderivation{
+\vlin{\sw}{}{S'\{?(U,[(U',V),?R],V'\}}{
+\vlin{\pU}{}{S'\{?(U,[U', ?R],V, V')\}}{
+\vlin{\wD }{}{S'(?(U,[U,?R]),!(V,V'))}{
+\vlhy{S'(?(U,U'),!(V,V'))}
+}}}}
+\]
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
