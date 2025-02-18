@@ -1,0 +1,878 @@
+\documentclass[12pt, oneside]{article}
+
+\usepackage[noxy, goodsyntax]{virginialake} % Typesetting derivations
+\usepackage{xcolor}
+\usepackage{amsthm} % Theorem environments
+\usepackage{titlesec}
+\usepackage{amsmath} % Symbols
+\usepackage{graphicx} % Better figures
+\usepackage{caption} % Figure captions
+\usepackage{mathtools} % '\denote' command
+\usepackage{stmaryrd} % Double brackets
+\usepackage{cancel} % Negataing coherence relations
+\usepackage{bm} % Bold maths expressions
+\usepackage{changepage} % Indenting sections in proofs
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+% Add space between paragraphs
+\setlength{\parskip}{1em}
+
+\titleformat{\section}[block]{\normalfont\bfseries\fontsize{1.3em}{1.3em}\selectfont}{\thesection}{1em}{}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section] 
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma} 
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem*{remark}{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\hyphenation{Straß-burger}
+
+\let\originaldagger\dagger
+\renewcommand{\dag}{\mathord{\originaldagger}}
+\DeclareMathSymbol{\hash}{\mathord}{letters}{`#}
+\DeclarePairedDelimiter\denote\llbracket\rrbracket
+
+\newcommand{\la}{\langle}
+\newcommand{\ra}{\rangle}
+\newcommand{\lp}{\llparenthesis}
+\newcommand{\rp}{\rrparenthesis}
+\newcommand{\sSys}{{\mathsf{sWIP}}}%
+\newcommand{\Sys}{{\mathsf{WIP}}}%
+\newcommand{\cohs}{{\mathsf{COHS}}}
+\newcommand{\coh}[1][]{\mathrel{\vcenter{\offinterlineskip\hbox{$\frown$}\vskip0.2ex\hbox{$\smile$}}_{\ifx\\#1\\\else#1\fi}}}
+\newcommand{\incoh}[1][]{\mathrel{\vcenter{\offinterlineskip\hbox{$\smile$}\vskip0.2ex\hbox{$\frown$}}_{\ifx\\#1\\\else#1\fi}}}
+\newcommand{\notcoh}[1][]{\cancel{\coh}_{\ifx\\#1\\\else#1\fi}}
+\newcommand{\scoh}[1][]{\mathrel{\frown}_{\ifx\\#1\\\else#1\fi}}
+\newcommand{\notscoh}[1][]{\mathrel{\ooalign{$\frown$\cr\hidewidth$/$\hidewidth}}_{\ifx\\#1\\\else#1\fi}}
+\newcommand{\comp}{\mathbin{\circ}}
+\newcommand{\unit}{\circledcirc}
+
+\title{WIP}
+\author{Jamie Brine}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    TODO:
+    \begin{itemize}
+        \item indent all proof environments and remove space
+        \item why are there big gaps in contents?
+        \item work through maps for rewrites
+        \item finish functors for connectives
+        \item explain how functors properly model contexts, and thus prove contextual closure
+        \item ultimately, prove naturality of rewrites
+    \end{itemize}
+\end{abstract}
+
+\newpage
+\tableofcontents
+
+\newpage
+\section{Introduction}
+
+- Brief background in modelling computation
+
+- Deep inference
+
+- BV, NEL
+
+- Reddy's ideas
+
+- Why we need my system
+
+- Result we will prove
+
+\newpage
+\section{System $\sSys$}
+
+This system is a modification of $\NEL$, first proposed by Guglielmi and Straßburger in 2002 \cite{guglielmi2002non}.
+The main difference between $\NEL$ and $\sSys$ is that the $!$ and $?$ structures, which I refer to collectively as the \textit{exponentials}, have been replaced by $\dag$ and $\hash$.
+These new exponentials can be considered ordered, which is reflected in the modified $\bD$ and $\bU$ rules governing their regeneration.
+
+\subsection{Structures and Equivalence}
+
+\begin{definition}
+\textit{Structures} in $\sSys$, denoted $R$,$S$,$T$,$V$.., are defined by the following grammar:
+
+\[R ::= \unit \,|\, a \,|\, \overline{R} \,|\, \dag R \,|\, \hash R \,|\, (R,..,R) \,|\, \la R;..;R\ra \,|\, [R,..,R]\]
+
+where
+\begin{itemize}
+\item $\unit$ is the \textit{unit}, which is common to all structures and also self dual; this can be thought of as an empty structure
+\item $a$ is an \textit{atom}, of which there are countably many
+\item $\overline{R}$ is the \textit{dual} of $R$
+\item $\dag R$ and $\hash R$ are the \textit{dagger} and \textit{hash} of $R$ respectively
+\item $(R,..,R)$, $\la R;..;R\ra$, and $[R,..,R]$ are \textit{copar}, \textit{seq}, and \textit{par} structures; they are considered \textit{proper} if they contain at least two elements
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+A structure with an empty hole, $S\{\,\,\}$, is called a \textit{context}.
+We say $R$ is a \textit{substructure} of $S\{R\}$.
+If structural parentheses fill the hole exactly, the curly braces will be ommitted, so for example $S\{[R,T]\}$ becomes $S[R,T]$.
+\end{definition}
+
+\begin{definition}
+Structures $R$ and $S$ are considered \textit{equivalent} modulo the relation $=$, which is the smallest congruence relation defined by the equations in Figure \ref{fig:equivalence}.
+\end{definition}
+
+\begin{figure}[ht!]
+    \centering
+    \setlength{\fboxsep}{5pt} % Padding inside the box
+    \setlength{\fboxrule}{0.5pt} % Thickness of the box border
+    \fbox{%
+        \begin{minipage}{0.95\textwidth} % Outer box spanning full width
+            \begin{minipage}{0.45\textwidth} % First column
+
+                \begin{align*}
+                    \textbf{Assoc}&\textbf{iativity} \\
+                    (R,(T)) &= (R,T) \\
+                    \la R;\la T\ra; U\ra &= \la R;T;U\ra \\
+                    [R,[T]] &= [R,T]
+                \end{align*}
+                \begin{align*}
+                    \textbf{Comm}&\textbf{utativity}\\
+                    (R, T) &= (T, R) \\
+                    [R, T] &= [T, R]
+                \end{align*}
+                \begin{align*}
+                    \textbf{Sing}&\textbf{leton} \\
+                    (R) = \la R\ra &= [R] = R
+                \end{align*}
+                \begin{align*}
+                    \textbf{U}&\textbf{nit} \\
+                    (R,T,\unit) &= (R,T) \\
+                    \la R;T;\unit\ra &= \la R;T\ra \\
+                    \la\unit;R;T\ra &= \la R;T\ra \\
+                    [R,T,\unit] &= [R,T] \\
+                \end{align*}
+            \end{minipage}
+            \hfill
+            \begin{minipage}{0.45\textwidth}
+                \begin{align*}
+                    \textbf{D}&\textbf{ual} \\
+                    \overline{\unit} &= \unit \\
+                    \overline{(R,T)} &= [\overline{R},\overline{T}] \\
+                    \overline{\la R;T\ra} &= \la \overline{R};\overline{T}\ra \\
+                    \overline{[R,T]} &= (\overline{R},\overline{T}) \\
+                    \overline{\dag R} &= \hash\overline{R} \\
+                    \overline{\hash R} &= \dag \overline{R} \\
+                    \overline{\overline{R}} &= R
+                \end{align*}
+                \begin{align*}
+                    \textbf{Expon}&\textbf{entials} \\
+                    \dag \unit &= \unit \\
+                    \hash \unit &= \unit
+                \end{align*}
+                \begin{align*}
+                    \textbf{Contextu}&\textbf{al Closure} \\
+                    \text{if }S\{R\} &= S\{T\} \text{,} \\
+                    \text{then }R&=T
+                \end{align*}
+            \end{minipage}
+        \end{minipage}
+    }
+    \caption{Syntactic Equivalence}
+    \label{fig:equivalence}
+\end{figure}
+
+\subsection{Rewrite Rules, Derivations, and Proofs}
+
+We describe how structures can be modified using a set of rules, and how these rules can be chained together to form longer derivations.
+In particular, we are interested in those derivations which begin with an empty premise, and describe a method with which to transform any derivation into one of this kind, which we call a proof.
+
+\begin{definition}
+A \textit{rewrite rule} is a rule $\rho$ with \textit{premise} T and \textit{conclusion} R, denoted $\vlinf{\rho}{}{R}{T}$.
+All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
+\end{definition}
+
+\begin{figure}[ht!]
+    \centering
+    \setlength{\fboxsep}{5pt} % Padding inside the box
+    \setlength{\fboxrule}{0.5pt} % Thickness of the box border
+    \fbox{%
+        \begin{minipage}{0.95\textwidth} % Outer box spanning full width
+            \begin{minipage}{0.3\textwidth} % First column
+                \centering
+                \[
+                \vlderivation{
+                    \vlin{\aiD}{}{S[\bar{a},a]}
+                    {\vlhy{S\{\unit\}}}
+                    }
+                \] 
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\sw}{}{S[(R,U),T]}
+                    {\vlhy{S([R,T],U)}}
+                    }  
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\qD}{}{S[\la R;U\ra,\la T;V\ra]}
+                    {\vlhy{S\la[R,T];[U,V]\ra}}
+                    }  
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\pD}{}{S[\dag R, \hash S]}
+                    {\vlhy{S\{\dag[R,S]\}}}
+                    }
+                \]
+                \\
+                \vspace{0.5em}
+            \end{minipage}
+            \hfill
+            \begin{minipage}{0.3\textwidth}
+                \centering
+                \[
+                \vlderivation{
+                    \vlin{\wD}{}{S\{\hash R\}}
+                    {\vlhy{S\{\unit\}}}
+                    }
+                \] 
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\bD}{}{S\{\hash R\}}
+                    {\vlhy{S\la R;\hash R\ra}}
+                    }  
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\aiU}{}{S\{\unit\}}
+                    {\vlhy{S(a,\bar{a})}}
+                    }  
+                \]
+                \\
+                \vspace{0.5em}
+            \end{minipage}
+            \begin{minipage}{0.35\textwidth}
+                \centering
+                \[
+                \vlderivation{
+                    \vlin{\qU}{}{S\la(R,U);(T,V)\ra}
+                    {\vlhy{S(\la R;T\ra,\la U;V\ra)}}
+                    }
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\pU}{}{S\{\hash(R,S)\}}
+                    {\vlhy{S(\hash R,\dag S)}}
+                    }
+                \] 
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\wU}{}{S\{\unit\}}
+                    {\vlhy{S\{\dag R\}}}
+                    }  
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\bU}{}{S\la R;\dag R\ra}
+                    {\vlhy{S\{\dag R\}}}
+                    }  
+                \]
+                \\
+                \vspace{0.5em}
+            \end{minipage}
+        \end{minipage}
+    }
+    \caption{Rewrite Rules for System $\sSys$}
+    \label{fig:rules}
+\end{figure}
+
+\begin{definition}
+A \textit{derivation} $\Delta$ from $R$ to $T$ is a finite chain of rewrites with premise $R$ and conclusion $T$, denoted $\vlderivation{\vlde{\Delta}{}{T}{\vlhy{R}}}$.
+A derivation whose premise is $\unit$ is called a \textit{proof}, to which we can add a topmost instance of the \textit{axiom} rule $\vlderivation{\vlin{\ax}{}{\unit}{\vlhy{}}}$;
+these are denoted $\vlderivation{\vlproof{\Delta}{}{T}}$.
+\end{definition}
+
+We can turn any derivation into a proof with the following proposition, whose proof uses standard proof theoretical notions common to many systems.
+
+\begin{proposition}\label{prop:DerivationToProof}
+If $\vlderivation{\vlde{\Delta}{}{T}{\vlhy{R}}}$ is a derivation, then there exists a proof $\vlderivation{\vlproof{\Delta}{}{(\overline{R},T)}}$.
+\end{proposition}
+
+\begin{remark}
+As $\sSys$ is a deep inference system, a rewrite rule can be applied at arbitrary depth within any structure.
+\end{remark}
+
+\begin{example}\label{example:DerivationExample}
+We give a derivation where, when read top down, the substructure on which the rule is being applied is bolded.
+Note that this is not the simplest derivation from this premise to this conclusion, but has been chosen to demonstrate applying the rules at different levels within the structure.
+
+\[
+\vlderivation{
+\vlin{\bD}{}{[\la R;\dag R\ra,\hash T]}{
+\vlin{\qD}{}{[\la R,\dag R\ra,\bm{\la T;\hash T\ra}]}{
+\vlin{\pD}{}{\bm{\la [R,T];[\dag R,\hash T]\ra}}{ 
+\vlin{\bU}{}{\la [R,T];\bm{\dag[R,T]}\ra}{
+\vlhy{\bm{\dag [R,T]}}
+}}}}}
+\]
+
+\end{example}
+
+\begin{example}
+Negating the premise of the derivation from example \ref{example:DerivationExample}, and then use the equivalence relation defined in \ref{fig:equivalence} to push negation to the level of atoms, we get the following:
+$$\overline{\dag [R,T]} = \hash \overline{[R,T]} = \hash (\overline{R},\overline{T})$$
+Using Proposition \ref{prop:DerivationToProof}, we can hence guarantee that it is possible to contruct the following proof:
+
+\[
+\vlproof{\Gamma}{}{
+(\hash (\overline{R},\overline{T}),[\la R;\dag R\ra,\hash T])}
+\]
+\end{example}
+
+\newpage
+\section{Coherence Space Semantics}
+
+We give denotational semantics to system $\sSys$ using a coherence space model.
+Broadly speaking, the aim of this model of the system is to give a representation of proofs of some structure $A$ as \textit{cliques} of the corresponding coherence space $\denote{A}$.
+
+\begin{remark}
+We will give the semantics for $\sSys$ in terms of only binary versions of the connectives copar, seq, and par.
+For example, instead of working with an arbitrary copar structure $(R_1,..,R_n)$, we will only consider the simpler case $(R,T)$, and instead rely on the associative property to inductively construct more complex structures.
+\end{remark}
+
+\subsection{Introduction to Coherence Spaces}
+The idea of coherence spaces was first proposed by Jean-Yves Girard as a model for linear logic \cite{girard1987linear}, and has since been adapted by a range of researchers to model their own systems.
+Most notably, Uday Reddy extended linear logic with an operator representing one-way communication \cite{Reddy1993ALL}, and gave a coherence space semantics on which much of this work has been based.
+
+We introduce the following definitions which will be used in defining our model, but for a more category theoretic introduction to coherence spaces the reader is referred to Paul-André Melliès' lecture notes \cite{mellies2000survival}.
+
+\begin{definition}
+    A \textit{coherence space} is a pair $(|A|,\coh[A])$, where $|A|$ is some underlying set and $\coh[A]$ is the \textit{coherence relation} defined on that set.
+    The relation is symmetric, reflexive, and transitive.
+    We also define a strictly irreflexive version $\scoh[A]$ which we call \textit{strict coherence}, such that $a\scoh[A]a' \iff a\coh[A]a'$ and $a\not=a'$
+\end{definition}
+
+\begin{definition}
+    We say $a$ and $a'$ are \textit{incoherent}, written $a \incoh[A] a'$, if either $a \notscoh[A] a'$ or $a=a'$
+\end{definition}
+
+\begin{remark}
+    We will often refer to the coherence space $(|A|,\coh[A])$ as simply $A$ when appropriate.
+    Similarly, we will often write $\coh$ or $\scoh$ without the subscript when the coherence space is obvious from the context.
+\end{remark}
+
+\begin{definition}
+    A \textit{clique} of a coherence space $A$ is some $C \subseteq |A|$, whose elements are all pairwise coherent.
+\end{definition}
+
+\begin{remark}
+    Note that as the clique is a set, the pairwise coherence is necessarily strict.
+\end{remark}
+
+\begin{definition}
+    A \textit{linear map} between coherence spaces $A$ and $B$ is some relation $f$ on $|A|$ and $|B|$,
+    such that if $f$ relates $a$ to $b$, and also relates $a'$ to $b'$, we have that
+    \begin{align*}
+        a \coh[A] a' &\implies b \coh[B] b' \\
+        a \scoh[A] a' &\implies b \scoh[B] b'
+    \end{align*}
+
+    We write $f:A\multimap B$.
+    We will use the notation $\lp a,b\rp\in f$ to mean "$f$ relates $a$ to $b$".
+    This notational choice is necessary as we will later give a specific meaning to regular parenthesis.
+\end{definition}
+
+\begin{definition}
+    For linear maps $f:A\multimap B$ and $g:B\multimap C$, we define the \textit{composition} $g\comp f:A\multimap C$ by:
+    $$g\comp f = \{\lp a,c\rp:\exists b\in|B|\text{ such that }\lp a,b\rp\in f, \lp b,c\rp\in g\}$$
+\end{definition}
+
+Armed with these definitions, we can begin to construct a semantic model of the system $\sSys$.
+
+\subsection{Semantics of Structures}
+
+DOES THIS SECTION NOW GET SPREAD BETWEEN THE FUNCTOR DEFINITIONS?
+
+For each structure $x$ in the grammar of $\sSys$, we will define the semantics $\denote{x}$.
+Thus, we can inductively define the semantics of an arbitrarily complex structure, starting by translating the atoms and then working outwards towards the outermost connective.
+
+\begin{remark}
+    Throughout this section, for any coherence space $A$ we will only define $\coh[A]$.
+    Deriving $\scoh[A]$ and $\incoh[A]$ is a simple exercise in applying the definitions of a coherence space, and thus is left to the reader.
+\end{remark}
+
+\begin{itemize}
+
+\item
+\textbf{Unit}: $\denote{\unit} = (\{*\},\{(*,*)\})$, a trivial coherence space whose underlying set is a singleton, with that single element related to itself.
+Notice that $* \notscoh[] *$ as the relation is strictly irreflexive, so $\scoh[\denote{\unit}]=\emptyset$.
+
+\item
+\textbf{Atom}: For each atom $a,b,..,z$ in a structure, we are able to choose any coherence space $A,B,..,Z$ to be the model $\denote{a},\denote{b},..,\denote{z}$.
+For example, an atom $b$ representing the base type of booleans may have the semantics $\denote{b} = (\{\top,\bot\},\{(\top,\top),(\bot,\bot)\})$.
+
+\item
+\textbf{Dual}: $\denote{\overline{R}}=(|\denote{R}|,\incoh[\denote{R}])$.
+
+\item
+\textbf{Copar}: $\denote{(R,T)} = (\denote{R}\times\denote{T},\coh[\denote{(R,T)}])$,
+such that:
+$$(r_1,t_1)\coh(r_2,t_2)\iff r_1\coh[\denote{R}]r_2, t_1\coh[\denote{T}]t_2$$
+
+\item
+\textbf{Seq}: $\denote{\la R;T\ra} = (\denote{R}\times\denote{T},\coh[\denote{\la R;T\ra}])$, such that:
+$$(r_1,t_1)\coh(r_2,t_2) \iff r_1\scoh[\denote{R}]r_2 \text{ or } r_1 = r_2, t_1\coh[\denote{T}]t_2$$
+
+\item
+\textbf{Par}: $\denote{[R,T]} = (\denote{R}\times\denote{T},\coh[\denote{[R,T]}])$, such that:
+$$(r_1,t_1)\coh(r_2,t_2) \iff r_1\scoh[\denote{R}]r_2 \text{ or } t_1\scoh[\denote{T}]t_2 \text{ or } (r_1,t_1)=(r_2,t_2)$$
+
+\item
+\textbf{Dagger}: $\denote{\dag R} = (\denote{R}^*, \coh[\denote{\dag R}])$, such that:
+$$r_1r_2...r_m \coh r'_1r'_2...r'_n \iff \text{one of:}$$
+
+\begin{itemize}
+    \item
+    $\exists 1\leq l \leq \min(m,n) \text{ s.t. } r_i=r'_i \enspace\forall i<l$, and $r_l \scoh[\denote{R}] r'_l$
+
+    \item
+    $r_i = r'_i \enspace\forall i\le\min(m,n)$
+\end{itemize}
+
+\item
+\textbf{Hash}: $\denote{\hash R} = (\denote{R}^*, \coh[\denote{\hash R}])$, such that:
+$$r_1r_2...r_m \coh r'_1r'_2...r'_n \iff \text{one of:}$$
+
+\begin{itemize}
+    \item
+    $\exists 1\leq l \leq \min(m,n) \text{ s.t. } r_i=r'_i \enspace\forall i<l$, and $r_l \notcoh[\denote{R}] r'_l$
+
+    \item
+    $r_1r_2...r_m = r'_1r'_2...r'_n$
+\end{itemize}
+
+\end{itemize}
+
+\subsection{Semantics of Rewrite Rules}
+For each rewrite rule of $\sSys$, we define a linear map between coherence spaces to be its model.
+The map representing some rewrite rule $\vlinf{\rho}{}{R}{T}$ will be of the form $F_\rho:T\multimap R$, so $F_\rho\subseteq|T|\times|R|$
+
+We will consider the simplest form of each rule, that is, applying each in an empty context.
+Extending this to rewrites in arbitrary contexts will be handled in the next subsection.
+
+Crucially, we must show that each of these maps preserve coherence (and thus cliques), which will allow chains of rewrites to model derivations (and thus proofs).
+
+\begin{definition}
+    To model the rewrite
+    \[
+        \vlderivation{
+            \vlin{\aiD}{}{[a,\overline{a}]}
+            {\vlhy{\unit}}
+            }
+        \]
+
+    we define $F_{\aiD}:\unit\multimap[a,\overline{a}]$ as follows:
+    $$F_{\aiD}=\{\lp *,(a_i,a_i)\rp:a_i\in|a|\}$$
+\end{definition}
+
+\begin{lemma}\label{lem:aiPreserves}
+    $F_{\aiD}$ preserves coherence
+\end{lemma}
+
+\begin{proof}
+    As $*\notscoh[\unit]*$, preservation of trivial coherence is vacuously true.
+    Now consider pairs $\lp*,(a_1,a_1)\rp,\lp*,(a_2,a_2)\rp\in F_{\aiD}$.
+    As $*=*$ and thus $*\coh*$, we must show that $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$.
+    If $a_1=a_2$ the coherence is trivial, so suppose that $a_1\neq a_2$.
+    We either have that $a_1\scoh[a]a_2$, in which case we get $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$, or that $a_1\notscoh[a]a_2$.
+    In the latter case, we get that $a_1\scoh[\overline{a}]a_2$, and so $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$.
+\end{proof}
+
+\begin{definition}
+    To model the rewrite
+    \[
+        \vlderivation{
+            \vlin{\wD}{}{\hash R}
+            {\vlhy{\unit}}
+            }
+        \]
+
+    we define $F_{\wD}:\unit\multimap\hash R$ as follows:
+    $$F_{\wD}=\{\lp *,r_1r_2...r_n\rp:r_i\in|R|\}$$
+\end{definition}
+
+\begin{lemma}
+    $F_{\wD}$ preserves coherence
+\end{lemma}
+
+\begin{proof}
+    As in the proof of Lemma \ref{lem:aiPreserves}, we need only to show that $r_1r_2...r_m\scoh[\hash R]r'_1r'_2...r'_n$ for any distinct words over $|R|$.
+    Assume WLOG that $m\le n$, then we have 2 possible cases:
+
+    Case 1: $r_1r_2...r_m=r'_1r'_2...r'_m$
+    \begin{adjustwidth}{1.5em}{}
+        As the two words are distinct, we must have that $m<n$
+        ?? DOES THIS NOT VIOLATE NO PREFIX CONDITION OF HASH ??
+    \end{adjustwidth}
+
+    Case 2: $\exists1\le i\le\text{ min}(m,n)$ such that $r_i\neq r'_i$
+    \begin{adjustwidth}{1.5em}{}
+        THEN DO THIS BIT
+    \end{adjustwidth}
+\end{proof}
+
+\begin{definition}
+    To model the rewrite
+    \[
+        \vlderivation{
+            \vlin{\sw}{}{[(R,U),T]}
+            {\vlhy{([R,T],U)}}
+            }
+        \]
+
+    we define $F_\sw:([R,T],U)\multimap[(R,U),T]$ as follows:
+    $$F_\sw=\{\lp(r,t,u),(r,u,t)\rp:r\in|R|,t\in|T|,u\in|U|\}$$
+\end{definition}
+
+\begin{lemma}
+    $F_\sw$ preserves coherence
+\end{lemma}
+
+\begin{proof}
+    Consider $(r,t,u),(r',t',u')\in|([R,T],U)|$.
+    If the two are equal, it is trivial to show that $F_\sw$ preserves this equality.
+    Assume instead that $(r,t,u)\scoh(r',t',u')$.
+    To get the required coherence $(r,u,t)\scoh[{[(R,U),T]}](r',u',t')$, it suffices to show that either $(r,u)\scoh[(R,U)](r',u')$ or $t\scoh t'$.
+    We have 2 possible cases:
+
+    Case 1: $(r,t)\scoh[{[R,T]}](r',t')$ and $u\coh u'$
+    \begin{adjustwidth}{1.5em}{}
+        $(r,t)\scoh(r',t')\implies r\scoh r'$ or $t\scoh t'$.
+        The latter alone suffices, and the former combined with $u\coh u'$ gives $(r,u)\scoh[(R,U)](r',u')$ as required.
+    \end{adjustwidth}
+
+    Case 2: $(r,t)\coh[{[R,T]}](r',t')$ and $u\scoh u'$
+    \begin{adjustwidth}{1.5em}{}
+        The same 2 cases as above can arise here, or alternatively we may have that $(r,t)=(r',t')$.
+        In this case, we have that $r\coh r'$, which combined with $u\scoh u'$ gives $(r,u)\scoh[(R,U)](r',u')$ as required.
+    \end{adjustwidth}
+
+    $\therefore F_\sw$ preserves strict coherence.
+
+\end{proof}
+
+\begin{definition}
+    To model the rewrite
+    \[
+        \vlderivation{
+            \vlin{\qD}{}{[\la R;U\ra,\la T;V\ra]}
+            {\vlhy{\la[R,T];[U,V]\ra}}
+            }  
+        \]
+
+    we define $F_{\qD}:\la[R,T];[U,V]\ra\multimap[\la R;U\ra,\la T;V\ra]$ as follows:
+    $$F_{\qD}=\{\lp(r,t,u,v),(r,u,t,v)\rp:r\in|R|,t\in|T|,u\in|U|,v\in|V|\}$$
+\end{definition}
+
+\begin{lemma}
+    $F_{\qD}$ preserves coherence
+\end{lemma}
+
+\begin{proof}
+    Consider $(r,t,u,v),(r',t',u',v')\in|\la[R,T];[U,V]\ra|$.
+    If the two are equal, it is trivial to show that $F_{\qD}$ preserves this equality.
+    Assume instead that $(r,t,u,v)\scoh(r',t',u',v')$.
+    To get the required coherence $(r,u,t,v)\scoh[{[\la R;U\ra,\la T;V\ra]}](r',u',t',v')$,
+    it suffices to show that either $(r,u)\scoh[\la R;U\ra](r',u')$ or $(t,v)\scoh[\la T;V\ra](t',v')$.
+    We have 2 possible cases:
+
+    Case 1: $(r,t)\scoh[{[R,T]}](r',t')$
+    \begin{adjustwidth}{1.5em}{}
+        We have that either $r\scoh r'$, implying $(r,u)\scoh(r',u')$, or $t\scoh t'$, in which case $(t,v)\scoh(t',v')$.
+        In either case the sufficient condition is met.
+    \end{adjustwidth}
+
+    Case 2: $(r,t)=(r',t')$ and $(u,v)\scoh[{[U,V]}](u',v')$
+    \begin{adjustwidth}{1.5em}{}
+        We have that either $u\scoh u'$ or $v\scoh v'$.
+        As $r=r'$, the former implies $(r,u)\scoh(r',u')$, and similarly the latter implies $(t,v)\scoh(t',v')$.
+        In either case the sufficient condition is met.
+    \end{adjustwidth}
+
+    $\therefore F_{\qD}$ preserves strict coherence. 
+\end{proof}
+
+\begin{definition}
+    To model the rewrite
+    \[
+        \vlderivation{
+            \vlin{\pD}{}{[\dag R,\hash T]}
+            {\vlhy{\dag[R,T]}}
+            }  
+        \]
+
+    we define $F_{\pD}:\dag[R,T]\multimap[\dag R,\hash T]$ as follows:
+    $$F_{\pD}=\{\lp r_1t_1...r_mt_m,(r'_1...r_n,t'_1...t'_p)\rp:r_i,r'_j\in|R|,t_k,t'_l\in|T|\}$$
+\end{definition}
+
+\begin{lemma}
+    $F_{\pD}$ preserves coherence
+\end{lemma}
+
+\begin{proof}
+    DO THIS BIT HERE PLEASE
+\end{proof}
+
+\begin{definition}
+    To model the rewrite
+    \[
+        \vlderivation{
+            \vlin{\bD}{}{\hash R}
+            {\vlhy{\la R;\hash R\ra}}
+            }  
+        \]
+
+    we define $F_{\bD}:\la R;\hash R\ra\multimap\hash R$ as follows:
+    $$F_{\bD}=\{\lp\la r_0;r_1...r_m,r'_1...r'_n\rp:r_i,r'_j\in|R|\}$$
+\end{definition}
+
+\begin{lemma}
+    $F_{\pD}$ preserves coherence
+\end{lemma}
+
+\begin{proof}
+    DO THIS BIT HERE PLEASE
+\end{proof}
+
+SOMETHING SOMETHING DUALITY OF RULES MAKES UP RULES AUTOMATIC.
+
+\subsection{Functoriality of Connectives}
+In order to prove that SOME RESULT IS TRUE, we require that structures of $\sSys$ behave nicely when working in the category of coherence spaces.
+We will briefly define this category, and then show that we can model each of the unary and binary connectives as functors.
+
+\begin{definition}
+The \textit{category of coherence spaces} is written $\cohs$, with coherence spaces as objects and linear maps between them as morphisms.
+\end{definition}
+
+Modelling connectives as functors on $\cohs$ allows rewrite rules to be applied within arbitrary contexts, by composing the rule's model with the functor representing the context.
+This abstraction simplifies deep inference by making rule application uniform and modular, ensuring semantics are preserved at all levels of nesting.
+Contexts can be constructed compositionally, providing a scalable and elegant framework for handling rules in arbitrary settings.
+
+\begin{definition}
+    Let $(\_,\_):\cohs\times\cohs\to\cohs$ be defined as follows:
+    \begin{itemize}
+        \item
+        For $R,T\in Ob(\cohs)$, $(R,T) \coloneqq (R\times T,\coh[(R,T)])$ such that:
+        $$(r,t)\coh[(R,T)](r',t')\iff r\coh[R]r'\text{ and }t\coh[T]t'$$
+
+        \item
+        For $f:R\multimap T$ and $g:U\multimap V$, 
+        $(f,g):(R,U)\multimap(T,V)$ is defined as follows:
+        $$(f,g)=\{\lp(r,u),(t,v)\rp:\lp r,t\rp\in f,\lp u,v\rp\in g\}$$
+    \end{itemize}
+\end{definition}
+
+\begin{lemma}\label{lem:CoparIsFunctor}
+    $(\_,\_)$ is a functor.
+\end{lemma}
+
+\begin{proof}
+    $(\_,\_)$ preserves identity:
+    \begin{align*}
+        (id_R,id_T) &= \{
+            \lp(r,t),(r,t)\rp:\lp r,r\rp\in id_R,\lp t,t\rp\in id_T
+        \} \\
+        &= \{\lp(r,t),(r,t)\rp:r\in |R|,t\in |T|\} \\
+        &= \{\lp(r,t),(r,t)\rp:(r,t)\in|(R,T)|\} \\
+        &= id_{(R,T)}
+    \end{align*}
+
+    $(\_,\_)$ preserves composition:
+    
+    \begin{adjustwidth}{1.5em}{}
+        Define 4 linear maps
+        $f : R\multimap T$,
+        $h : T\multimap U$,
+        $g : V\multimap W$,
+    and $k : W\multimap X$.
+    Then we have $(f,g):(R,V)\multimap(T,W),(h,k):(T,W)\multimap(U,X)$, and:
+    \end{adjustwidth}
+
+    \begin{align*}
+        (h,k)\comp(f,g) &= \{
+            \lp(r,v)(u,x)\rp:\exists(t,w)\in|(T,W)| \text{ such that}\\
+            &\quad\lp(r,v),(t,w)\rp\in(f,g),\lp(t,w),(u,x)\rp\in(h,k)
+        \} \\
+        &= \{
+            \lp(r,v)(u,x)\rp:\exists t\in|T|,w\in|W| \text{ such that} \\
+            &\quad\lp r,t\rp\in f,\lp v,w\rp\in g,\lp t,u\rp\in h,\lp w,x\rp\in k
+        \} \\
+        &= \{
+            \lp(r,v),(u,x)\rp:\lp r,u\rp\in h\comp f,\lp v,x\rp\in k\comp g
+        \} \\
+        &= (h\comp f,k\comp g)
+    \end{align*}
+
+    $(\_,\_)$ preserves coherence:
+
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:R\multimap T$, $g:U\multimap V$.
+
+        Take $(r,u),(r',u')\in|(R,U)|$.
+        If $(r,u)=(r',u')$, then clearly $(f,g)$ preserves this equality,
+        so we need only to consider the case $(r,u)\scoh[(R,U)](r',u')$, showing that for any pairs
+        $\lp(r,u),(t,v)\rp$ and $\lp(r',u'),(t',v')\rp\in(f,g)$ we have $(t,v)\scoh[(T,V)](t',v')$.
+
+        Without loss of generality, assume that $r\scoh[R]r'$ and $u\coh[U]u'$.
+        Linearity of $f$ and $g$ implies that $t\scoh[T]t'$ and $v\coh[V]t'$.
+        This gives us $(t,v)\coh[(T,V)](t',v')$, and as $t\neq t'$, we get $(t,v)\scoh[(T,V)](t',v')$ as required.
+    \end{adjustwidth}
+
+\end{proof}
+
+\begin{definition}
+    Let $\la\_;\_\ra:\cohs\times\cohs\to\cohs$ be defined as follows:
+    \begin{itemize}
+        \item
+        For $R,T\in Ob(\cohs)$, $\la R;T\ra\coloneqq(|R|\times|T|,\coh[\la R;T\ra])$ such that:
+        $$(r,t)\coh[\la R;T\ra](r',t') \iff r\scoh[R]r'\text{ or }(r=r'\text{ and }t\coh[T]t')$$
+
+        \item
+        For $f:R\multimap T$ and $g:U\multimap V$, 
+        $\la f;g\ra:\la R;U\ra\multimap\la T;V\ra$ is defined as follows:
+        $$\la f;g\ra=\{\lp(r,u),(t,v)\rp:\lp r,t\rp\in f,\lp u,v\rp\in g\}$$
+    \end{itemize}
+\end{definition}
+
+\begin{lemma}
+    $\la\_;\_\ra$ is a functor.
+\end{lemma}
+
+\begin{proof}
+    $\la\_;\_\ra$ preserves identity and composition.
+    The argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,S)$ replaced by $\la R;S\ra$\\
+
+    $\la\_;\_\ra$ preserves coherence:
+
+    \begin{adjustwidth}{1.5em}{}
+        Define $f : R\multimap T$, $g : U\multimap V$.
+
+        As in the proof of Lemma \ref{lem:CoparIsFunctor}, we need only to consider the case $(r,u)\scoh[\la R;U\ra](r',u')$, showing that for any pairs
+        $\lp(r,u),(t,v)\rp$ and $\lp(r',u'),(t',v')\rp\in \la f;g\ra$ we have $(t,v)\scoh[\la T;V\ra](t',v')$.
+        
+        We have that either $r\scoh[R]r'$, or that $r=r'$ and $u\scoh[U]u'$.
+        As $f$ and $g$ are linear maps, the former implies that $t\scoh t'$, while the latter implies that $t\coh t'$ and $v\scoh v'$.
+        In either case we get that $(t,v)\coh[\la T;V\ra](t',v')$, and as either $t\neq t'$ or $v\neq v'$ we find that the coherence is strict as required.
+    \end{adjustwidth}
+\end{proof}
+
+\begin{definition}
+    Let $\overline{\{\quad\}}:\cohs^{op}\to\cohs$ be defined as follows:
+    \begin{itemize}
+        \item
+        For $R\in Ob(\cohs)$, $\overline{R}=(|R|,\incoh[R])$.
+
+        \item
+        For $f:R\multimap T$, $\overline{f}:\overline{T}\multimap\overline{R}$ is defined as:
+        $$\overline{f}=\{\lp t,r\rp:\lp r,t\rp\in f\}$$.
+
+
+    \end{itemize}
+\end{definition}
+
+\begin{lemma}
+    $\overline{\{\quad\}}$ is a functor
+\end{lemma}
+
+\begin{proof}
+    $\overline{\{\quad\}}$ preserves identity trivially, as the underlying set of $\overline{R}$ is the same as that of $R$:
+
+    $\overline{\{\quad\}}$ preserves composition:
+    \begin{adjustwidth}{1.5em}{}
+        Define 2 linear maps $f:R\multimap T$, $g:T\multimap U$. Then:
+    \end{adjustwidth}
+    \begin{align*}
+        \overline{f}\comp\overline{g} &= \{\lp u,r\rp:\exists t \text{ such that } \lp u,t\rp\in \overline{g},\lp t,r\rp\in \overline{f}\} \\
+        &= \{\lp u,r\rp:\exists t \text{ such that } \lp r,t\rp\in f,\lp t,u\rp\in g\} \\
+        &= \{\lp u,r\rp:\lp r,u\rp\in g\comp f\} \\
+        &= \overline{g\comp f}
+    \end{align*}
+
+    $\overline{\{\quad\}}$ preserves coherence:
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:R\multimap T$
+
+        Take $t,t'\in|T|$ such that $t\scoh[\overline{T}]t'$, that is, $t\notscoh[T]t'$.
+        Consider pairs $\lp t,r\rp,\lp t',r'\rp\in\overline{f}$, so we have pairs $\lp r,t\rp,\lp r',t'\rp\in f$.
+        As $t\notscoh[T]t'$, the contrapositive to the linearity of $f$ gives that $r\notscoh[R]r'$, and thus $r\scoh[\overline{R}]r'$ as required.
+
+        If we instead take $t=t'$, 
+
+    \end{adjustwidth}
+
+\end{proof}
+
+\begin{definition}
+    Let $\dag\_:\cohs\to\cohs$ be defined as follows:
+\end{definition}
+
+\begin{lemma}
+    $D$ is a functor
+\end{lemma}
+
+
+\begin{proof}
+    $D$ preserves identity:
+    \begin{align*}
+        D(id_{\denote{R}}) &= ... \\
+        &= ... \\
+        &= id_{\denote{\dag R}}
+    \end{align*}
+
+    $D$ preserves composition:
+    \begin{adjustwidth}{1.5em}{}
+        Define 2 linear maps $f:\denote{R}\multimap\denote{T}$, $g:\denote{T}\multimap\denote{U}$. Then:
+    \end{adjustwidth}
+    \begin{align*}
+        D(g)\comp D(f) &= ... \\
+        &= ... \\
+        &= D(g\comp f)
+    \end{align*}
+
+    $D$ preserves coherence:
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:\denote{R}\multimap\denote{T}$
+    \end{adjustwidth}
+
+\end{proof}
+
+\newpage
+\section{Some Big Result...}
+
+\begin{theorem}
+    Cor blimey look at the state of this stonking result!
+\end{theorem}
+
+\begin{proof}
+    Bodge together all of the lemmas from the previous chapters and there you go.
+    Easy.
+    No bother at all.
+\end{proof}
+
+\newpage
+\section{Conclusion}
+
+\newpage
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

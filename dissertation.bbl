@@ -1,0 +1,22 @@
+\begin{thebibliography}{1}
+
+\bibitem{girard1987linear}
+Jean-Yves Girard.
+\newblock Linear logic.
+\newblock {\em Theoretical computer science}, 50(1):1--101, 1987.
+
+\bibitem{guglielmi2002non}
+Alessio Guglielmi and Lutz Stra{\ss}burger.
+\newblock A non-commutative extension of mell.
+\newblock In {\em Logic for Programming, Artificial Intelligence, and Reasoning: 9th International Conference, LPAR 2002 Tbilisi, Georgia, October 14--18, 2002 Proceedings 9}, pages 231--246. Springer, 2002.
+
+\bibitem{mellies2000survival}
+Paul-André Melliès.
+\newblock A survival guide on coherence spaces, 2000.
+
+\bibitem{Reddy1993ALL}
+Uday~S. Reddy.
+\newblock A linear logic model of state.
+\newblock 1993.
+
+\end{thebibliography}
