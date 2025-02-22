@@ -224,8 +224,8 @@ All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
                 \\
                 \[
                 \vlderivation{
-                    \vlin{\pD}{}{S[\dag R, \hash S]}
-                    {\vlhy{S\{\dag[R,S]\}}}
+                    \vlin{\pD}{}{S[\dag R, \hash T]}
+                    {\vlhy{S\{\dag[R,T]\}}}
                     }
                 \]
                 \\
@@ -400,8 +400,6 @@ Armed with these definitions, we can begin to construct a semantic model of the 
 
 \subsection{Semantics of Structures}
 
-DOES THIS SECTION NOW GET SPREAD BETWEEN THE FUNCTOR DEFINITIONS?
-
 For each structure $x$ in the grammar of $\sSys$, we will define the semantics $\denote{x}$.
 Thus, we can inductively define the semantics of an arbitrarily complex structure, starting by translating the atoms and then working outwards towards the outermost connective.
 
@@ -462,6 +460,230 @@ $$r_1r_2...r_m \coh r'_1r'_2...r'_n \iff \text{one of:}$$
 
 \end{itemize}
 
+\subsection{Functoriality of Connectives}
+
+We will now take a step back from modelling the system $\sSys$, and view the coherence space model from a purely categorical perspective.
+For the rest of this section, we abstract out the underlying structure of any given coherence space, and instead consider how rewrite rules and connectives behave when applied to arbitrary ones.
+
+We require that connectives in our model behave nicely when working in the category of coherence spaces.
+We will briefly define this category, and then show that we can model each of the unary and binary connectives as functors.
+
+Modelling connectives as functors allows rewrite rules to be applied within arbitrary contexts, by composing the rule's model with the functor representing the context.
+This abstraction simplifies deep inference by making rule application uniform and modular, ensuring necessary properties are preserved at all levels of nesting.
+Contexts can be constructed compositionally, providing a scalable and elegant framework for handling rules in arbitrary settings.
+
+\begin{definition}
+    The \textit{category of coherence spaces} is written $\cohs$, with coherence spaces as objects and linear maps between them as morphisms.
+\end{definition}
+
+\begin{definition}
+    Let $(\_,\_):\cohs\times\cohs\to\cohs$ be defined as follows:
+    \begin{itemize}
+        \item
+        For $R,T\in Ob(\cohs)$, $(R,T) \coloneqq (R\times T,\coh[(R,T)])$ such that:
+        $$(r,t)\coh[(R,T)](r',t')\iff r\coh[R]r'\text{ and }t\coh[T]t'$$
+
+        \item
+        For $f:R\multimap T$ and $g:U\multimap V$, 
+        $(f,g):(R,U)\multimap(T,V)$ is defined as follows:
+        $$(f,g)=\{\lp(r,u),(t,v)\rp:\lp r,t\rp\in f,\lp u,v\rp\in g\}$$
+    \end{itemize}
+\end{definition}
+
+\begin{lemma}\label{lem:CoparIsFunctor}
+    $(\_,\_)$ is a functor.
+\end{lemma}
+
+\begin{proof}
+    $(\_,\_)$ preserves identity:
+    \begin{align*}
+        (id_R,id_T) &= \{
+            \lp(r,t),(r,t)\rp:\lp r,r\rp\in id_R,\lp t,t\rp\in id_T
+        \} \\
+        &= \{\lp(r,t),(r,t)\rp:r\in |R|,t\in |T|\} \\
+        &= \{\lp(r,t),(r,t)\rp:(r,t)\in|(R,T)|\} \\
+        &= id_{(R,T)}
+    \end{align*}
+
+    $(\_,\_)$ preserves composition:
+    
+    \begin{adjustwidth}{1.5em}{}
+        Define 4 linear maps
+        $f : R\multimap T$,
+        $h : T\multimap U$,
+        $g : V\multimap W$,
+    and $k : W\multimap X$.
+    Then we have $(f,g):(R,V)\multimap(T,W),(h,k):(T,W)\multimap(U,X)$, and:
+    \end{adjustwidth}
+
+    \begin{align*}
+        (h,k)\comp(f,g) &= \{
+            \lp(r,v)(u,x)\rp:\exists(t,w)\in|(T,W)| \text{ such that}\\
+            &\quad\lp(r,v),(t,w)\rp\in(f,g),\lp(t,w),(u,x)\rp\in(h,k)
+        \} \\
+        &= \{
+            \lp(r,v)(u,x)\rp:\exists t\in|T|,w\in|W| \text{ such that} \\
+            &\quad\lp r,t\rp\in f,\lp v,w\rp\in g,\lp t,u\rp\in h,\lp w,x\rp\in k
+        \} \\
+        &= \{
+            \lp(r,v),(u,x)\rp:\lp r,u\rp\in h\comp f,\lp v,x\rp\in k\comp g
+        \} \\
+        &= (h\comp f,k\comp g)
+    \end{align*}
+
+    $(\_,\_)$ preserves coherence:
+
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:R\multimap T$, $g:U\multimap V$.
+
+        Take $(r,u)\in|(R,U)|$ and consider $\lp(r,u),(t,v)\rp,\lp(r,u),(t',v')\rp\in(f,g)$.
+        We require that $(t,v)\coh[(T,V)](t',v')$, as $(t,v)$ is coherent to itself by equality.
+        Indeed, I AM TOO TIRED AND IT'S SATURDAY NIGHT.
+
+        We now consider the case that $(r,u)\scoh[(R,U)](r',u')$, showing that for any pairs
+        $\lp(r,u),(t,v)\rp$ and $\lp(r',u'),(t',v')\rp\in(f,g)$ we have $(t,v)\scoh[(T,V)](t',v')$:
+        Without loss of generality, assume that $r\scoh[R]r'$ and $u\coh[U]u'$.
+        Linearity of $f$ and $g$ implies that $t\scoh[T]t'$ and $v\coh[V]t'$.
+        This gives us $(t,v)\coh[(T,V)](t',v')$, and as $t\neq t'$, we get $(t,v)\scoh[(T,V)](t',v')$ as required.
+
+    \end{adjustwidth}
+
+\end{proof}
+
+\begin{definition}
+    Let $\la\_;\_\ra:\cohs\times\cohs\to\cohs$ be defined as follows:
+    \begin{itemize}
+        \item
+        For $R,T\in Ob(\cohs)$, $\la R;T\ra\coloneqq(|R|\times|T|,\coh[\la R;T\ra])$ such that:
+        $$(r,t)\coh[\la R;T\ra](r',t') \iff r\scoh[R]r'\text{ or }(r=r'\text{ and }t\coh[T]t')$$
+
+        \item
+        For $f:R\multimap T$ and $g:U\multimap V$, 
+        $\la f;g\ra:\la R;U\ra\multimap\la T;V\ra$ is defined as follows:
+        $$\la f;g\ra=\{\lp(r,u),(t,v)\rp:\lp r,t\rp\in f,\lp u,v\rp\in g\}$$
+    \end{itemize}
+\end{definition}
+
+\begin{lemma}
+    $\la\_;\_\ra$ is a functor.
+\end{lemma}
+
+\begin{proof}
+    $\la\_;\_\ra$ preserves identity and composition.
+    The argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,S)$ replaced by $\la R;S\ra$\\
+
+    $\la\_;\_\ra$ preserves coherence:
+
+    \begin{adjustwidth}{1.5em}{}
+        Define $f : R\multimap T$, $g : U\multimap V$.
+
+        DON'T OVERLOOK EQUAL CASE.
+        As in the proof of Lemma \ref{lem:CoparIsFunctor}, we need only to consider the case $(r,u)\scoh[\la R;U\ra](r',u')$, showing that for any pairs
+        $\lp(r,u),(t,v)\rp$ and $\lp(r',u'),(t',v')\rp\in \la f;g\ra$ we have $(t,v)\scoh[\la T;V\ra](t',v')$.
+        
+        We have that either $r\scoh[R]r'$, or that $r=r'$ and $u\scoh[U]u'$.
+        As $f$ and $g$ are linear maps, the former implies that $t\scoh t'$, while the latter implies that $t\coh t'$ and $v\scoh v'$.
+        In either case we get that $(t,v)\coh[\la T;V\ra](t',v')$, and as either $t\neq t'$ or $v\neq v'$ we find that the coherence is strict as required.
+    \end{adjustwidth}
+\end{proof}
+
+\begin{definition}
+    Let $\overline{\{\quad\}}:\cohs^{op}\to\cohs$ be defined as follows:
+    \begin{itemize}
+        \item
+        For $R\in Ob(\cohs)$, $\overline{R}=(|R|,\incoh[R])$.
+
+        \item
+        For $f:R\multimap T$, $\overline{f}:\overline{T}\multimap\overline{R}$ is defined as follows:
+        $$\overline{f}=\{\lp t,r\rp:\lp r,t\rp\in f\}$$
+    \end{itemize}
+\end{definition}
+
+\begin{lemma}
+    $\overline{\{\quad\}}$ is a functor
+\end{lemma}
+
+\begin{proof}
+    $\overline{\{\quad\}}$ preserves identity trivially, as the underlying set of $\overline{R}$ is the same as that of $R$:
+
+    $\overline{\{\quad\}}$ preserves composition:
+    \begin{adjustwidth}{1.5em}{}
+        Define 2 linear maps $f:R\multimap T$, $g:T\multimap U$. Then:
+    \end{adjustwidth}
+    \begin{align*}
+        \overline{f}\comp\overline{g} &= \{\lp u,r\rp:\exists t \text{ such that } \lp u,t\rp\in \overline{g},\lp t,r\rp\in \overline{f}\} \\
+        &= \{\lp u,r\rp:\exists t \text{ such that } \lp r,t\rp\in f,\lp t,u\rp\in g\} \\
+        &= \{\lp u,r\rp:\lp r,u\rp\in g\comp f\} \\
+        &= \overline{g\comp f}
+    \end{align*}
+
+    $\overline{\{\quad\}}$ preserves coherence:
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:R\multimap T$
+
+        Take $t,t'\in|T|$ such that $t\scoh[\overline{T}]t'$, that is, $t\notscoh[T]t'$.
+        Consider pairs $\lp t,r\rp,\lp t',r'\rp\in\overline{f}$, so we have pairs $\lp r,t\rp,\lp r',t'\rp\in f$.
+        As $t\notscoh[T]t'$, the contrapositive to the linearity of $f$ gives that $r\notscoh[R]r'$, and thus $r\scoh[\overline{R}]r'$ as required.
+
+        If we instead take $t=t'$, SOMETHING ELSE HAPPENS
+
+    \end{adjustwidth}
+
+\end{proof}
+
+\begin{definition}
+    Let $\dag\_:\cohs\to\cohs$ be defined as follows:
+
+    \begin{itemize}
+        \item
+        For $R\in Ob(\cohs)$, $\dag R=(|R|^*,\coh[\dag R])$, such that:
+        $$r_1r_2...r_m \coh r'_1r'_2...r'_n \iff \text{one of:}$$
+
+        \begin{itemize}
+            \item
+            $\exists 1\leq l \leq \min(m,n) \text{ s.t. } r_i=r'_i \enspace\forall i<l$, and $r_l \scoh[R] r'_l$
+
+            \item
+            $r_i = r'_i \enspace\forall i\le\min(m,n)$
+        \end{itemize}
+
+        (Informally, 2 words over $R$ are coherent in $\dag R$ if one is a prefix of the other, or if the first place they differ they do so strictly coherently)
+
+        \item
+        For $f:R\multimap T$, $\dag f:\dag R\multimap\dag T$ is defined as follows:
+        $$\dag f=\{\lp r_1r_2...r_n,t_1t_2...t_n\rp:\lp r_i,t_i\rp\in f\enspace\forall 1\le i\le n\}$$
+    \end{itemize}
+\end{definition}
+
+\begin{lemma}
+    $\dag\_$ is a functor
+\end{lemma}
+
+\begin{proof}
+    $\dag\_$ preserves identity:
+    \begin{align*}
+        \dag id_{R} &= ... \\
+        &= ... \\
+        &= id_{\dag R}
+    \end{align*}
+
+    $\dag\_$ preserves composition:
+    \begin{adjustwidth}{1.5em}{}
+        Define 2 linear maps $f:R\multimap T$, $g:T\multimap U$. Then:
+    \end{adjustwidth}
+    \begin{align*}
+        \dag g\comp \dag f &= ... \\
+        &= ... \\
+        &= \dag(g\comp f)
+    \end{align*}
+
+    $\dag\_$ preserves coherence:
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:R\multimap T$
+    \end{adjustwidth}
+
+\end{proof}
+
 \subsection{Semantics of Rewrite Rules}
 For each rewrite rule of $\sSys$, we define a linear map between coherence spaces to be its model.
 The map representing some rewrite rule $\vlinf{\rho}{}{R}{T}$ will be of the form $F_\rho:T\multimap R$, so $F_\rho\subseteq|T|\times|R|$
@@ -489,7 +711,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{lemma}
 
 \begin{proof}
-    As $*\notscoh[\unit]*$, preservation of trivial coherence is vacuously true.
+    As $*\notscoh[\unit]*$, preservation of strict coherence is vacuously true.
     Now consider pairs $\lp*,(a_1,a_1)\rp,\lp*,(a_2,a_2)\rp\in F_{\aiD}$.
     As $*=*$ and thus $*\coh*$, we must show that $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$.
     If $a_1=a_2$ the coherence is trivial, so suppose that $a_1\neq a_2$.
@@ -654,206 +876,6 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{proof}
 
 SOMETHING SOMETHING DUALITY OF RULES MAKES UP RULES AUTOMATIC.
-
-\subsection{Functoriality of Connectives}
-In order to prove that SOME RESULT IS TRUE, we require that structures of $\sSys$ behave nicely when working in the category of coherence spaces.
-We will briefly define this category, and then show that we can model each of the unary and binary connectives as functors.
-
-\begin{definition}
-The \textit{category of coherence spaces} is written $\cohs$, with coherence spaces as objects and linear maps between them as morphisms.
-\end{definition}
-
-Modelling connectives as functors on $\cohs$ allows rewrite rules to be applied within arbitrary contexts, by composing the rule's model with the functor representing the context.
-This abstraction simplifies deep inference by making rule application uniform and modular, ensuring semantics are preserved at all levels of nesting.
-Contexts can be constructed compositionally, providing a scalable and elegant framework for handling rules in arbitrary settings.
-
-\begin{definition}
-    Let $(\_,\_):\cohs\times\cohs\to\cohs$ be defined as follows:
-    \begin{itemize}
-        \item
-        For $R,T\in Ob(\cohs)$, $(R,T) \coloneqq (R\times T,\coh[(R,T)])$ such that:
-        $$(r,t)\coh[(R,T)](r',t')\iff r\coh[R]r'\text{ and }t\coh[T]t'$$
-
-        \item
-        For $f:R\multimap T$ and $g:U\multimap V$, 
-        $(f,g):(R,U)\multimap(T,V)$ is defined as follows:
-        $$(f,g)=\{\lp(r,u),(t,v)\rp:\lp r,t\rp\in f,\lp u,v\rp\in g\}$$
-    \end{itemize}
-\end{definition}
-
-\begin{lemma}\label{lem:CoparIsFunctor}
-    $(\_,\_)$ is a functor.
-\end{lemma}
-
-\begin{proof}
-    $(\_,\_)$ preserves identity:
-    \begin{align*}
-        (id_R,id_T) &= \{
-            \lp(r,t),(r,t)\rp:\lp r,r\rp\in id_R,\lp t,t\rp\in id_T
-        \} \\
-        &= \{\lp(r,t),(r,t)\rp:r\in |R|,t\in |T|\} \\
-        &= \{\lp(r,t),(r,t)\rp:(r,t)\in|(R,T)|\} \\
-        &= id_{(R,T)}
-    \end{align*}
-
-    $(\_,\_)$ preserves composition:
-    
-    \begin{adjustwidth}{1.5em}{}
-        Define 4 linear maps
-        $f : R\multimap T$,
-        $h : T\multimap U$,
-        $g : V\multimap W$,
-    and $k : W\multimap X$.
-    Then we have $(f,g):(R,V)\multimap(T,W),(h,k):(T,W)\multimap(U,X)$, and:
-    \end{adjustwidth}
-
-    \begin{align*}
-        (h,k)\comp(f,g) &= \{
-            \lp(r,v)(u,x)\rp:\exists(t,w)\in|(T,W)| \text{ such that}\\
-            &\quad\lp(r,v),(t,w)\rp\in(f,g),\lp(t,w),(u,x)\rp\in(h,k)
-        \} \\
-        &= \{
-            \lp(r,v)(u,x)\rp:\exists t\in|T|,w\in|W| \text{ such that} \\
-            &\quad\lp r,t\rp\in f,\lp v,w\rp\in g,\lp t,u\rp\in h,\lp w,x\rp\in k
-        \} \\
-        &= \{
-            \lp(r,v),(u,x)\rp:\lp r,u\rp\in h\comp f,\lp v,x\rp\in k\comp g
-        \} \\
-        &= (h\comp f,k\comp g)
-    \end{align*}
-
-    $(\_,\_)$ preserves coherence:
-
-    \begin{adjustwidth}{1.5em}{}
-        Define $f:R\multimap T$, $g:U\multimap V$.
-
-        Take $(r,u),(r',u')\in|(R,U)|$.
-        If $(r,u)=(r',u')$, then clearly $(f,g)$ preserves this equality,
-        so we need only to consider the case $(r,u)\scoh[(R,U)](r',u')$, showing that for any pairs
-        $\lp(r,u),(t,v)\rp$ and $\lp(r',u'),(t',v')\rp\in(f,g)$ we have $(t,v)\scoh[(T,V)](t',v')$.
-
-        Without loss of generality, assume that $r\scoh[R]r'$ and $u\coh[U]u'$.
-        Linearity of $f$ and $g$ implies that $t\scoh[T]t'$ and $v\coh[V]t'$.
-        This gives us $(t,v)\coh[(T,V)](t',v')$, and as $t\neq t'$, we get $(t,v)\scoh[(T,V)](t',v')$ as required.
-    \end{adjustwidth}
-
-\end{proof}
-
-\begin{definition}
-    Let $\la\_;\_\ra:\cohs\times\cohs\to\cohs$ be defined as follows:
-    \begin{itemize}
-        \item
-        For $R,T\in Ob(\cohs)$, $\la R;T\ra\coloneqq(|R|\times|T|,\coh[\la R;T\ra])$ such that:
-        $$(r,t)\coh[\la R;T\ra](r',t') \iff r\scoh[R]r'\text{ or }(r=r'\text{ and }t\coh[T]t')$$
-
-        \item
-        For $f:R\multimap T$ and $g:U\multimap V$, 
-        $\la f;g\ra:\la R;U\ra\multimap\la T;V\ra$ is defined as follows:
-        $$\la f;g\ra=\{\lp(r,u),(t,v)\rp:\lp r,t\rp\in f,\lp u,v\rp\in g\}$$
-    \end{itemize}
-\end{definition}
-
-\begin{lemma}
-    $\la\_;\_\ra$ is a functor.
-\end{lemma}
-
-\begin{proof}
-    $\la\_;\_\ra$ preserves identity and composition.
-    The argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,S)$ replaced by $\la R;S\ra$\\
-
-    $\la\_;\_\ra$ preserves coherence:
-
-    \begin{adjustwidth}{1.5em}{}
-        Define $f : R\multimap T$, $g : U\multimap V$.
-
-        As in the proof of Lemma \ref{lem:CoparIsFunctor}, we need only to consider the case $(r,u)\scoh[\la R;U\ra](r',u')$, showing that for any pairs
-        $\lp(r,u),(t,v)\rp$ and $\lp(r',u'),(t',v')\rp\in \la f;g\ra$ we have $(t,v)\scoh[\la T;V\ra](t',v')$.
-        
-        We have that either $r\scoh[R]r'$, or that $r=r'$ and $u\scoh[U]u'$.
-        As $f$ and $g$ are linear maps, the former implies that $t\scoh t'$, while the latter implies that $t\coh t'$ and $v\scoh v'$.
-        In either case we get that $(t,v)\coh[\la T;V\ra](t',v')$, and as either $t\neq t'$ or $v\neq v'$ we find that the coherence is strict as required.
-    \end{adjustwidth}
-\end{proof}
-
-\begin{definition}
-    Let $\overline{\{\quad\}}:\cohs^{op}\to\cohs$ be defined as follows:
-    \begin{itemize}
-        \item
-        For $R\in Ob(\cohs)$, $\overline{R}=(|R|,\incoh[R])$.
-
-        \item
-        For $f:R\multimap T$, $\overline{f}:\overline{T}\multimap\overline{R}$ is defined as:
-        $$\overline{f}=\{\lp t,r\rp:\lp r,t\rp\in f\}$$.
-
-
-    \end{itemize}
-\end{definition}
-
-\begin{lemma}
-    $\overline{\{\quad\}}$ is a functor
-\end{lemma}
-
-\begin{proof}
-    $\overline{\{\quad\}}$ preserves identity trivially, as the underlying set of $\overline{R}$ is the same as that of $R$:
-
-    $\overline{\{\quad\}}$ preserves composition:
-    \begin{adjustwidth}{1.5em}{}
-        Define 2 linear maps $f:R\multimap T$, $g:T\multimap U$. Then:
-    \end{adjustwidth}
-    \begin{align*}
-        \overline{f}\comp\overline{g} &= \{\lp u,r\rp:\exists t \text{ such that } \lp u,t\rp\in \overline{g},\lp t,r\rp\in \overline{f}\} \\
-        &= \{\lp u,r\rp:\exists t \text{ such that } \lp r,t\rp\in f,\lp t,u\rp\in g\} \\
-        &= \{\lp u,r\rp:\lp r,u\rp\in g\comp f\} \\
-        &= \overline{g\comp f}
-    \end{align*}
-
-    $\overline{\{\quad\}}$ preserves coherence:
-    \begin{adjustwidth}{1.5em}{}
-        Define $f:R\multimap T$
-
-        Take $t,t'\in|T|$ such that $t\scoh[\overline{T}]t'$, that is, $t\notscoh[T]t'$.
-        Consider pairs $\lp t,r\rp,\lp t',r'\rp\in\overline{f}$, so we have pairs $\lp r,t\rp,\lp r',t'\rp\in f$.
-        As $t\notscoh[T]t'$, the contrapositive to the linearity of $f$ gives that $r\notscoh[R]r'$, and thus $r\scoh[\overline{R}]r'$ as required.
-
-        If we instead take $t=t'$, 
-
-    \end{adjustwidth}
-
-\end{proof}
-
-\begin{definition}
-    Let $\dag\_:\cohs\to\cohs$ be defined as follows:
-\end{definition}
-
-\begin{lemma}
-    $D$ is a functor
-\end{lemma}
-
-
-\begin{proof}
-    $D$ preserves identity:
-    \begin{align*}
-        D(id_{\denote{R}}) &= ... \\
-        &= ... \\
-        &= id_{\denote{\dag R}}
-    \end{align*}
-
-    $D$ preserves composition:
-    \begin{adjustwidth}{1.5em}{}
-        Define 2 linear maps $f:\denote{R}\multimap\denote{T}$, $g:\denote{T}\multimap\denote{U}$. Then:
-    \end{adjustwidth}
-    \begin{align*}
-        D(g)\comp D(f) &= ... \\
-        &= ... \\
-        &= D(g\comp f)
-    \end{align*}
-
-    $D$ preserves coherence:
-    \begin{adjustwidth}{1.5em}{}
-        Define $f:\denote{R}\multimap\denote{T}$
-    \end{adjustwidth}
-
-\end{proof}
 
 \newpage
 \section{Some Big Result...}

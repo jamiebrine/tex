@@ -5,7 +5,7 @@
 \contentsline {section}{\numberline {3}Coherence Space Semantics}{8}{}%
 \contentsline {subsection}{\numberline {3.1}Introduction to Coherence Spaces}{8}{}%
 \contentsline {subsection}{\numberline {3.2}Semantics of Structures}{9}{}%
-\contentsline {subsection}{\numberline {3.3}Semantics of Rewrite Rules}{11}{}%
-\contentsline {subsection}{\numberline {3.4}Functoriality of Connectives}{14}{}%
+\contentsline {subsection}{\numberline {3.3}Functoriality of Connectives}{11}{}%
+\contentsline {subsection}{\numberline {3.4}Semantics of Rewrite Rules}{15}{}%
 \contentsline {section}{\numberline {4}Some Big Result...}{20}{}%
 \contentsline {section}{\numberline {5}Conclusion}{21}{}%
