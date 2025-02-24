@@ -1,10 +1,12 @@
-
+dissertation 2.log
+dissertation.aux
+dissertation.bbl
+dissertation.blg
+dissertation.fdb_latexmk
+dissertation.fls
+dissertation.log
+dissertation.synctex.gz
+dissertation.toc
+references.bib
+.gitignore
 .DS_Store
-proof.aux
-proof.log
-proof.bbl
-proof.blg
-proof.fdb_latexmk
-proof.fls
-proof.synctex.gz
-proof.log

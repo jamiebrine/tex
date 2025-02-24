@@ -50,7 +50,7 @@
 \newcommand{\scoh}[1][]{\mathrel{\frown}_{\ifx\\#1\\\else#1\fi}}
 \newcommand{\notscoh}[1][]{\mathrel{\ooalign{$\frown$\cr\hidewidth$/$\hidewidth}}_{\ifx\\#1\\\else#1\fi}}
 \newcommand{\comp}{\mathbin{\circ}}
-\newcommand{\unit}{\circledcirc}
+\newcommand{\unit}{\circ}
 
 \title{WIP}
 \author{Jamie Brine}
@@ -120,7 +120,7 @@ If structural parentheses fill the hole exactly, the curly braces will be ommitt
 \end{definition}
 
 \begin{definition}
-Structures $R$ and $S$ are considered \textit{equivalent} modulo the relation $=$, which is the smallest congruence relation defined by the equations in Figure \ref{fig:equivalence}.
+Structures $R$ and $S$ are considered \textit{equivalent} modulo the relation $=$, which is the smallest congruence defined by the equations in Figure \ref{fig:equivalence}.
 \end{definition}
 
 \begin{figure}[ht!]
@@ -328,7 +328,7 @@ Note that this is not the simplest derivation from this premise to this conclusi
 \end{example}
 
 \begin{example}
-Negating the premise of the derivation from example \ref{example:DerivationExample}, and then use the equivalence relation defined in \ref{fig:equivalence} to push negation to the level of atoms, we get the following:
+Negating the premise of the derivation from example \ref{example:DerivationExample}, and then use the equivalence relation defined in Figure \ref{fig:equivalence} to push negation to the level of atoms, we get the following:
 $$\overline{\dag [R,T]} = \hash \overline{[R,T]} = \hash (\overline{R},\overline{T})$$
 Using Proposition \ref{prop:DerivationToProof}, we can hence guarantee that it is possible to contruct the following proof:
 
@@ -344,6 +344,8 @@ Using Proposition \ref{prop:DerivationToProof}, we can hence guarantee that it i
 We give denotational semantics to system $\sSys$ using a coherence space model.
 Broadly speaking, the aim of this model of the system is to give a representation of proofs of some structure $A$ as \textit{cliques} of the corresponding coherence space $\denote{A}$.
 
+One of the advantages of doing so is that it allows us to derive properties about the logical system by working with purely categorical constructs.
+Some desirable results may be difficult to prove using the logic of the system alone, but much simpler when we work with only the model.
 \begin{remark}
 We will give the semantics for $\sSys$ in terms of only binary versions of the connectives copar, seq, and par.
 For example, instead of working with an arbitrary copar structure $(R_1,..,R_n)$, we will only consider the simpler case $(R,T)$, and instead rely on the associative property to inductively construct more complex structures.
@@ -351,9 +353,10 @@ For example, instead of working with an arbitrary copar structure $(R_1,..,R_n)$
 
 \subsection{Introduction to Coherence Spaces}
 The idea of coherence spaces was first proposed by Jean-Yves Girard as a model for linear logic \cite{girard1987linear}, and has since been adapted by a range of researchers to model their own systems.
-Most notably, Uday Reddy extended linear logic with an operator representing one-way communication \cite{Reddy1993ALL}, and gave a coherence space semantics on which much of this work has been based.
+Most notably, Uday Reddy extended linear logic with an operator representing one-way communication \cite{reddy1993all}, and gave a coherence space semantics on which much of this work has been based.
 
-We introduce the following definitions which will be used in defining our model, but for a more category theoretic introduction to coherence spaces the reader is referred to Paul-André Melliès' lecture notes \cite{mellies2000survival}.
+We introduce the following definitions which will be used in defining our model.
+For a more structured, category theoretic introduction to coherence spaces, the reader is referred to Paul-André Melliès' lecture notes \cite{mellies2000survival}.
 
 \begin{definition}
     A \textit{coherence space} is a pair $(|A|,\coh[A])$, where $|A|$ is some underlying set and $\coh[A]$ is the \textit{coherence relation} defined on that set.
@@ -386,9 +389,7 @@ We introduce the following definitions which will be used in defining our model,
         a \scoh[A] a' &\implies b \scoh[B] b'
     \end{align*}
 
-    We write $f:A\multimap B$.
-    We will use the notation $\lp a,b\rp\in f$ to mean "$f$ relates $a$ to $b$".
-    This notational choice is necessary as we will later give a specific meaning to regular parenthesis.
+    We write $f:A\multimap B$, and use the notation $\lp a,b\rp\in f$ to mean "$f$ relates $a$ to $b$".
 \end{definition}
 
 \begin{definition}
@@ -402,6 +403,7 @@ Armed with these definitions, we can begin to construct a semantic model of the 
 
 For each structure $x$ in the grammar of $\sSys$, we will define the semantics $\denote{x}$.
 Thus, we can inductively define the semantics of an arbitrarily complex structure, starting by translating the atoms and then working outwards towards the outermost connective.
+Here we will state the semantics of each structure, then in the next section unpack and justify each definition.
 
 \begin{remark}
     Throughout this section, for any coherence space $A$ we will only define $\coh[A]$.
@@ -436,7 +438,7 @@ $$(r_1,t_1)\coh(r_2,t_2) \iff r_1\scoh[\denote{R}]r_2 \text{ or } t_1\scoh[\deno
 
 \item
 \textbf{Dagger}: $\denote{\dag R} = (\denote{R}^*, \coh[\denote{\dag R}])$, such that:
-$$r_1r_2...r_m \coh r'_1r'_2...r'_n \iff \text{one of:}$$
+$$r_1...r_m \coh r'_1...r'_n \iff \text{one of:}$$
 
 \begin{itemize}
     \item
@@ -448,14 +450,14 @@ $$r_1r_2...r_m \coh r'_1r'_2...r'_n \iff \text{one of:}$$
 
 \item
 \textbf{Hash}: $\denote{\hash R} = (\denote{R}^*, \coh[\denote{\hash R}])$, such that:
-$$r_1r_2...r_m \coh r'_1r'_2...r'_n \iff \text{one of:}$$
+$$r_1...r_m \coh r'_1...r'_n \iff \text{one of:}$$
 
 \begin{itemize}
     \item
-    $\exists 1\leq l \leq \min(m,n) \text{ s.t. } r_i=r'_i \enspace\forall i<l$, and $r_l \notcoh[\denote{R}] r'_l$
+    $\exists 1\leq l \leq \min(m,n) \text{ s.t. } r_i=r'_i \enspace\forall i<l$, and $r_l \scoh[\denote{R}] r'_l$
 
     \item
-    $r_1r_2...r_m = r'_1r'_2...r'_n$
+    $r_1...r_m = r'_1...r'_n$
 \end{itemize}
 
 \end{itemize}
@@ -475,6 +477,16 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
 \begin{definition}
     The \textit{category of coherence spaces} is written $\cohs$, with coherence spaces as objects and linear maps between them as morphisms.
 \end{definition}
+
+In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of some map $f:A\multimap B$, we will show 2 things:
+\begin{enumerate}
+    \item
+    For $a\scoh[A]a'$, and pairs $\lp a,b\rp,\lp a',b'\rp\in Ff$, we have that $b\scoh[B]b'$
+    \item 
+    For pairs $\lp a,b\rp,\lp a,b'\rp\in Ff$, we have that $b\coh[B]b'$
+\end{enumerate}
+(1) directly shows preservation of strict coherence. As strict coherence is a stronger condition than coherence, it also shows preservation of coherence in all cases aside from that where $a=a'$;
+(2) verifies this case directly.
 
 \begin{definition}
     Let $(\_,\_):\cohs\times\cohs\to\cohs$ be defined as follows:
@@ -536,15 +548,14 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
     \begin{adjustwidth}{1.5em}{}
         Define $f:R\multimap T$, $g:U\multimap V$.
 
-        Take $(r,u)\in|(R,U)|$ and consider $\lp(r,u),(t,v)\rp,\lp(r,u),(t',v')\rp\in(f,g)$.
-        We require that $(t,v)\coh[(T,V)](t',v')$, as $(t,v)$ is coherent to itself by equality.
-        Indeed, I AM TOO TIRED AND IT'S SATURDAY NIGHT.
-
-        We now consider the case that $(r,u)\scoh[(R,U)](r',u')$, showing that for any pairs
-        $\lp(r,u),(t,v)\rp$ and $\lp(r',u'),(t',v')\rp\in(f,g)$ we have $(t,v)\scoh[(T,V)](t',v')$:
+        First assume that $(r,u)\scoh[(R,U)](r',u')$, and consider pairs $\lp(r,u),(t,v)\rp$, $\lp(r',u'),(t',v')\rp\in(f,g)$.
         Without loss of generality, assume that $r\scoh[R]r'$ and $u\coh[U]u'$.
-        Linearity of $f$ and $g$ implies that $t\scoh[T]t'$ and $v\coh[V]t'$.
-        This gives us $(t,v)\coh[(T,V)](t',v')$, and as $t\neq t'$, we get $(t,v)\scoh[(T,V)](t',v')$ as required.
+        Linearity of $f$ and $g$ implies that $t\scoh[T]t'$ and $v\coh[V]v'$.
+        This gives us $(t,v)\coh[(T,V)](t',v')$, and as $t\neq t'$ we find that the coherence is strict as required.
+
+        Now consider pairs $\lp(r,u),(t,v)\rp,\lp(r,u),(t',v')\rp\in(f,g)$.
+        Linearity of $f$ and $g$ implies that $t\coh[T]t'$ and $v\coh[V]v'$.
+        This gives us $(t,v)\coh[(T,V)](t',v')$ as required.
 
     \end{adjustwidth}
 
@@ -570,20 +581,22 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
 
 \begin{proof}
     $\la\_;\_\ra$ preserves identity and composition.
-    The argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,S)$ replaced by $\la R;S\ra$\\
+    The argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,T)$ replaced by $\la R;T\ra$\\
 
     $\la\_;\_\ra$ preserves coherence:
 
     \begin{adjustwidth}{1.5em}{}
         Define $f : R\multimap T$, $g : U\multimap V$.
 
-        DON'T OVERLOOK EQUAL CASE.
-        As in the proof of Lemma \ref{lem:CoparIsFunctor}, we need only to consider the case $(r,u)\scoh[\la R;U\ra](r',u')$, showing that for any pairs
-        $\lp(r,u),(t,v)\rp$ and $\lp(r',u'),(t',v')\rp\in \la f;g\ra$ we have $(t,v)\scoh[\la T;V\ra](t',v')$.
-        
+        First assume that $(r,u)\scoh[\la R;U\ra](r',u')$, and consider pairs $\lp(r,u),(t,v)\rp$, $\lp(r',u'),(t',v')\rp\in \la f;g\ra$. 
         We have that either $r\scoh[R]r'$, or that $r=r'$ and $u\scoh[U]u'$.
         As $f$ and $g$ are linear maps, the former implies that $t\scoh t'$, while the latter implies that $t\coh t'$ and $v\scoh v'$.
         In either case we get that $(t,v)\coh[\la T;V\ra](t',v')$, and as either $t\neq t'$ or $v\neq v'$ we find that the coherence is strict as required.
+
+        Now consider pairs $\lp(r,u),(t,v)\rp,\lp(r,u),(t',v')\rp\in\la f;g\ra$.
+        Linearity of $f$ implies that $t\coh[T]t'$.
+        We have that either $t\neq t'$, in which case $t\scoh[T]t'$, or that $t=t'$.
+        Combining the second case with the linearity of $g$ gives that $t=t'$ and $v\coh[V]v'$, so either case gives us $(t,v)\coh[(T,V)](t',v')$ as required.
     \end{adjustwidth}
 \end{proof}
 
@@ -625,7 +638,8 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
         Consider pairs $\lp t,r\rp,\lp t',r'\rp\in\overline{f}$, so we have pairs $\lp r,t\rp,\lp r',t'\rp\in f$.
         As $t\notscoh[T]t'$, the contrapositive to the linearity of $f$ gives that $r\notscoh[R]r'$, and thus $r\scoh[\overline{R}]r'$ as required.
 
-        If we instead take $t=t'$, SOMETHING ELSE HAPPENS
+        If we instead consider pairs $\lp t,r\rp,\lp t,r'\rp\in\overline{f}$, we have pairs $\lp r,t\rp,\lp r',t\rp\in f$.
+        Then $t=t'\implies t\incoh[T]t'$, and again the contrapositive of linearity of $f$ gives $r\incoh[R]r'$, thus $r\coh[\overline{R}]r'$ as required.
 
     \end{adjustwidth}
 
@@ -637,7 +651,7 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
     \begin{itemize}
         \item
         For $R\in Ob(\cohs)$, $\dag R=(|R|^*,\coh[\dag R])$, such that:
-        $$r_1r_2...r_m \coh r'_1r'_2...r'_n \iff \text{one of:}$$
+        $$r_1...r_m \coh r'_1...r'_n \iff \text{one of:}$$
 
         \begin{itemize}
             \item
@@ -651,7 +665,7 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
 
         \item
         For $f:R\multimap T$, $\dag f:\dag R\multimap\dag T$ is defined as follows:
-        $$\dag f=\{\lp r_1r_2...r_n,t_1t_2...t_n\rp:\lp r_i,t_i\rp\in f\enspace\forall 1\le i\le n\}$$
+        $$\dag f=\{\lp r_1...r_n,t_1...t_n\rp:\lp r_i,t_i\rp\in f\enspace\forall 1\le i\le n\}$$
     \end{itemize}
 \end{definition}
 
@@ -662,8 +676,8 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
 \begin{proof}
     $\dag\_$ preserves identity:
     \begin{align*}
-        \dag id_{R} &= ... \\
-        &= ... \\
+        \dag id_{R} &= \{\lp r_1...r_n,r_1...r_n\rp:\lp r_i,r_i\rp\in id_R\enspace\forall 1\le i\le n\} \\
+        &= \{\lp r_1...r_n,r_1...r_n\rp:r_i\in |R|\enspace\forall 1\le i\le n\} \\
         &= id_{\dag R}
     \end{align*}
 
@@ -672,24 +686,78 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
         Define 2 linear maps $f:R\multimap T$, $g:T\multimap U$. Then:
     \end{adjustwidth}
     \begin{align*}
-        \dag g\comp \dag f &= ... \\
-        &= ... \\
+        \dag g\comp \dag f &= \{\lp r_1...r_n,u_1u_2...u_n\rp:\exists t_1...t_n\in|T|^* \text{ such that } \\
+        &\quad\lp r_1...r_n,t_1...t_n\rp\in\dag f, \lp t_1...t_n,u_1u_2...u_n\rp\in\dag g\} \\
+        &= \{\lp r_1...r_n,u_1u_2...u_n\rp:\exists t_i\in|T|\text{ such that } \\
+        &\quad\lp r_i,t_i\rp\in f,\lp t_i,u_i\rp\in g\enspace\forall 1\le i\le n\} \\
+        &= \{\lp r_1...r_n,u_1u_2...u_n\rp:\lp r_i,u_1\rp\in g\comp f \enspace\forall 1\le i\le n\} \\
         &= \dag(g\comp f)
     \end{align*}
 
     $\dag\_$ preserves coherence:
     \begin{adjustwidth}{1.5em}{}
-        Define $f:R\multimap T$
-    \end{adjustwidth}
+        Define $f:R\multimap T$.
 
+        First assume that $r_1...r_n\scoh[\dag R]r'_1...r'_n$, and consider pairs $\lp r_1...r_n,t_1...t_n\rp$, $\lp r'_1...r'_n,t'_1...t'_n\rp\in\dag f$.
+        $\exists 1\le j\le n$ where $j$ is the smallest index such that $r_j\scoh[R]r'_j$.
+        Linearity of $f$ then gives that $t_i\coh[T]t'_i\enspace\forall 1\le i\le j$, so in the first position that they differ they must do so coherently 
+        (even if all of $t_i=t'_i$, linearity of $f$ ensures that $t_j\scoh[T]t'_j$).
+        This gives $t_1...t_n\scoh[\dag T]t'_1...t'_n$ as required.
+
+        Now consider pairs $\lp r_1...r_n,t_1...t_n\rp$, $\lp r_1...r_n,t'_1...t'_n\rp\in\dag f$.
+        Linearity of $f$ gives that $t_i\coh[T]t'_i\enspace\forall1\le i\le n$.
+        If $t_1...t_n=t'_1...t'_n$ then the proof is trivial, so assume they are not equal.
+        $\exists 1\le j\le n$ where $j$ is the smallest index such that $t_j\neq t'_j$.
+        However, as $t_j\coh[T]t'_j$, we must have that $t_j\scoh[T]t'_j$, giving $t_1...t_n\coh[\dag T]t'_1...t'_n$ as required.
+    \end{adjustwidth}
 \end{proof}
 
-\subsection{Semantics of Rewrite Rules}
+The remaining connectives, Par and Hash, can be constructed compositionally, as they are the duals of Copar and Dagger respectively.
+That is, we can define:
+$$[\_,\_]\coloneqq\overline{(\overline{\{\quad\}},\overline{\{\quad\}})}:\cohs\times\cohs\to\cohs$$
+$$\hash \_\coloneqq\overline{\dag\overline{\{\quad\}}}:\cohs\to\cohs$$
+
+Deriving the actions of these functors is left as an exercise to the reader; the results are as follows:
+
+\begin{itemize}
+    \item
+    For $R,T\in Ob(\cohs)$, $[R,T] \coloneqq (R\times T,\coh[{[R,T]}])$ such that:
+    $$(r,t)\coh[{[R,T]}](r',t')\iff r\scoh[R]r'\text{ or }t\scoh[T]t'\text{ or }(r,t)=(r',t')$$
+
+    \item
+    For $f:R\multimap T$ and $g:U\multimap V$, 
+    $[f,g]:[R,U]\multimap[T,V]$ is defined as follows:
+    $$[f,g]=\{\lp(r,u),(t,v)\rp:\lp r,t\rp\in f,\lp u,v\rp\in g\}$$
+
+    \item
+        For $R\in Ob(\cohs)$, $\hash R=(|R|^*,\coh[\hash R])$, such that:
+        $$r_1...r_m \coh r'_1...r'_n \iff \text{one of:}$$
+
+        \begin{itemize}
+            \item
+            $\exists 1\leq l \leq \min(m,n) \text{ s.t. } r_i=r'_i \enspace\forall i<l$, and $r_l \scoh[R] r'_l$
+
+            \item
+            $r_1...r_m=r'_1...r'_n$
+        \end{itemize}
+
+        (Informally, 2 words over $R$ are coherent in $\hash R$ if they are equal, or if the first place they differ they do so strictly coherently)
+
+        \item
+        For $f:R\multimap T$, $\hash f:\hash R\multimap\hash T$ is defined as follows:
+        $$\hash f=\{\lp r_1...r_n,t_1...t_n\rp:\lp r_i,t_i\rp\in f\enspace\forall 1\le i\le n\}$$
+\end{itemize}
+
+We do not have to prove that these are functors, as composition of functors always results in functors.
+
+With these final 2 functors, we now have a purely categorial model of any structure that could arise from the grammar of $\sSys$, which preserves all necessary properties no matter the choice of coherence space for atoms.
+
+\subsection{Semantics of Rewrite Rules} 
 For each rewrite rule of $\sSys$, we define a linear map between coherence spaces to be its model.
-The map representing some rewrite rule $\vlinf{\rho}{}{R}{T}$ will be of the form $F_\rho:T\multimap R$, so $F_\rho\subseteq|T|\times|R|$
+The map representing some rewrite rule $\vlinf{\rho}{}{R}{T}$ will be of the form $F_\rho:T\multimap R$.
 
 We will consider the simplest form of each rule, that is, applying each in an empty context.
-Extending this to rewrites in arbitrary contexts will be handled in the next subsection.
+Extending this to rewrites in arbitrary contexts is automatic, as we can represent the context as a functor. 
 
 Crucially, we must show that each of these maps preserve coherence (and thus cliques), which will allow chains of rewrites to model derivations (and thus proofs).
 
@@ -729,7 +797,8 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
         \]
 
     we define $F_{\wD}:\unit\multimap\hash R$ as follows:
-    $$F_{\wD}=\{\lp *,r_1r_2...r_n\rp:r_i\in|R|\}$$
+    $$F_{\wD}=\{\lp *,\epsilon\rp\}$$
+    where $\epsilon$ is the empty sequence in$ R$
 \end{definition}
 
 \begin{lemma}
@@ -737,19 +806,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{lemma}
 
 \begin{proof}
-    As in the proof of Lemma \ref{lem:aiPreserves}, we need only to show that $r_1r_2...r_m\scoh[\hash R]r'_1r'_2...r'_n$ for any distinct words over $|R|$.
-    Assume WLOG that $m\le n$, then we have 2 possible cases:
-
-    Case 1: $r_1r_2...r_m=r'_1r'_2...r'_m$
-    \begin{adjustwidth}{1.5em}{}
-        As the two words are distinct, we must have that $m<n$
-        ?? DOES THIS NOT VIOLATE NO PREFIX CONDITION OF HASH ??
-    \end{adjustwidth}
-
-    Case 2: $\exists1\le i\le\text{ min}(m,n)$ such that $r_i\neq r'_i$
-    \begin{adjustwidth}{1.5em}{}
-        THEN DO THIS BIT
-    \end{adjustwidth}
+    Trivial, as any two empty sequences in $R$ are coherent by equality.
 \end{proof}
 
 \begin{definition}
@@ -787,9 +844,6 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
         The same 2 cases as above can arise here, or alternatively we may have that $(r,t)=(r',t')$.
         In this case, we have that $r\coh r'$, which combined with $u\scoh u'$ gives $(r,u)\scoh[(R,U)](r',u')$ as required.
     \end{adjustwidth}
-
-    $\therefore F_\sw$ preserves strict coherence.
-
 \end{proof}
 
 \begin{definition}
@@ -829,8 +883,6 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
         As $r=r'$, the former implies $(r,u)\scoh(r',u')$, and similarly the latter implies $(t,v)\scoh(t',v')$.
         In either case the sufficient condition is met.
     \end{adjustwidth}
-
-    $\therefore F_{\qD}$ preserves strict coherence. 
 \end{proof}
 
 \begin{definition}
