@@ -60,15 +60,7 @@
 \maketitle
 
 \begin{abstract}
-    TODO:
-    \begin{itemize}
-        \item indent all proof environments and remove space
-        \item why are there big gaps in contents?
-        \item work through maps for rewrites
-        \item finish functors for connectives
-        \item explain how functors properly model contexts, and thus prove contextual closure
-        \item ultimately, prove naturality of rewrites
-    \end{itemize}
+    Made a thing, it did a thing, very happy.
 \end{abstract}
 
 \newpage
@@ -346,6 +338,7 @@ Broadly speaking, the aim of this model of the system is to give a representatio
 
 One of the advantages of doing so is that it allows us to derive properties about the logical system by working with purely categorical constructs.
 Some desirable results may be difficult to prove using the logic of the system alone, but much simpler when we work with only the model.
+
 \begin{remark}
 We will give the semantics for $\sSys$ in terms of only binary versions of the connectives copar, seq, and par.
 For example, instead of working with an arbitrary copar structure $(R_1,..,R_n)$, we will only consider the simpler case $(R,T)$, and instead rely on the associative property to inductively construct more complex structures.
@@ -399,11 +392,11 @@ For a more structured, category theoretic introduction to coherence spaces, the 
 
 Armed with these definitions, we can begin to construct a semantic model of the system $\sSys$.
 
-\subsection{Semantics of Structures}
+\subsection{A Model for Structures of $\sSys$}
 
-For each structure $x$ in the grammar of $\sSys$, we will define the semantics $\denote{x}$.
+For each structure $x$ in the grammar of $\sSys$, we would like to define some semantic model $\denote{x}$ to represent it.
 Thus, we can inductively define the semantics of an arbitrarily complex structure, starting by translating the atoms and then working outwards towards the outermost connective.
-Here we will state the semantics of each structure, then in the next section unpack and justify each definition.
+Here we will state the semantics that we would like for each structure, then, throughout the rest of this section, unpack and justify each definition.
 
 \begin{remark}
     Throughout this section, for any coherence space $A$ we will only define $\coh[A]$.
@@ -462,7 +455,7 @@ $$r_1...r_m \coh r'_1...r'_n \iff \text{one of:}$$
 
 \end{itemize}
 
-\subsection{Functoriality of Connectives}
+\subsection{Connectives are Functors}
 
 We will now take a step back from modelling the system $\sSys$, and view the coherence space model from a purely categorical perspective.
 For the rest of this section, we abstract out the underlying structure of any given coherence space, and instead consider how rewrite rules and connectives behave when applied to arbitrary ones.
@@ -752,7 +745,7 @@ We do not have to prove that these are functors, as composition of functors alwa
 
 With these final 2 functors, we now have a purely categorial model of any structure that could arise from the grammar of $\sSys$, which preserves all necessary properties no matter the choice of coherence space for atoms.
 
-\subsection{Semantics of Rewrite Rules} 
+\subsection{Rewrite Rules are Linear Maps} 
 For each rewrite rule of $\sSys$, we define a linear map between coherence spaces to be its model.
 The map representing some rewrite rule $\vlinf{\rho}{}{R}{T}$ will be of the form $F_\rho:T\multimap R$.
 
@@ -828,6 +821,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 
 \begin{proof}
     Consider $(r,t,u),(r',t',u')\in|([R,T],U)|$.
+
     If the two are equal, it is trivial to show that $F_\sw$ preserves this equality.
     Assume instead that $(r,t,u)\scoh(r',t',u')$.
     To get the required coherence $(r,u,t)\scoh[{[(R,U),T]}](r',u',t')$, it suffices to show that either $(r,u)\scoh[(R,U)](r',u')$ or $t\scoh t'$.
@@ -865,6 +859,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 
 \begin{proof}
     Consider $(r,t,u,v),(r',t',u',v')\in|\la[R,T];[U,V]\ra|$.
+
     If the two are equal, it is trivial to show that $F_{\qD}$ preserves this equality.
     Assume instead that $(r,t,u,v)\scoh(r',t',u',v')$.
     To get the required coherence $(r,u,t,v)\scoh[{[\la R;U\ra,\la T;V\ra]}](r',u',t',v')$,
@@ -895,7 +890,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
         \]
 
     we define $F_{\pD}:\dag[R,T]\multimap[\dag R,\hash T]$ as follows:
-    $$F_{\pD}=\{\lp r_1t_1...r_mt_m,(r'_1...r_n,t'_1...t'_p)\rp:r_i,r'_j\in|R|,t_k,t'_l\in|T|\}$$
+    $$F_{\pD}=\{\lp (r_1,t_1)...(r_n,t_n),(r_1...r_n,t_1...t_n)\rp:r_i\in|R|,t_j\in|T|\}$$
 \end{definition}
 
 \begin{lemma}
@@ -903,7 +898,26 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{lemma}
 
 \begin{proof}
-    DO THIS BIT HERE PLEASE
+    Consider $(r_1,t_1)...(r_m,t_m),(r'_1,t'_1)...(r'_n,t'_n)\in|\dag[R,T]|$
+
+    If the two are equal, it is trivial to show that $F_{\pD}$ preserves this equality.
+    Assume instead that $(r_1,t_1)...(r_m,t_m)\scoh[\dag{[R,T]}](r'_1,t'_1)...(r'_n,t'_n)$,
+    and consider pairs $\lp (r_1,t_1)...(r_m,t_m),(r_1...r_m,t_1...t_m)\rp$, $\lp (r'_1,t'_1)...(r'_n,t'_n),(r'_1...r'_n,t'_1...t'_n)\rp$ .
+    We have 2 possible cases:
+    
+    Case 1: $\exists 1\leq l \leq \min(m,n) \text{ s.t. } (r_i,t_i)=(r'_i,t_i) \enspace\forall i<l$, and $(r_l,t_l)\scoh[{[R,T]}](r'_l,t'_l)$
+    \begin{adjustwidth}{1.5em}{}
+        Assume WLOG that $r_l\scoh[R]r'_l$.
+        We then have that $r_i=r'_i\enspace\forall 1\le i\le l$, and $r_l\scoh[R]r'_l$.
+        This implies that $r_1...r_m\scoh[\dag R]r'_1...r'_n$, which then gives $(r_1...r_m,t_1...t_m)\scoh[{[\dag R,\hash T]}](r'_1...r'_n,t'_1...t'_n)$ as required.
+    \end{adjustwidth}
+
+    Case 2: $(r_i,t_i)=(r'_i,t_i')\enspace\forall 1\le i\le \text{min}(m,n)$
+    \begin{adjustwidth}{1.5em}{}
+        We get that $r_i=r'_i\enspace\forall 1\le i\le \text{min}(m,n)$.
+        As $(r_1,t_1)...(r_m,t_m)\scoh[\dag{[R,T]}](r'_1,t'_1)...(r'_n,t'_n)$, we must have that $m\neq n$.
+        This implies that $r_1...r_m\scoh[\dag R]r'_1...r'_n$, and so $(r_1...r_m,t_1...t_m)\scoh[{[\dag R,\hash T]}](r'_1...r'_n,t'_1...t'_n)$ as required.
+    \end{adjustwidth}
 \end{proof}
 
 \begin{definition}
@@ -916,18 +930,31 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
         \]
 
     we define $F_{\bD}:\la R;\hash R\ra\multimap\hash R$ as follows:
-    $$F_{\bD}=\{\lp\la r_0;r_1...r_m,r'_1...r'_n\rp:r_i,r'_j\in|R|\}$$
+    $$F_{\bD}=\{\lp(r,r_1...r_n),rr_1...r_n\rp:r_i\in|R|\}$$
 \end{definition}
 
 \begin{lemma}
-    $F_{\pD}$ preserves coherence
+    $F_{\bD}$ preserves coherence
 \end{lemma}
 
 \begin{proof}
-    DO THIS BIT HERE PLEASE
+    Consider $(r,r_1...r_m),(r',r'_1...r'_n)\in|\la R;\hash R\ra|$.
+
+    If the two are equal, it is trivial to show that $F_{\bD}$ preserves this equality.
+    Assume instead that $(r,r_1...r_m)\scoh[\la R;\hash R\ra](r',r'_1...r'_n)$.
+    We have that either $r\scoh[R]r'$, or that $r=r'$ and $r_1...r_m\scoh[\hash R]r'_1...r'_n$.
+    In either case, $rr_1...r_m\neq r'r'_1...r'_n$, and the first place they differ they do so strictly coherently,
+    giving $rr_1...r_m\scoh[\hash R]r'r'_1...r'_n$ as required.
 \end{proof}
 
-SOMETHING SOMETHING DUALITY OF RULES MAKES UP RULES AUTOMATIC.
+We can once again leverage the idea of duality to construct models the remaining rewrite rules.
+By applying the $\overline{\{\quad\}}$ functor to the model for any "down" rule, we get the model for the corresponding "up" rule.
+Verifying that the resulting linear maps do behave as intended is left as an exercise to the reader.
+
+SHOULD I DEFINE ONE OR TWO OF THEM HERE AS AN EXAMPLE??
+
+\newpage
+\section{Natural Transformations}
 
 \newpage
 \section{Some Big Result...}

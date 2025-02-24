@@ -1,3 +1,4 @@
+.gitignore
 dissertation 2.log
 dissertation.aux
 dissertation.bbl
@@ -8,5 +9,4 @@ dissertation.log
 dissertation.synctex.gz
 dissertation.toc
 references.bib
-.gitignore
 .DS_Store
