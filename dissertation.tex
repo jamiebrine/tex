@@ -135,10 +135,6 @@ Structures $R$ and $S$ are considered \textit{equivalent} modulo the relation $=
                     [R, T] &= [T, R]
                 \end{align*}
                 \begin{align*}
-                    \textbf{Sing}&\textbf{leton} \\
-                    (R) = \la R\ra &= [R] = R
-                \end{align*}
-                \begin{align*}
                     \textbf{U}&\textbf{nit} \\
                     (R,T,\unit) &= (R,T) \\
                     \la R;T;\unit\ra &= \la R;T\ra \\
@@ -149,6 +145,10 @@ Structures $R$ and $S$ are considered \textit{equivalent} modulo the relation $=
             \hfill
             \begin{minipage}{0.45\textwidth}
                 \begin{align*}
+                    \textbf{Sing}&\textbf{leton} \\
+                    (R) = \la R\ra &= [R] = R
+                \end{align*}
+                \begin{align*}
                     \textbf{D}&\textbf{ual} \\
                     \overline{\unit} &= \unit \\
                     \overline{(R,T)} &= [\overline{R},\overline{T}] \\
@@ -157,11 +157,6 @@ Structures $R$ and $S$ are considered \textit{equivalent} modulo the relation $=
                     \overline{\dag R} &= \hash\overline{R} \\
                     \overline{\hash R} &= \dag \overline{R} \\
                     \overline{\overline{R}} &= R
-                \end{align*}
-                \begin{align*}
-                    \textbf{Expon}&\textbf{entials} \\
-                    \dag \unit &= \unit \\
-                    \hash \unit &= \unit
                 \end{align*}
                 \begin{align*}
                     \textbf{Contextu}&\textbf{al Closure} \\
@@ -178,7 +173,7 @@ Structures $R$ and $S$ are considered \textit{equivalent} modulo the relation $=
 \subsection{Rewrite Rules, Derivations, and Proofs}
 
 We describe how structures can be modified using a set of rules, and how these rules can be chained together to form longer derivations.
-In particular, we are interested in those derivations which begin with an empty premise, and describe a method with which to transform any derivation into one of this kind, which we call a proof.
+In particular, we are interested in those derivations which begin with an empty premise, which we will call proofs. 
 
 \begin{definition}
 A \textit{rewrite rule} is a rule $\rho$ with \textit{premise} T and \textit{conclusion} R, denoted $\vlinf{\rho}{}{R}{T}$.
@@ -226,6 +221,12 @@ All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
             \hfill
             \begin{minipage}{0.3\textwidth}
                 \centering
+                \[
+                    \vlderivation{
+                        \vlin{\dD}{}{S\{\dag\unit\}}
+                        {\vlhy{S\{\unit\}}}
+                        }
+                    \] 
                 \[
                 \vlderivation{
                     \vlin{\wD}{}{S\{\hash R\}}
@@ -474,9 +475,9 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
 In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of some map $f:A\multimap B$, we will show 2 things:
 \begin{enumerate}
     \item
-    For $a\scoh[A]a'$, and pairs $\lp a,b\rp,\lp a',b'\rp\in Ff$, we have that $b\scoh[B]b'$
+    For $a\scoh[FA]a'$, and pairs $\lp a,b\rp,\lp a',b'\rp\in Ff$, we have that $b\scoh[FB]b'$
     \item 
-    For pairs $\lp a,b\rp,\lp a,b'\rp\in Ff$, we have that $b\coh[B]b'$
+    For pairs $\lp a,b\rp,\lp a,b'\rp\in Ff$, we have that $b\coh[FB]b'$
 \end{enumerate}
 (1) directly shows preservation of strict coherence. As strict coherence is a stronger condition than coherence, it also shows preservation of coherence in all cases aside from that where $a=a'$;
 (2) verifies this case directly.
@@ -683,7 +684,7 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
         &\quad\lp r_1...r_n,t_1...t_n\rp\in\dag f, \lp t_1...t_n,u_1u_2...u_n\rp\in\dag g\} \\
         &= \{\lp r_1...r_n,u_1u_2...u_n\rp:\exists t_i\in|T|\text{ such that } \\
         &\quad\lp r_i,t_i\rp\in f,\lp t_i,u_i\rp\in g\enspace\forall 1\le i\le n\} \\
-        &= \{\lp r_1...r_n,u_1u_2...u_n\rp:\lp r_i,u_1\rp\in g\comp f \enspace\forall 1\le i\le n\} \\
+        &= \{\lp r_1...r_n,u_1u_2...u_n\rp:\lp r_i,u_i\rp\in g\comp f \enspace\forall 1\le i\le n\} \\
         &= \dag(g\comp f)
     \end{align*}
 
@@ -747,10 +748,25 @@ With these final 2 functors, we now have a purely categorial model of any struct
 
 \subsection{Rewrite Rules are Linear Maps} 
 For each rewrite rule of $\sSys$, we define a linear map between coherence spaces to be its model.
-The map representing some rewrite rule $\vlinf{\rho}{}{R}{T}$ will be of the form $F_\rho:T\multimap R$.
+The map representing some rewrite rule $\vlinf{\rho}{}{T}{R}$ will be of the form $F_\rho:R\multimap T$.
 
 We will consider the simplest form of each rule, that is, applying each in an empty context.
 Extending this to rewrites in arbitrary contexts is automatic, as we can represent the context as a functor. 
+
+Suppose we have a rule $\rho$ as above, and would like to apply it inside of a context
+$$S=\dag\la\{\quad\};\overline{(U,V)}\ra$$
+to perform the following rewrite:
+$$\vlinf{\rho}{}{\dag\la T;\overline{(U,V)}\ra}{\dag\la R;\overline{(U,V)}\ra}$$
+
+We can compose the functors $\dag\_,\la\_;\_\ra,\overline{\{\quad\}},$ and $(\_,\_)$ to create the functor
+$$\dag\la\_;\overline{(\_,\_)}\ra:\cohs\times\cohs^{op}\times\cohs^{op}\to\cohs$$
+which, when $U$ and $V$ are put into the second and third slots, gives us a representation of a structure with a single hole:
+$$\dag\la\_;\overline{(U,V)}\ra:\cohs\to\cohs$$
+
+Finally, we can apply this to $F_\rho$ to get the linear map representing the application of $\rho$ in the context $S$.
+
+We will later prove the important result that the linear maps representing rewrite rules are natural transformations.
+That is, the same result is obtained whether we first apply the context functor to the linear map, and then apply this new map to the structure representation, or instead apply the rewrite rule to the structure representation and then the context functor to this result.
 
 Crucially, we must show that each of these maps preserve coherence (and thus cliques), which will allow chains of rewrites to model derivations (and thus proofs).
 
@@ -768,7 +784,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{definition}
 
 \begin{lemma}\label{lem:aiPreserves}
-    $F_{\aiD}$ preserves coherence
+    $F_{\aiD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
@@ -795,13 +811,33 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{definition}
 
 \begin{lemma}
-    $F_{\wD}$ preserves coherence
+    $F_{\wD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
     Trivial, as any two empty sequences in $R$ are coherent by equality.
 \end{proof}
 
+\begin{definition}
+    To model the rewrite
+    \[
+        \vlderivation{
+            \vlin{\dD}{}{\dag\unit}
+            {\vlhy{\unit}}
+            }
+        \]
+
+    we define $F_{\dD}:\unit\multimap\dag\unit$ as follows:
+    $$F_{\dD}=\{\lp *,*^n\rp:n\in\mathbb{N}\}$$
+\end{definition}
+
+\begin{lemma}
+    $F_{\dD}$ is a linear map
+\end{lemma}
+
+\begin{proof}
+    Trivial, as $*^n$ is a prefix of $*$ for $n\in\{0,1\}$, while $*$ is a prefix of $*^n$ for any $n\ge 2$.
+\end{proof}
 \begin{definition}
     To model the rewrite
     \[
@@ -816,7 +852,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{definition}
 
 \begin{lemma}
-    $F_\sw$ preserves coherence
+    $F_\sw$ is a linear map
 \end{lemma}
 
 \begin{proof}
@@ -854,9 +890,8 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{definition}
 
 \begin{lemma}
-    $F_{\qD}$ preserves coherence
+    $F_{\qD}$ is a linear map
 \end{lemma}
-
 \begin{proof}
     Consider $(r,t,u,v),(r',t',u',v')\in|\la[R,T];[U,V]\ra|$.
 
@@ -894,7 +929,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{definition}
 
 \begin{lemma}
-    $F_{\pD}$ preserves coherence
+    $F_{\pD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
@@ -934,7 +969,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \end{definition}
 
 \begin{lemma}
-    $F_{\bD}$ preserves coherence
+    $F_{\bD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
