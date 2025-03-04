@@ -1,5 +1,6 @@
-\documentclass[12pt, oneside]{article}
-
+\documentclass[11pt, oneside]{article}
+\usepackage{tikz-cd} % Commuting diagrams
+\usepackage[a4paper, margin=1in]{geometry} % Adjust margins
 \usepackage[noxy, goodsyntax]{virginialake} % Typesetting derivations
 \usepackage{xcolor}
 \usepackage{amsthm} % Theorem environments
@@ -12,10 +13,10 @@
 \usepackage{cancel} % Negataing coherence relations
 \usepackage{bm} % Bold maths expressions
 \usepackage{changepage} % Indenting sections in proofs
-
+\usepackage{tocloft}
+\setlength{\cftbeforesecskip}{11pt}  % Adjusts spacing before section entries
 % Remove paragraph indentation
 \setlength{\parindent}{0pt}
-
 % Add space between paragraphs
 \setlength{\parskip}{1em}
 
@@ -482,6 +483,7 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 (1) directly shows preservation of strict coherence. As strict coherence is a stronger condition than coherence, it also shows preservation of coherence in all cases aside from that where $a=a'$;
 (2) verifies this case directly.
 
+\subsubsection{Copar}
 \begin{definition}
     Let $(\_,\_):\cohs\times\cohs\to\cohs$ be defined as follows:
     \begin{itemize}
@@ -555,6 +557,7 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 
 \end{proof}
 
+\subsubsection{Seq}
 \begin{definition}
     Let $\la\_;\_\ra:\cohs\times\cohs\to\cohs$ be defined as follows:
     \begin{itemize}
@@ -594,6 +597,7 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
     \end{adjustwidth}
 \end{proof}
 
+\subsubsection{Dual}
 \begin{definition}
     Let $\overline{\{\quad\}}:\cohs^{op}\to\cohs$ be defined as follows:
     \begin{itemize}
@@ -639,6 +643,7 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 
 \end{proof}
 
+\subsubsection{Dagger}
 \begin{definition}
     Let $\dag\_:\cohs\to\cohs$ be defined as follows:
 
@@ -706,6 +711,7 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
     \end{adjustwidth}
 \end{proof}
 
+\subsubsection{Par and Hash}
 The remaining connectives, Par and Hash, can be constructed compositionally, as they are the duals of Copar and Dagger respectively.
 That is, we can define:
 $$[\_,\_]\coloneqq\overline{(\overline{\{\quad\}},\overline{\{\quad\}})}:\cohs\times\cohs\to\cohs$$
@@ -770,6 +776,7 @@ That is, the same result is obtained whether we first apply the context functor 
 
 Crucially, we must show that each of these maps preserve coherence (and thus cliques), which will allow chains of rewrites to model derivations (and thus proofs).
 
+\subsubsection{$\aiD$}
 \begin{definition}
     To model the rewrite
     \[
@@ -795,7 +802,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
     We either have that $a_1\scoh[a]a_2$, in which case we get $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$, or that $a_1\notscoh[a]a_2$.
     In the latter case, we get that $a_1\scoh[\overline{a}]a_2$, and so $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$.
 \end{proof}
-
+\subsubsection{$\wD$}
 \begin{definition}
     To model the rewrite
     \[
@@ -807,7 +814,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 
     we define $F_{\wD}:\unit\multimap\hash R$ as follows:
     $$F_{\wD}=\{\lp *,\epsilon\rp\}$$
-    where $\epsilon$ is the empty sequence in$ R$
+    where $\epsilon$ is the empty sequence in $R$
 \end{definition}
 
 \begin{lemma}
@@ -818,6 +825,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
     Trivial, as any two empty sequences in $R$ are coherent by equality.
 \end{proof}
 
+\subsubsection{$\dD$}
 \begin{definition}
     To model the rewrite
     \[
@@ -838,6 +846,8 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 \begin{proof}
     Trivial, as $*^n$ is a prefix of $*$ for $n\in\{0,1\}$, while $*$ is a prefix of $*^n$ for any $n\ge 2$.
 \end{proof}
+
+\subsubsection{$\sw$}
 \begin{definition}
     To model the rewrite
     \[
@@ -876,6 +886,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
     \end{adjustwidth}
 \end{proof}
 
+\subsubsection{$\qD$}
 \begin{definition}
     To model the rewrite
     \[
@@ -915,6 +926,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
     \end{adjustwidth}
 \end{proof}
 
+\subsubsection{$\pD$}
 \begin{definition}
     To model the rewrite
     \[
@@ -955,6 +967,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
     \end{adjustwidth}
 \end{proof}
 
+\subsubsection{$\bD$}
 \begin{definition}
     To model the rewrite
     \[
@@ -982,18 +995,62 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
     giving $rr_1...r_m\scoh[\hash R]r'r'_1...r'_n$ as required.
 \end{proof}
 
+\subsubsection{Up Rules}
 We can once again leverage the idea of duality to construct models the remaining rewrite rules.
 By applying the $\overline{\{\quad\}}$ functor to the model for any "down" rule, we get the model for the corresponding "up" rule.
 Verifying that the resulting linear maps do behave as intended is left as an exercise to the reader.
 
-SHOULD I DEFINE ONE OR TWO OF THEM HERE AS AN EXAMPLE??
-
 \newpage
-\section{Natural Transformations}
+\section{Naturality of Rewrite Rules}
+In order to correctly model derivations, we require a certain freedom regarding the order that we can apply rewrite rules and context functors.
+As mentioned previously, applying a context to a both sides of a rewrite should yield the same result as applying the context to the rewritten structure.
+This required property of rewrite rules, when considered as linear maps of coherence spaces, is naturality.
 
+We first give formal definitions of the category theoretic concepts at play, namely natural and dinatural transformations. 
+Then, we show a few key examples of rewrites behaving in the intended way, and classify each rewrite rule's map as one of these types.
+Finally, we use a key result proved by McCusker to show that we can compose arbitrarily many rewrites into a derivation and still enjoy the same properties.
+
+\subsection{Natural and Dinatural Transformations}
+\begin{definition}
+Given functors $F,G:\mathbb{C}\to\mathbb{D}$, a \textit{natural transformation} $\phi:F\to G$ is a family of morphisms $\phi_A:FA\to GA$, such that for any $f\in \text{Hom}_{\mathbb{C}}(A,B)$ the following diagram commutes:
+\[
+\begin{tikzcd}
+    FA \arrow[r,"Ff"]\arrow[d,"\phi_A"]& FB\arrow[d,"\phi_B"] \\
+    GA \arrow[r,"Gf"] & GB
+\end{tikzcd}
+\]
+\end{definition}
+
+It is a standard result that the composition of two natural transformations is itself a natural transformation (see any basic category theory text).
+We will thus use this fact without proof.
+
+\begin{definition}
+Given functors $F,G:\mathbb{C}\times\mathbb{C}^{op}\to\mathbb{D}$, a \textit{dinatural transformation} $\psi:F\to G$ is a family of morphisms
+$\psi_A:F(A,A)\to G(A,A)$, such that for any $f\in\text{Hom}_{\mathbb{C}}(A,B)$ the following diagram commutes:
+\[
+\begin{tikzcd}
+    & F(A,A) \arrow[r,"\psi_A"] & G(A,A) \arrow[rd,"{G(1,a)}"] \\
+    F(B,A) \arrow[ru,"{F(a,1)}"] \arrow[rd,"{F(1,a)}"] &&& G(A,B) \\
+    & F(B,B) \arrow[r,"\psi_B"] & G(B,B) \arrow[ru,"{G(f,1)}"]
+\end{tikzcd}
+\]
+where $1$ is the identity morphism.
+\end{definition}
+
+Unlike natural transformations, dinatural transformations do not compose in general.
+McCusker \cite{mccusker2018compositionality} gave a characterisation of dinatural transformations as diagrams, and proved that the composition of two dinatural transformations is itself dinatural if the resulting diagram contains no cycles.
+We will later show that the specific dinatural transformations we are interested in will never compose to form these cycles, and thus can compose freely.
+
+\subsection{Classifying Rewrite Rules}
+
+\subsubsection{Natural Rewrites}
+$F_{\sw},F_{\qD},F_{\pD},F_{\dD},F_{\qU}$, and $F_{\pU}$ are natural transformations.
+They just are bro of course they are just look at them its so obvious.
+
+\subsubsection{Dinatural Rewrites}
+???
 \newpage
 \section{Some Big Result...}
-
 \begin{theorem}
     Cor blimey look at the state of this stonking result!
 \end{theorem}
