@@ -30,7 +30,8 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem*{remark}{Remark}
 \newtheorem{example}[theorem]{Example}
-
+\usepackage{etoolbox}
+\AtBeginEnvironment{proof}{\vspace{-25pt}} % Adjust as needed
 \hyphenation{Straß-burger}
 
 \let\originaldagger\dagger
@@ -1042,6 +1043,24 @@ McCusker \cite{mccusker2018compositionality} gave a characterisation of dinatura
 We will later show that the specific dinatural transformations we are interested in will never compose to form these cycles, and thus can compose freely.
 
 \subsection{Classifying Rewrite Rules}
+
+We briefly introduce some new terminology with which to classify rewrite rules of $\sSys$.
+\begin{definition}
+We call a rewrite rule $\vlinf{\rho}{}{T}{R}$ of $\sSys$ a \textit{(di)natural rewrite} if its model as a linear map $F_{\rho}$ is a (di)natural transformation.
+\end{definition}
+
+We will classify all FINAL NUMBER rules of $\sSys$, but only give proofs for a select few.
+The following proposition also limits the amount of rules we need to classify.
+
+\begin{proposition}
+An up-down pair of rules ${\mathsf{\rho}}{\uparrow},{\mathsf{\rho}}{\downarrow}$ must both have the same classification.
+\end{proposition}
+
+\begin{proof}
+We use a commuting diagram to show the (di)naturality of any rule $\rho$.
+As an up-down pair are, by definition, dual to eachother, we can simply reverse the arrows in the proof of ${\mathsf{\rho}}{\uparrow}$'s classification to get an equivalent one for ${\mathsf{\rho}}{\downarrow}$.
+THIS FEELS RIGHT BUT MAY BE INCOMPLETE.
+\end{proof}
 
 \subsubsection{Natural Rewrites}
 $F_{\sw},F_{\qD},F_{\pD},F_{\dD},F_{\qU}$, and $F_{\pU}$ are natural transformations.
