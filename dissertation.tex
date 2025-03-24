@@ -54,7 +54,7 @@
 \newcommand{\comp}{\mathbin{\circ}}
 \newcommand{\unit}{\circ}
 
-\title{WIP}
+\title{A Coherence Space Model of Deep Inference}
 \author{Jamie Brine}
 
 \begin{document}
@@ -87,7 +87,7 @@
 \section{System $\sSys$}
 
 This system is a modification of $\NEL$, first proposed by Guglielmi and Straßburger in 2002 \cite{guglielmi2002non}.
-The main difference between $\NEL$ and $\sSys$ is that the $!$ and $?$ structures, which I refer to collectively as the \textit{exponentials}, have been replaced by $\dag$ and $\hash$.
+The main difference between $\NEL$ and $\sSys$ is that the $!$ and $?$ structures, which are referred to collectively as the \textit{exponentials}, have been replaced by $\dag$ and $\hash$.
 These new exponentials can be considered ordered, which is reflected in the modified $\bD$ and $\bU$ rules governing their regeneration.
 
 \subsection{Structures and Equivalence}
@@ -578,11 +578,10 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 \end{lemma}
 
 \begin{proof}
-    $\la\_;\_\ra$ preserves identity and composition.
-    The argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,T)$ replaced by $\la R;T\ra$\\
+    $\la\_;\_\ra$ preserves identity and composition;
+    the argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,T)$ replaced by $\la R;T\ra$.\\
 
     $\la\_;\_\ra$ preserves coherence:
-
     \begin{adjustwidth}{1.5em}{}
         Define $f : R\multimap T$, $g : U\multimap V$.
 
@@ -755,7 +754,7 @@ With these final 2 functors, we now have a purely categorial model of any struct
 
 \subsection{Rewrite Rules are Linear Maps} 
 For each rewrite rule of $\sSys$, we define a linear map between coherence spaces to be its model.
-The map representing some rewrite rule $\vlinf{\rho}{}{T}{R}$ will be of the form $F_\rho:R\multimap T$.
+The map representing some rewrite rule $\vlinf{\rho}{}{T}{R}$ will be of the form $f_\rho:R\multimap T$.
 
 We will consider the simplest form of each rule, that is, applying each in an empty context.
 Extending this to rewrites in arbitrary contexts is automatic, as we can represent the context as a functor. 
@@ -770,7 +769,7 @@ $$\dag\la\_;\overline{(\_,\_)}\ra:\cohs\times\cohs^{op}\times\cohs^{op}\to\cohs$
 which, when $U$ and $V$ are put into the second and third slots, gives us a representation of a structure with a single hole:
 $$\dag\la\_;\overline{(U,V)}\ra:\cohs\to\cohs$$
 
-Finally, we can apply this to $F_\rho$ to get the linear map representing the application of $\rho$ in the context $S$.
+Finally, we can apply this to $f_\rho$ to get the linear map representing the application of $\rho$ in the context $S$.
 
 We will later prove the important result that the linear maps representing rewrite rules are natural transformations.
 That is, the same result is obtained whether we first apply the context functor to the linear map, and then apply this new map to the structure representation, or instead apply the rewrite rule to the structure representation and then the context functor to this result.
@@ -787,17 +786,17 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
             }
         \]
 
-    we define $F_{\aiD}:\unit\multimap[a,\overline{a}]$ as follows:
-    $$F_{\aiD}=\{\lp *,(a_i,a_i)\rp:a_i\in|a|\}$$
+    we define $f_{\aiD}:\unit\multimap[a,\overline{a}]$ as follows:
+    $$f_{\aiD}=\{\lp *,(a_i,a_i)\rp:a_i\in|a|\}$$
 \end{definition}
 
 \begin{lemma}\label{lem:aiPreserves}
-    $F_{\aiD}$ is a linear map
+    $f_{\aiD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
     As $*\notscoh[\unit]*$, preservation of strict coherence is vacuously true.
-    Now consider pairs $\lp*,(a_1,a_1)\rp,\lp*,(a_2,a_2)\rp\in F_{\aiD}$.
+    Now consider pairs $\lp*,(a_1,a_1)\rp,\lp*,(a_2,a_2)\rp\in f_{\aiD}$.
     As $*=*$ and thus $*\coh*$, we must show that $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$.
     If $a_1=a_2$ the coherence is trivial, so suppose that $a_1\neq a_2$.
     We either have that $a_1\scoh[a]a_2$, in which case we get $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$, or that $a_1\notscoh[a]a_2$.
@@ -813,13 +812,13 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
             }
         \]
 
-    we define $F_{\wD}:\unit\multimap\hash R$ as follows:
-    $$F_{\wD}=\{\lp *,\epsilon\rp\}$$
+    we define $f_{\wD}:\unit\multimap\hash R$ as follows:
+    $$f_{\wD}=\{\lp *,\epsilon\rp\}$$
     where $\epsilon$ is the empty sequence in $R$
 \end{definition}
 
 \begin{lemma}
-    $F_{\wD}$ is a linear map
+    $f_{\wD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
@@ -836,12 +835,12 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
             }
         \]
 
-    we define $F_{\dD}:\unit\multimap\dag\unit$ as follows:
-    $$F_{\dD}=\{\lp *,*^n\rp:n\in\mathbb{N}\}$$
+    we define $f_{\dD}:\unit\multimap\dag\unit$ as follows:
+    $$f_{\dD}=\{\lp *,*^n\rp:n\in\mathbb{N}\}$$
 \end{definition}
 
 \begin{lemma}
-    $F_{\dD}$ is a linear map
+    $f_{\dD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
@@ -858,18 +857,18 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
             }
         \]
 
-    we define $F_\sw:([R,T],U)\multimap[(R,U),T]$ as follows:
-    $$F_\sw=\{\lp(r,t,u),(r,u,t)\rp:r\in|R|,t\in|T|,u\in|U|\}$$
+    we define $f_\sw:([R,T],U)\multimap[(R,U),T]$ as follows:
+    $$f_\sw=\{\lp(r,t,u),(r,u,t)\rp:r\in|R|,t\in|T|,u\in|U|\}$$
 \end{definition}
 
 \begin{lemma}
-    $F_\sw$ is a linear map
+    $f_\sw$ is a linear map
 \end{lemma}
 
 \begin{proof}
     Consider $(r,t,u),(r',t',u')\in|([R,T],U)|$.
 
-    If the two are equal, it is trivial to show that $F_\sw$ preserves this equality.
+    If the two are equal, it is trivial to show that $f_\sw$ preserves this equality.
     Assume instead that $(r,t,u)\scoh(r',t',u')$.
     To get the required coherence $(r,u,t)\scoh[{[(R,U),T]}](r',u',t')$, it suffices to show that either $(r,u)\scoh[(R,U)](r',u')$ or $t\scoh t'$.
     We have 2 possible cases:
@@ -897,17 +896,17 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
             }  
         \]
 
-    we define $F_{\qD}:\la[R,T];[U,V]\ra\multimap[\la R;U\ra,\la T;V\ra]$ as follows:
-    $$F_{\qD}=\{\lp(r,t,u,v),(r,u,t,v)\rp:r\in|R|,t\in|T|,u\in|U|,v\in|V|\}$$
+    we define $f_{\qD}:\la[R,T];[U,V]\ra\multimap[\la R;U\ra,\la T;V\ra]$ as follows:
+    $$f_{\qD}=\{\lp(r,t,u,v),(r,u,t,v)\rp:r\in|R|,t\in|T|,u\in|U|,v\in|V|\}$$
 \end{definition}
 
 \begin{lemma}
-    $F_{\qD}$ is a linear map
+    $f_{\qD}$ is a linear map
 \end{lemma}
 \begin{proof}
     Consider $(r,t,u,v),(r',t',u',v')\in|\la[R,T];[U,V]\ra|$.
 
-    If the two are equal, it is trivial to show that $F_{\qD}$ preserves this equality.
+    If the two are equal, it is trivial to show that $f_{\qD}$ preserves this equality.
     Assume instead that $(r,t,u,v)\scoh(r',t',u',v')$.
     To get the required coherence $(r,u,t,v)\scoh[{[\la R;U\ra,\la T;V\ra]}](r',u',t',v')$,
     it suffices to show that either $(r,u)\scoh[\la R;U\ra](r',u')$ or $(t,v)\scoh[\la T;V\ra](t',v')$.
@@ -937,20 +936,20 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
             }  
         \]
 
-    we define $F_{\pD}:\dag[R,T]\multimap[\dag R,\hash T]$ as follows:
-    $$F_{\pD}=\{\lp (r_1,t_1)...(r_n,t_n),(r_1...r_n,t_1...t_n)\rp:r_i\in|R|,t_j\in|T|\}$$
+    we define $f_{\pD}:\dag[R,T]\multimap[\dag R,\hash T]$ as follows:
+    $$f_{\pD}=\{\lp (r_1,t_1)...(r_n,t_n),(r_1...r_n,t_1...t_n)\rp:r_i\in|R|,t_j\in|T|\}$$
 \end{definition}
 
 \begin{lemma}
-    $F_{\pD}$ is a linear map
+    $f_{\pD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
     Consider $(r_1,t_1)...(r_m,t_m),(r'_1,t'_1)...(r'_n,t'_n)\in|\dag[R,T]|$
 
-    If the two are equal, it is trivial to show that $F_{\pD}$ preserves this equality.
+    If the two are equal, it is trivial to show that $f_{\pD}$ preserves this equality.
     Assume instead that $(r_1,t_1)...(r_m,t_m)\scoh[\dag{[R,T]}](r'_1,t'_1)...(r'_n,t'_n)$,
-    and consider pairs $\lp (r_1,t_1)...(r_m,t_m),(r_1...r_m,t_1...t_m)\rp$, $\lp (r'_1,t'_1)...(r'_n,t'_n),(r'_1...r'_n,t'_1...t'_n)\rp$ .
+    considering pairs $\lp (r_1,t_1)...(r_m,t_m),(r_1...r_m,t_1...t_m)\rp$, $\lp (r'_1,t'_1)...(r'_n,t'_n),(r'_1...r'_n,t'_1...t'_n)\rp$ .
     We have 2 possible cases:
     
     Case 1: $\exists 1\leq l \leq \min(m,n) \text{ s.t. } (r_i,t_i)=(r'_i,t_i) \enspace\forall i<l$, and $(r_l,t_l)\scoh[{[R,T]}](r'_l,t'_l)$
@@ -963,7 +962,7 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
     Case 2: $(r_i,t_i)=(r'_i,t_i')\enspace\forall 1\le i\le \text{min}(m,n)$
     \begin{adjustwidth}{1.5em}{}
         We get that $r_i=r'_i\enspace\forall 1\le i\le \text{min}(m,n)$.
-        As $(r_1,t_1)...(r_m,t_m)\scoh[\dag{[R,T]}](r'_1,t'_1)...(r'_n,t'_n)$, we must have that $m\neq n$.
+        As $(r_1,t_1)...(r_m,t_m)\scoh[\dag{[R,T]}](r'_1,t'_1)...(r'_n,t'_n)$, it follows that $m\neq n$.
         This implies that $r_1...r_m\scoh[\dag R]r'_1...r'_n$, and so $(r_1...r_m,t_1...t_m)\scoh[{[\dag R,\hash T]}](r'_1...r'_n,t'_1...t'_n)$ as required.
     \end{adjustwidth}
 \end{proof}
@@ -978,18 +977,18 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
             }  
         \]
 
-    we define $F_{\bD}:\la R;\hash R\ra\multimap\hash R$ as follows:
-    $$F_{\bD}=\{\lp(r,r_1...r_n),rr_1...r_n\rp:r_i\in|R|\}$$
+    we define $f_{\bD}:\la R;\hash R\ra\multimap\hash R$ as follows:
+    $$f_{\bD}=\{\lp(r,r_1...r_n),rr_1...r_n\rp:r_i\in|R|\}$$
 \end{definition}
 
 \begin{lemma}
-    $F_{\bD}$ is a linear map
+    $f_{\bD}$ is a linear map
 \end{lemma}
 
 \begin{proof}
     Consider $(r,r_1...r_m),(r',r'_1...r'_n)\in|\la R;\hash R\ra|$.
 
-    If the two are equal, it is trivial to show that $F_{\bD}$ preserves this equality.
+    If the two are equal, it is trivial to show that $f_{\bD}$ preserves this equality.
     Assume instead that $(r,r_1...r_m)\scoh[\la R;\hash R\ra](r',r'_1...r'_n)$.
     We have that either $r\scoh[R]r'$, or that $r=r'$ and $r_1...r_m\scoh[\hash R]r'_1...r'_n$.
     In either case, $rr_1...r_m\neq r'r'_1...r'_n$, and the first place they differ they do so strictly coherently,
@@ -1046,7 +1045,7 @@ We will later show that the specific dinatural transformations we are interested
 
 We briefly introduce some new terminology with which to classify rewrite rules of $\sSys$.
 \begin{definition}
-We call a rewrite rule $\vlinf{\rho}{}{T}{R}$ of $\sSys$ a \textit{(di)natural rewrite} if its model as a linear map $F_{\rho}$ is a (di)natural transformation.
+We call a rewrite rule $\vlinf{\rho}{}{T}{R}$ of $\sSys$ a \textit{(di)natural rewrite} if its model as a linear map $f_{\rho}$ is a (di)natural transformation.
 \end{definition}
 
 We will classify all FINAL NUMBER rules of $\sSys$, but only give proofs for a select few.
@@ -1063,11 +1062,44 @@ THIS FEELS RIGHT BUT MAY BE INCOMPLETE.
 \end{proof}
 
 \subsubsection{Natural Rewrites}
-$F_{\sw},F_{\qD},F_{\pD},F_{\dD},F_{\qU}$, and $F_{\pU}$ are natural transformations.
+$f_{\sw},f_{\qD},f_{\pD},f_{\dD},f_{\qU}$, and $f_{\pU}$ are natural transformations.
 They just are bro of course they are just look at them its so obvious.
+
+\begin{lemma}
+$\sw$ is a natural rewrite.
+\end{lemma}
+
+\begin{proof}
+We need to show that $f_{\sw}:([R,T],U)\multimap[(R,U),T]$ is a natural transformation.
+Following the definitions, we see that the required $F$ and $G$ are
+$$([R,T],U),[(R,U),T]:\cohs\times\cohs\times\cohs\to\cohs$$
+We thus need to show that for any $g:R\multimap R'$, $h:T\multimap T'$, and $k:U\multimap U'$, the following diagram commutes:
+
+\[
+\begin{tikzcd}[column sep = large]
+    ([R,T],U) \arrow[r,"{([g,h],k)}"]\arrow[d,"f_{\sw}"]& ([R',T'],U') \arrow[d,"f_{\sw}"] \\
+    {[(R,U),T]} \arrow[r,"{[(g,k),h]}"] & {[(R',U'),T']}
+\end{tikzcd}
+\]
+
+Indeed,
+
+\begin{align*}
+(f_{\sw}\comp ([g,h],k))([R,T],U) &= f_{\sw}([R',T'],U') \\
+&= [(R',U'),T'] \\
+&= [(g,k),h][(R,U),T] \\
+&= ([(g,k),h]\comp f_{\sw})([R,T],U)
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+$\bU$ is a natural rewrite.
+\end{lemma}
 
 \subsubsection{Dinatural Rewrites}
 ???
+
+
 \newpage
 \section{Some Big Result...}
 \begin{theorem}
