@@ -1,4 +1,5 @@
 \documentclass[11pt, oneside]{article}
+\usepackage{lmodern} % Use scalable fonts to avoid font substitution warnings
 \usepackage{tikz-cd} % Commuting diagrams
 \usepackage[a4paper, margin=1in]{geometry} % Adjust margins
 \usepackage[noxy, goodsyntax]{virginialake} % Typesetting derivations
@@ -14,6 +15,9 @@
 \usepackage{bm} % Bold maths expressions
 \usepackage{changepage} % Indenting sections in proofs
 \usepackage{tocloft}
+\usepackage{tikz} % Structure bracket heirarchy
+
+\usetikzlibrary{arrows.meta, positioning}
 \setlength{\cftbeforesecskip}{11pt}  % Adjusts spacing before section entries
 % Remove paragraph indentation
 \setlength{\parindent}{0pt}
@@ -192,7 +196,7 @@ All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
                 \centering
                 \[
                 \vlderivation{
-                    \vlin{\aiD}{}{S[\bar{a},a]}
+                    \vlin{\aiD}{}{S[R,\overline{R}]}
                     {\vlhy{S\{\unit\}}}
                     }
                 \] 
@@ -246,7 +250,7 @@ All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
                 \[
                 \vlderivation{
                     \vlin{\aiU}{}{S\{\unit\}}
-                    {\vlhy{S(a,\bar{a})}}
+                    {\vlhy{S(R,\overline{R})}}
                     }  
                 \]
                 \\
@@ -781,13 +785,13 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
     To model the rewrite
     \[
         \vlderivation{
-            \vlin{\aiD}{}{[a,\overline{a}]}
+            \vlin{\aiD}{}{[R,\overline{R}]}
             {\vlhy{\unit}}
             }
         \]
 
-    we define $f_{\aiD}:\unit\multimap[a,\overline{a}]$ as follows:
-    $$f_{\aiD}=\{\lp *,(a_i,a_i)\rp:a_i\in|a|\}$$
+    we define $f_{\aiD}:\unit\multimap[R,\overline{R}]$ as follows:
+    $$f_{\aiD}=\{\lp *,(r,r)\rp:r\in|R|\}$$
 \end{definition}
 
 \begin{lemma}\label{lem:aiPreserves}
@@ -796,11 +800,11 @@ Crucially, we must show that each of these maps preserve coherence (and thus cli
 
 \begin{proof}
     As $*\notscoh[\unit]*$, preservation of strict coherence is vacuously true.
-    Now consider pairs $\lp*,(a_1,a_1)\rp,\lp*,(a_2,a_2)\rp\in f_{\aiD}$.
-    As $*=*$ and thus $*\coh*$, we must show that $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$.
-    If $a_1=a_2$ the coherence is trivial, so suppose that $a_1\neq a_2$.
-    We either have that $a_1\scoh[a]a_2$, in which case we get $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$, or that $a_1\notscoh[a]a_2$.
-    In the latter case, we get that $a_1\scoh[\overline{a}]a_2$, and so $(a_1,a_1)\coh[{[a,\overline{a}]}](a_2,a_2)$.
+    Now consider pairs $\lp*,(r,r)\rp,\lp*,(r',r')\rp\in f_{\aiD}$.
+    As $*=*$ and thus $*\coh*$, we must show that $(r,r)\coh[{[R,\overline{R}]}](r',r')$.
+    If $r=r'$ the coherence is trivial, so suppose that $r\neq r'$.
+    We either have that $r\scoh[R]r'$, in which case we get $(r,r)\coh[{[R,\overline{R}]}](r',r')$, or that $r\notscoh[R]r'$.
+    In the latter case, we get that $r\scoh[\overline{R}]r'$, and so $(r,r)\coh[{[R,\overline{R}]}](r',r')$.
 \end{proof}
 \subsubsection{$\wD$}
 \begin{definition}
@@ -1001,7 +1005,7 @@ By applying the $\overline{\{\quad\}}$ functor to the model for any "down" rule,
 Verifying that the resulting linear maps do behave as intended is left as an exercise to the reader.
 
 \newpage
-\section{Naturality of Rewrite Rules}
+\section{Naturality of Rewrites}
 In order to correctly model derivations, we require a certain freedom regarding the order that we can apply rewrite rules and context functors.
 As mentioned previously, applying a context to a both sides of a rewrite should yield the same result as applying the context to the rewritten structure.
 This required property of rewrite rules, when considered as linear maps of coherence spaces, is naturality.
@@ -1029,9 +1033,9 @@ Given functors $F,G:\mathbb{C}\times\mathbb{C}^{op}\to\mathbb{D}$, a \textit{din
 $\psi_A:F(A,A)\to G(A,A)$, such that for any $f\in\text{Hom}_{\mathbb{C}}(A,B)$ the following diagram commutes:
 \[
 \begin{tikzcd}
-    & F(A,A) \arrow[r,"\psi_A"] & G(A,A) \arrow[rd,"{G(1,a)}"] \\
-    F(B,A) \arrow[ru,"{F(a,1)}"] \arrow[rd,"{F(1,a)}"] &&& G(A,B) \\
-    & F(B,B) \arrow[r,"\psi_B"] & G(B,B) \arrow[ru,"{G(f,1)}"]
+    & F(A,A) \arrow[r,"\psi_A"] & G(A,A) \arrow[rd,"{G(f,1)}"] \\
+    F(A,B) \arrow[ru,"{F(1,f)}"] \arrow[rd,"{F(f,1)}"] &&& G(B,A) \\
+    & F(B,B) \arrow[r,"\psi_B"] & G(B,B) \arrow[ru,"{G(1,f)}"]
 \end{tikzcd}
 \]
 where $1$ is the identity morphism.
@@ -1096,10 +1100,165 @@ Indeed,
 $\bU$ is a natural rewrite.
 \end{lemma}
 
+\begin{proof}
+We need to show that $f_{\bU}$ is a natural transformation.
+As above, the definition states that for all $g:R\multimap R'$ the following diagram must commute:
+
+\[
+\begin{tikzcd}
+    \dag R \arrow[r,"\dag g"]\arrow[d,"f_{\bU}"]& \dag R' \arrow[d,"f_{\bU}"] \\
+    \la R; \dag R\ra \arrow[r,"\la g;\dag g\ra"] & \la R';\dag R'\ra
+\end{tikzcd}
+\]
+
+Indeed,
+
+\begin{align*}
+(f_{\bU}\comp \dag g)\dag R &= f_{\bU}R' \\
+&= \la R;R'\ra \\
+&= \la g;\dag g\ra\la R;\dag R\ra \\
+&= (\la g;\dag g\ra \comp \dag R)\dag R
+\end{align*}
+\end{proof}
+
 \subsubsection{Dinatural Rewrites}
-???
 
+DEFINE UNIT FUNCTOR AS COHS X COHSOP TO COHS????
+DO IT HERE AND REUSE IT
+\begin{lemma}
+$\aiD$ is a dinatural rewrite.
+\end{lemma}
+\begin{proof}
+We need to show that $f_{\aiD}:\unit\multimap[R,\overline{R}]$ is a dinatural transformation.
+Following the defintions, we find that the required $F$ is the trivial functor $\unit$ from $\cohs\times\cohs^{op}$ to $\cohs$, which sends all coherence spaces to the trivial coherence space $*$, and all linear maps to the identity.
+Then $G$ is
+$$[R,\overline{R}]:\cohs\times\cohs^{op}\to\cohs$$
+For any $g:R\multimap R'$, the required commutative diagram is
 
+\[
+\begin{tikzcd}
+    & * \arrow[r,"f_{\aiD}"] & {[R,\overline{R}]} \arrow[rd,"{[g,id_{\overline{R}}]}"] \\
+    * \arrow[ru,"id"] \arrow[rd,"id"] &&& {[R',\overline{R}]} \\
+    & * \arrow[r,"f_{\aiD}"] & {[R',\overline{R'}]} \arrow[ru,"{[id_R,\overline{g}]}"]
+\end{tikzcd}
+\]
+
+which can be simplified to the following:
+
+\[
+\begin{tikzcd}
+    * \arrow[r, "f_{\aiD}"]\arrow[d,"f_{\aiD}"] & {[R,\overline{R}]} \arrow[d,"{[g,id_{\overline{R}}]}"] \\
+    {[R',\overline{R'}]} \arrow[r,"{[id_R,\overline{g}]}"] & {[R',\overline{R}]}
+\end{tikzcd}
+\]
+
+Indeed,
+
+\begin{align*}
+([g,id_{\overline{R}}]\circ f_{\aiD})* &= [g,id_{\overline{R}}][R,\overline{R}] \\
+&= [R',\overline{R}] \\
+&= [id_R,\overline{g}][R',\overline{R'}] \\
+&= ([id_R,\overline{g}] \circ f_{\aiD})*
+\end{align*}
+\end{proof}
+
+In fact, $\aiD$ and $\aiU$ are the only two dinatural rewrites of $\sSys$.
+We will now use this fact to prove a result about proofs in this system.
+
+\subsubsection{Proofs are Dinatural}
+- Explain graph notation
+
+Looking specifically at $\sSys$, noting that the only two dinatural rewrites are $\aiU$ and $\aiD$, we see that the only time a cycle could form would be if the conclusion of an $\aiD$ rewrite later became the premise of an $\aiU$.
+That is, if we were to construct a derivation like so:
+
+\[
+\vlderivation{
+\vlin{\aiU}{}{S'\{\unit\}}{
+\vlin{}{}{S'(R,\overline{R})}{
+\vlin{}{}{...}{ 
+\vlin{\aiD}{}{S[R,\overline{R}]}{
+\vlhy{S\{\unit\}}
+}}}}}
+\]
+
+We are able to ignore the changes made to the context $S$; WHY?? JUSTIFY!
+We thus need only to show that we are not able to freely rewrite the copar substructure $[R,\overline{R}]$ into the par substructure $(R,\overline{R})$.
+By analysing the rewrite rules of the system, we can easily verify that this is the case.
+
+\begin{proposition}
+For any structures $R$,$T$ of $\sSys$, the following derivation cannot be formed:
+$$\vlderivation{\vlde{\Delta}{}{(R,T)}{\vlhy{[R,T]}}}$$
+
+\end{proposition}
+
+\begin{proof}
+There are 5 rewrites (besides $\aiU$and $\aiD$) containing either a copar in the premise or a par in the conclusion.
+We now analyse each of them individually, deduce which structures can be freely transformed into others, and ultimately show that the copar to par rewrite is impossible in a well-formed structure.
+The main technique used is to set certain structures in each rule's definition to the unit, to see how the simplified version of the rule can be applied in more general situations.
+
+\begin{itemize}
+    \item 
+    $\vlderivation{
+        \vlin{\sw}{}{[(R,U),T]}
+        {\vlhy{([R,T],U)}}
+    }$:
+
+    By setting $R=\unit$ and applying the singleton laws, we are able to rewrite $(T,U)$ to $[T,U]$.
+    $\sw$ thus allows us to replace any par structure with a copar.
+    Instead setting $T=\unit$ or $U=\unit$ and removing redundant brackets, the rule simply reduces to the identity.
+
+    \item
+    $\vlderivation{
+        \vlin{\qD}{}{[\la R;U\ra,\la T;V\ra]}
+        {\vlhy{\la[R,T];[U,V]\ra}}
+        }$:
+    
+    Here we can set $T=U=\unit$, which once simplified allows a rewrite from $\la R;V\ra$ to $[R,V]$, or indeed any seq structure to a copar.
+    Once again, this is the only application of the rule which allows us to directly replace a structure brackets, with all others either shuffling elements between substructures or reducing to the identity.
+
+    \item
+    $                \vlderivation{
+        \vlin{\qU}{}{S\la(R,U);(T,V)\ra}
+        {\vlhy{S(\la R;T\ra,\la U;V\ra)}}
+        }$
+
+    This is the dual of $\qD$; it is unsurprising that by taking the dual of each structure and swapping premise with conclusion, we can rewrite a par structure into a seq.
+    This result is easily verified by once again setting $T=U=\unit$.
+
+    \item
+    $\vlderivation{
+        \vlin{\pU}{}{S\{\hash(R,S)\}}
+        {\vlhy{S(\hash R,\dag S)}}
+        }$, 
+    $\vlderivation{
+        \vlin{\pD}{}{S[\dag R, \hash T]}
+        {\vlhy{S\{\dag[R,T]\}}}
+        }$:
+
+    While these do contain the structures of interest, they only introduce new unary connectives.
+    As they do not exchange any structure brackets, they do not contribute to our search.
+\end{itemize}
+
+Of the 5 rewrites above, only 3 direct exchanges of structure brackets have been shown to be possible:
+$(...)\to[...]$, $\la ...\ra\to[...]$, and $(...)\to\la ...\ra$.
+This is better demonstrated visually as a heirarchy of structure brackets, in which we are free to move down the list but unable to climb back up:
+
+\begin{center}
+    \begin{tikzpicture}
+        \node (A) at (0,2) {\( (...) \)};
+        \node (B) at (0,1) {\( \la ... \ra \)};
+        \node (C) at (0,0) {\( [...] \)};
+
+        \draw[->, bend left=20] (A.east) to node[right] {$\qU$} (B.east);
+        \draw[->, bend left=20] (B.east) to node[right] {$\qD$} (C.east);
+        \draw[->, bend right=40] (A.west) to node[left] {$\sw$} (C.west);
+    \end{tikzpicture}
+\end{center}
+
+This shows that the proposed rewrite is indeed impossible.
+\end{proof}
+
+- Conclude that proofs are dinatural as they are compositions of naturals and dinaturals with no cycles
 \newpage
 \section{Some Big Result...}
 \begin{theorem}
