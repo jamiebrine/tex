@@ -757,8 +757,9 @@ We do not have to prove that these are functors, as composition of functors alwa
 With these final 2 functors, we now have a purely categorial model of any structure that could arise from the grammar of $\sSys$, which preserves all necessary properties no matter the choice of coherence space for atoms.
 
 \subsection{Rewrite Rules are Linear Maps} 
-For each rewrite rule of $\sSys$, we define a linear map between coherence spaces to be its model.
-The map representing some rewrite rule $\vlinf{\rho}{}{T}{R}$ will be of the form $f_\rho:R\multimap T$.
+For each rewrite rule of $\sSys$, we define a family of linear maps between coherence spaces to be its model.
+The map representing some rewrite rule $\vlinf{\rho}{}{T}{R}$ will be of the form $\rho_R:R\multimap T$;
+we will use the notation $\rho_{\_}$ to denote the family of linear maps representing the polymorphic map $\rho$, applicable to arbitrary structures.
 
 We will consider the simplest form of each rule, that is, applying each in an empty context.
 Extending this to rewrites in arbitrary contexts is automatic, as we can represent the context as a functor. 
@@ -773,7 +774,7 @@ $$\dag\la\_;\overline{(\_,\_)}\ra:\cohs\times\cohs^{op}\times\cohs^{op}\to\cohs$
 which, when $U$ and $V$ are put into the second and third slots, gives us a representation of a structure with a single hole:
 $$\dag\la\_;\overline{(U,V)}\ra:\cohs\to\cohs$$
 
-Finally, we can apply this to $f_\rho$ to get the linear map representing the application of $\rho$ in the context $S$.
+Finally, we can apply this to $\rho_R$ to get the linear map representing the application of $\rho$ to $R$ in the context $S$.
 
 We will later prove that the same result is obtained whether we first apply the context functor to the linear map, and then apply this new map to the structure representation, or instead apply the rewrite rule to the structure representation and then the context functor to this result.
 Crucially, we must first show that each of these maps preserve coherence (and thus cliques), which will allow chains of rewrites to model derivations (and thus proofs).
@@ -783,26 +784,26 @@ Crucially, we must first show that each of these maps preserve coherence (and th
     To model the rewrite
     \[
         \vlderivation{
-            \vlin{\aiD}{}{[R,\overline{R}]}
+            \vlin{\aiD}{}{[a,\overline{a}]}
             {\vlhy{\unit}}
             }
         \]
 
-    we define $f_{\aiD}:\unit\multimap[R,\overline{R}]$ as follows:
-    $$f_{\aiD}=\{\lp *,(r,r)\rp:r\in|R|\}$$
+    we define $\aiD_a:\unit\multimap[a,\overline{a}]$ as follows:
+    $$\aiD_a=\{\lp *,(\alpha,\alpha)\rp:\alpha\in|a|\}$$
 \end{definition}
 
 \begin{lemma}\label{lem:aiPreserves}
-    $f_{\aiD}$ is a linear map
+    $\aiD_a$ is a linear map
 \end{lemma}
 
 \begin{proof}
     As $*\notscoh[\unit]*$, preservation of strict coherence is vacuously true.
-    Now consider pairs $\lp*,(r,r)\rp,\lp*,(r',r')\rp\in f_{\aiD}$.
-    As $*=*$ and thus $*\coh*$, we must show that $(r,r)\coh[{[R,\overline{R}]}](r',r')$.
-    If $r=r'$ the coherence is trivial, so suppose that $r\neq r'$.
-    We either have that $r\scoh[R]r'$, in which case we get $(r,r)\coh[{[R,\overline{R}]}](r',r')$, or that $r\notscoh[R]r'$.
-    In the latter case, we get that $r\scoh[\overline{R}]r'$, and so $(r,r)\coh[{[R,\overline{R}]}](r',r')$.
+    Now consider pairs $\lp*,(\alpha,\alpha)\rp,\lp*,(\beta,\beta)\rp\in \aiD_{\unit}$.
+    As $*=*$ and thus $*\coh*$, we must show that $(\alpha,\alpha)\coh[{[a,\overline{a}]}](\beta,\beta)$.
+    If $\alpha=\beta$ the coherence is trivial, so suppose that $\alpha\neq\beta$.
+    We either have that $\alpha\scoh[a]\beta$, in which case we get $(\alpha,\alpha)\coh[{[a,\overline{a}]}](\beta,\beta)$, or that $\alpha\notscoh[a]\beta$.
+    In the latter case, we get that $\alpha\scoh[\overline{a}]\beta$, and so $(\alpha,\alpha)\coh[{[a,\overline{a}]}](\beta,\beta)$.
 \end{proof}
 \subsubsection{$\wD$}
 \begin{definition}
@@ -814,13 +815,13 @@ Crucially, we must first show that each of these maps preserve coherence (and th
             }
         \]
 
-    we define $f_{\wD}:\unit\multimap\hash R$ as follows:
-    $$f_{\wD}=\{\lp *,\epsilon\rp\}$$
+    we define $\wD_R:\unit\multimap\hash R$ as follows:
+    $$\wD_R=\{\lp *,\epsilon\rp\}$$
     where $\epsilon$ is the empty sequence in $R$
 \end{definition}
 
 \begin{lemma}
-    $f_{\wD}$ is a linear map
+    $\wD_R$ is a linear map
 \end{lemma}
 
 \begin{proof}
@@ -837,12 +838,12 @@ Crucially, we must first show that each of these maps preserve coherence (and th
             }
         \]
 
-    we define $f_{\dD}:\unit\multimap\dag\unit$ as follows:
-    $$f_{\dD}=\{\lp *,*^n\rp:n\in\mathbb{N}\}$$
+    we define $\dD_{\unit}:\unit\multimap\dag\unit$ as follows:
+    $$\dD_{\unit}=\{\lp *,*^n\rp:n\in\mathbb{N}\}$$
 \end{definition}
 
 \begin{lemma}
-    $f_{\dD}$ is a linear map
+    $\dD_{\unit}$ is a linear map
 \end{lemma}
 
 \begin{proof}
@@ -859,18 +860,18 @@ Crucially, we must first show that each of these maps preserve coherence (and th
             }
         \]
 
-    we define $f_\sw:([R,T],U)\multimap[(R,U),T]$ as follows:
-    $$f_\sw=\{\lp(r,t,u),(r,u,t)\rp:r\in|R|,t\in|T|,u\in|U|\}$$
+    we define $\sw_{R,T,U}:([R,T],U)\multimap[(R,U),T]$ as follows:
+    $$\sw_{R,T,U}=\{\lp(r,t,u),(r,u,t)\rp:r\in|R|,t\in|T|,u\in|U|\}$$
 \end{definition}
 
 \begin{lemma}
-    $f_\sw$ is a linear map
+    $\sw_{R,T,U}$ is a linear map
 \end{lemma}
 
 \begin{proof}
     Consider $(r,t,u),(r',t',u')\in|([R,T],U)|$.
 
-    If the two are equal, it is trivial to show that $f_\sw$ preserves this equality.
+    If the two are equal, it is trivial to show that $\sw_{R,T,U}$ preserves this equality.
     Assume instead that $(r,t,u)\scoh(r',t',u')$.
     To get the required coherence $(r,u,t)\scoh[{[(R,U),T]}](r',u',t')$, it suffices to show that either $(r,u)\scoh[(R,U)](r',u')$ or $t\scoh t'$.
     We have 2 possible cases:
@@ -898,17 +899,17 @@ Crucially, we must first show that each of these maps preserve coherence (and th
             }  
         \]
 
-    we define $f_{\qD}:\la[R,T];[U,V]\ra\multimap[\la R;U\ra,\la T;V\ra]$ as follows:
-    $$f_{\qD}=\{\lp(r,t,u,v),(r,u,t,v)\rp:r\in|R|,t\in|T|,u\in|U|,v\in|V|\}$$
+    we define $\qD_{R,T,U,V}:\la[R,T];[U,V]\ra\multimap[\la R;U\ra,\la T;V\ra]$ as follows:
+    $$\qD_{R,T,U,V}=\{\lp(r,t,u,v),(r,u,t,v)\rp:r\in|R|,t\in|T|,u\in|U|,v\in|V|\}$$
 \end{definition}
 
 \begin{lemma}
-    $f_{\qD}$ is a linear map
+    $\qD_{R,T,U,V}$ is a linear map
 \end{lemma}
 \begin{proof}
     Consider $(r,t,u,v),(r',t',u',v')\in|\la[R,T];[U,V]\ra|$.
 
-    If the two are equal, it is trivial to show that $f_{\qD}$ preserves this equality.
+    If the two are equal, it is trivial to show that $\qD_{R,T,U,V}$ preserves this equality.
     Assume instead that $(r,t,u,v)\scoh(r',t',u',v')$.
     To get the required coherence $(r,u,t,v)\scoh[{[\la R;U\ra,\la T;V\ra]}](r',u',t',v')$,
     it suffices to show that either $(r,u)\scoh[\la R;U\ra](r',u')$ or $(t,v)\scoh[\la T;V\ra](t',v')$.
@@ -938,18 +939,18 @@ Crucially, we must first show that each of these maps preserve coherence (and th
             }  
         \]
 
-    we define $f_{\pD}:\dag[R,T]\multimap[\dag R,\hash T]$ as follows:
-    $$f_{\pD}=\{\lp (r_1,t_1)...(r_n,t_n),(r_1...r_n,t_1...t_n)\rp:r_i\in|R|,t_j\in|T|\}$$
+    we define $\pD_{R,T}:\dag[R,T]\multimap[\dag R,\hash T]$ as follows:
+    $$\pD_{R,T}=\{\lp (r_1,t_1)...(r_n,t_n),(r_1...r_n,t_1...t_n)\rp:r_i\in|R|,t_j\in|T|\}$$
 \end{definition}
 
 \begin{lemma}
-    $f_{\pD}$ is a linear map
+    $\pD_{R,T}$ is a linear map
 \end{lemma}
 
 \begin{proof}
     Consider $(r_1,t_1)...(r_m,t_m),(r'_1,t'_1)...(r'_n,t'_n)\in|\dag[R,T]|$
 
-    If the two are equal, it is trivial to show that $f_{\pD}$ preserves this equality.
+    If the two are equal, it is trivial to show that $\pD_{R,T}$ preserves this equality.
     Assume instead that $(r_1,t_1)...(r_m,t_m)\scoh[\dag{[R,T]}](r'_1,t'_1)...(r'_n,t'_n)$,
     considering pairs $\lp (r_1,t_1)...(r_m,t_m),(r_1...r_m,t_1...t_m)\rp$, $\lp (r'_1,t'_1)...(r'_n,t'_n),(r'_1...r'_n,t'_1...t'_n)\rp$ .
     We have 2 possible cases:
@@ -979,18 +980,18 @@ Crucially, we must first show that each of these maps preserve coherence (and th
             }  
         \]
 
-    we define $f_{\bD}:\la R;\hash R\ra\multimap\hash R$ as follows:
-    $$f_{\bD}=\{\lp(r,r_1...r_n),rr_1...r_n\rp:r_i\in|R|\}$$
+    we define $\bD_{R}:\la R;\hash R\ra\multimap\hash R$ as follows:
+    $$\bD_{R}=\{\lp(r,r_1...r_n),rr_1...r_n\rp:r_i\in|R|\}$$
 \end{definition}
 
 \begin{lemma}
-    $f_{\bD}$ is a linear map
+    $\bD_{R}$ is a linear map
 \end{lemma}
 
 \begin{proof}
     Consider $(r,r_1...r_m),(r',r'_1...r'_n)\in|\la R;\hash R\ra|$.
 
-    If the two are equal, it is trivial to show that $f_{\bD}$ preserves this equality.
+    If the two are equal, it is trivial to show that $\bD_{R}$ preserves this equality.
     Assume instead that $(r,r_1...r_m)\scoh[\la R;\hash R\ra](r',r'_1...r'_n)$.
     We have that either $r\scoh[R]r'$, or that $r=r'$ and $r_1...r_m\scoh[\hash R]r'_1...r'_n$.
     In either case, $rr_1...r_m\neq r'r'_1...r'_n$, and the first place they differ they do so strictly coherently,
@@ -1047,14 +1048,14 @@ We will later show that the specific dinatural transformations we are interested
 
 We briefly introduce some new terminology with which to classify rewrite rules of $\sSys$.
 \begin{definition}
-We call a rewrite rule $\vlinf{\rho}{}{T}{R}$ of $\sSys$ a \textit{(di)natural rewrite} if its model as a linear map $f_{\rho}$ is a (di)natural transformation.
+We call a rewrite rule $\vlinf{\rho}{}{T}{R}$ of $\sSys$ a \textit{(di)natural rewrite} if its model as a family of linear maps $\rho$ is a (di)natural transformation.
 \end{definition}
 
 We will classify all FINAL NUMBER rules of $\sSys$, but only give proofs for a select few.
 The following proposition also limits the amount of rules we need to classify.
 
 \begin{proposition}
-An up-down pair of rules ${\mathsf{\rho}}{\uparrow},{\mathsf{\rho}}{\downarrow}$ must both have the same classification.
+An up-down pair of rewrite rules ${\mathsf{\rho}}{\uparrow},{\mathsf{\rho}}{\downarrow}$ must both have the same classification.
 \end{proposition}
 
 \begin{proof}
@@ -1115,10 +1116,9 @@ As above, the definition states that for all $g:R\multimap R'$ the following dia
 Indeed,
 
 \begin{align*}
-(f_{\bU}\comp \dag g)\dag R &= f_{\bU}R' \\
-&= \la R;R'\ra \\
-&= \la g;\dag g\ra\la R;\dag R\ra \\
-&= (\la g;\dag g\ra \comp \dag R)\dag R
+f_{\bU} &= \{\lp(r'r'_1...r'_n),(r',r'_1...r'_n):r_i\in|R|\} \\
+\dag g &= \{\lp(r_1...r_n),(r'_1...r'_n)\rp:\lp r,r'\rp\in g\} \\
+f_{\bU}\comp\dag g &= \{\lp()\rp:\} \\
 \end{align*}
 \end{proof}
 
