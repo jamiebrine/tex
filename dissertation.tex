@@ -775,10 +775,8 @@ $$\dag\la\_;\overline{(U,V)}\ra:\cohs\to\cohs$$
 
 Finally, we can apply this to $f_\rho$ to get the linear map representing the application of $\rho$ in the context $S$.
 
-We will later prove the important result that the linear maps representing rewrite rules are natural transformations.
-That is, the same result is obtained whether we first apply the context functor to the linear map, and then apply this new map to the structure representation, or instead apply the rewrite rule to the structure representation and then the context functor to this result.
-
-Crucially, we must show that each of these maps preserve coherence (and thus cliques), which will allow chains of rewrites to model derivations (and thus proofs).
+We will later prove that the same result is obtained whether we first apply the context functor to the linear map, and then apply this new map to the structure representation, or instead apply the rewrite rule to the structure representation and then the context functor to this result.
+Crucially, we must first show that each of these maps preserve coherence (and thus cliques), which will allow chains of rewrites to model derivations (and thus proofs).
 
 \subsubsection{$\aiD$}
 \begin{definition}
@@ -1066,8 +1064,7 @@ THIS FEELS RIGHT BUT MAY BE INCOMPLETE.
 \end{proof}
 
 \subsubsection{Natural Rewrites}
-$f_{\sw},f_{\qD},f_{\pD},f_{\dD},f_{\qU}$, and $f_{\pU}$ are natural transformations.
-They just are bro of course they are just look at them its so obvious.
+SAY SOMETHING HERE
 
 \begin{lemma}
 $\sw$ is a natural rewrite.
@@ -1089,10 +1086,14 @@ We thus need to show that for any $g:R\multimap R'$, $h:T\multimap T'$, and $k:U
 Indeed,
 
 \begin{align*}
-(f_{\sw}\comp ([g,h],k))([R,T],U) &= f_{\sw}([R',T'],U') \\
-&= [(R',U'),T'] \\
-&= [(g,k),h][(R,U),T] \\
-&= ([(g,k),h]\comp f_{\sw})([R,T],U)
+f_{\sw}\comp ([g,h],k) &= \{\lp(r,t,u),(r',u',t')\rp: \\
+&\quad\lp(r,t,u),(r',t',u')\rp\in([g,h],k),\lp(r',t',u'),(r',u',t')\rp\in f_{\sw}\} \\
+&= \{\lp(r,t,u),(r',u',t')\rp:\lp r,r'\rp\in g, \lp t,t'\rp\in h, \lp u,u'\rp\in k\} \\
+&= \{\lp(r,t,u),(r',u',t')\rp: \\
+&\quad\lp(r,t,u),(r,u,t)\rp\in f_{\sw},\lp(r,u,t),(r',u',t')\rp\in[(g,k),h]\} \\
+&= [(g,k),h]\comp f_{\sw}
+% &= \{\lp(r',t',u'),(r',u',t')\rp:r'\in|R'|,t'\in|T'|,u'\in|U'|\} \\
+% &\quad\comp\{\lp(r,t,u),(r',t',u')\rp:\lp r,r'\rp\in g, \lp t,t'\rp\in h, \lp u,u'\rp\in k\} \\
 \end{align*}
 \end{proof}
 
@@ -1123,14 +1124,12 @@ Indeed,
 
 \subsubsection{Dinatural Rewrites}
 
-DEFINE UNIT FUNCTOR AS COHS X COHSOP TO COHS????
-DO IT HERE AND REUSE IT
 \begin{lemma}
 $\aiD$ is a dinatural rewrite.
 \end{lemma}
 \begin{proof}
 We need to show that $f_{\aiD}:\unit\multimap[R,\overline{R}]$ is a dinatural transformation.
-Following the defintions, we find that the required $F$ is the trivial functor $\unit$ from $\cohs\times\cohs^{op}$ to $\cohs$, which sends all coherence spaces to the trivial coherence space $*$, and all linear maps to the identity.
+Following the defintions, we find that the required $F$ is the trivial functor $\unit:\cohs\times\cohs^{op}\to\cohs$, which sends all coherence spaces to the trivial coherence space $*$, and all linear maps to the identity.
 Then $G$ is
 $$[R,\overline{R}]:\cohs\times\cohs^{op}\to\cohs$$
 For any $g:R\multimap R'$, the required commutative diagram is
@@ -1264,6 +1263,12 @@ This shows that the proposed rewrite is indeed impossible.
 \begin{theorem}
     Cor blimey look at the state of this stonking result!
 \end{theorem}
+
+TODO:
+
+- Check atomic flows (Alessio)
+- In NELL, duplication gives copars which leads to cycles; we have it giving seqs which we conjecture does not
+- MLL is known to give no cycles, we are somewhere inbetween
 
 \begin{proof}
     Bodge together all of the lemmas from the previous chapters and there you go.
