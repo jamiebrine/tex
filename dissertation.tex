@@ -1073,7 +1073,7 @@ $\sw$ is a natural rewrite.
 
 \begin{proof}
 Following the definitions, we see that the required $F$ and $G$ are
-$$([R,T],U),[(R,U),T]:\cohs\times\cohs\times\cohs\to\cohs$$
+$$([\_,\_],\_),[(\_,\_),\_]:\cohs\times\cohs\times\cohs\to\cohs$$
 We thus need to show that for any $g:R\multimap R'$, $h:T\multimap T'$, and $k:U\multimap U'$, the following diagram commutes:
 
 \[
@@ -1102,7 +1102,7 @@ $\bU$ is a natural rewrite.
 \end{lemma}
 
 \begin{proof}
-Here, the definition states that for all $g:R\multimap R'$ the following diagram must commute:
+Here, the definitions give us $F = \dag\_, G = \la\_;\dag\_\ra$, and we are required to show that for all $g:R\multimap R'$ the following diagram must commute:
 
 \[
 \begin{tikzcd}
@@ -1114,9 +1114,12 @@ Here, the definition states that for all $g:R\multimap R'$ the following diagram
 Indeed,
 
 \begin{align*}
-f_{\bU} &= \{\lp(r'r'_1...r'_n),(r',r'_1...r'_n):r_i\in|R|\} \\
-\dag g &= \{\lp(r_1...r_n),(r'_1...r'_n)\rp:\lp r,r'\rp\in g\} \\
-f_{\bU}\comp\dag g &= \{\lp()\rp:\} \\
+\bU_{R'}\comp\dag g &= \{\lp r_0...r_n,(r'_0,r'_1...r'_n)\rp: \\
+&\quad\lp r_0...r_n,r'_0...r'_n\rp\in\dag g,\lp r'_0...r'_n,(r'_0,r'_1...r'_n)\rp\in\bU_{R'}\} \\
+&= \{\lp r_0...r_n,(r'_0,r'_1...r'_n)\rp:\lp r_i,r'_i\rp\in g\} \\
+&= \{\lp r_0...r_n,(r'_0,r'_1...r'_n)\rp: \\
+&\quad\lp r_0...r_n,(r_0,r_1...r_n)\rp\in\bU_{R},\lp(r_0,r_1...r_n),(r'_0,r'_1...r'_n)\rp\in\la g;\dag g\ra\} \\
+&= \la g;\dag g\ra\comp\bU_{R}
 \end{align*}
 \end{proof}
 
@@ -1126,17 +1129,17 @@ f_{\bU}\comp\dag g &= \{\lp()\rp:\} \\
 $\aiD$ is a dinatural rewrite.
 \end{lemma}
 \begin{proof}
-We need to show that $f_{\aiD}:\unit\multimap[R,\overline{R}]$ is a dinatural transformation.
-Following the defintions, we find that the required $F$ is the trivial functor $\unit:\cohs\times\cohs^{op}\to\cohs$, which sends all coherence spaces to the trivial coherence space $*$, and all linear maps to the identity.
+Following the defintions, we find that the required $F$ is the trivial functor $\unit:\cohs\times\cohs^{op}\to\cohs$.
+This sends any pair of coherence spaces to the trivial coherence space $*$, and all linear maps to the identity.
 Then $G$ is
-$$[R,\overline{R}]:\cohs\times\cohs^{op}\to\cohs$$
-For any $g:R\multimap R'$, the required commutative diagram is
+$$[\_,\overline{\{\enspace\}}]:\cohs\times\cohs^{op}\to\cohs$$
+For any $g:a\multimap b$, the required commutative diagram is
 
 \[
 \begin{tikzcd}
-    & * \arrow[r,"f_{\aiD}"] & {[R,\overline{R}]} \arrow[rd,"{[g,id_{\overline{R}}]}"] \\
-    * \arrow[ru,"id"] \arrow[rd,"id"] &&& {[R',\overline{R}]} \\
-    & * \arrow[r,"f_{\aiD}"] & {[R',\overline{R'}]} \arrow[ru,"{[id_R,\overline{g}]}"]
+    & * \arrow[r,"\aiD_{a}"] & {[a,\overline{a}]} \arrow[rd,"{[g,id_{\overline{a}}]}"] \\
+    * \arrow[ru,"id"] \arrow[rd,"id"] &&& {[b,\overline{a}]} \\
+    & * \arrow[r,"\aiD_{b}"] & {[b,\overline{b}]} \arrow[ru,"{[id_a,\overline{g}]}"]
 \end{tikzcd}
 \]
 
@@ -1144,18 +1147,18 @@ which can be simplified to the following:
 
 \[
 \begin{tikzcd}
-    * \arrow[r, "f_{\aiD}"]\arrow[d,"f_{\aiD}"] & {[R,\overline{R}]} \arrow[d,"{[g,id_{\overline{R}}]}"] \\
-    {[R',\overline{R'}]} \arrow[r,"{[id_R,\overline{g}]}"] & {[R',\overline{R}]}
+    * \arrow[r, "\aiD_{a}"]\arrow[d,"\aiD_{b}"] & {[a,\overline{a}]} \arrow[d,"{[g,id_{\overline{a}}]}"] \\
+    {[b,\overline{b}]} \arrow[r,"{[id_b,\overline{g}]}"] & {[b,\overline{a}]}
 \end{tikzcd}
 \]
 
 Indeed,
 
 \begin{align*}
-([g,id_{\overline{R}}]\circ f_{\aiD})* &= [g,id_{\overline{R}}][R,\overline{R}] \\
-&= [R',\overline{R}] \\
-&= [id_R,\overline{g}][R',\overline{R'}] \\
-&= ([id_R,\overline{g}] \circ f_{\aiD})*
+    [g,id_{\overline{a}}]\comp\aiD_{a} &= ... \\
+    &= ... \\
+    &= ... \\
+    &= [id_b,\overline{g}]\comp\aiD_{b}
 \end{align*}
 \end{proof}
 
