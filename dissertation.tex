@@ -981,7 +981,7 @@ Crucially, we must first show that each of these maps preserve coherence (and th
         \]
 
     we define $\bD_{R}:\la R;\hash R\ra\multimap\hash R$ as follows:
-    $$\bD_{R}=\{\lp(r,r_1...r_n),rr_1...r_n\rp:r_i\in|R|\}$$
+    $$\bD_{R}=\{\lp(r_0,r_1...r_n),r_0r_1...r_n\rp:r_i\in|R|\}$$
 \end{definition}
 
 \begin{lemma}
@@ -989,13 +989,13 @@ Crucially, we must first show that each of these maps preserve coherence (and th
 \end{lemma}
 
 \begin{proof}
-    Consider $(r,r_1...r_m),(r',r'_1...r'_n)\in|\la R;\hash R\ra|$.
+    Consider $(r_0,r_1...r_m),(r'_0,r'_1...r'_n)\in|\la R;\hash R\ra|$.
 
     If the two are equal, it is trivial to show that $\bD_{R}$ preserves this equality.
-    Assume instead that $(r,r_1...r_m)\scoh[\la R;\hash R\ra](r',r'_1...r'_n)$.
-    We have that either $r\scoh[R]r'$, or that $r=r'$ and $r_1...r_m\scoh[\hash R]r'_1...r'_n$.
-    In either case, $rr_1...r_m\neq r'r'_1...r'_n$, and the first place they differ they do so strictly coherently,
-    giving $rr_1...r_m\scoh[\hash R]r'r'_1...r'_n$ as required.
+    Assume instead that $(r_0,r_1...r_m)\scoh[\la R;\hash R\ra](r'_0,r'_1...r'_n)$.
+    We have that either $r_0\scoh[R]r'_0$, or that $r_0=r'_0$ and $r_1...r_m\scoh[\hash R]r'_1...r'_n$.
+    In either case, $r_0r_1...r_m\neq r'_0r'_1...r'_n$, and the first place they differ they do so strictly coherently,
+    giving $r_0r_1...r_m\scoh[\hash R]r'_0r'_1...r'_n$ as required.
 \end{proof}
 
 \subsubsection{Up Rules}
@@ -1048,7 +1048,7 @@ We will later show that the specific dinatural transformations we are interested
 
 We briefly introduce some new terminology with which to classify rewrite rules of $\sSys$.
 \begin{definition}
-We call a rewrite rule $\vlinf{\rho}{}{T}{R}$ of $\sSys$ a \textit{(di)natural rewrite} if its model as a family of linear maps $\rho$ is a (di)natural transformation.
+We call a rewrite rule $\vlinf{\rho}{}{T}{R}$ of $\sSys$ a \textit{(di)natural rewrite} if its model as a family of linear maps $\rho_{\_}$ is a (di)natural transformation.
 \end{definition}
 
 We will classify all FINAL NUMBER rules of $\sSys$, but only give proofs for a select few.
@@ -1072,14 +1072,13 @@ $\sw$ is a natural rewrite.
 \end{lemma}
 
 \begin{proof}
-We need to show that $f_{\sw}:([R,T],U)\multimap[(R,U),T]$ is a natural transformation.
 Following the definitions, we see that the required $F$ and $G$ are
 $$([R,T],U),[(R,U),T]:\cohs\times\cohs\times\cohs\to\cohs$$
 We thus need to show that for any $g:R\multimap R'$, $h:T\multimap T'$, and $k:U\multimap U'$, the following diagram commutes:
 
 \[
 \begin{tikzcd}[column sep = large]
-    ([R,T],U) \arrow[r,"{([g,h],k)}"]\arrow[d,"f_{\sw}"]& ([R',T'],U') \arrow[d,"f_{\sw}"] \\
+    ([R,T],U) \arrow[r,"{([g,h],k)}"]\arrow[d,"\sw_{R,T,U}"]& ([R',T'],U') \arrow[d,"\sw_{R',T',U'}"] \\
     {[(R,U),T]} \arrow[r,"{[(g,k),h]}"] & {[(R',U'),T']}
 \end{tikzcd}
 \]
@@ -1087,12 +1086,12 @@ We thus need to show that for any $g:R\multimap R'$, $h:T\multimap T'$, and $k:U
 Indeed,
 
 \begin{align*}
-f_{\sw}\comp ([g,h],k) &= \{\lp(r,t,u),(r',u',t')\rp: \\
-&\quad\lp(r,t,u),(r',t',u')\rp\in([g,h],k),\lp(r',t',u'),(r',u',t')\rp\in f_{\sw}\} \\
+\sw_{R',T',U'}\comp ([g,h],k) &= \{\lp(r,t,u),(r',u',t')\rp: \\
+&\quad\lp(r,t,u),(r',t',u')\rp\in([g,h],k),\lp(r',t',u'),(r',u',t')\rp\in \sw_{R',T',U'}\} \\
 &= \{\lp(r,t,u),(r',u',t')\rp:\lp r,r'\rp\in g, \lp t,t'\rp\in h, \lp u,u'\rp\in k\} \\
 &= \{\lp(r,t,u),(r',u',t')\rp: \\
-&\quad\lp(r,t,u),(r,u,t)\rp\in f_{\sw},\lp(r,u,t),(r',u',t')\rp\in[(g,k),h]\} \\
-&= [(g,k),h]\comp f_{\sw}
+&\quad\lp(r,t,u),(r,u,t)\rp\in \sw_{R,T,U},\lp(r,u,t),(r',u',t')\rp\in[(g,k),h]\} \\
+&= [(g,k),h]\comp \sw_{R,T,U}
 % &= \{\lp(r',t',u'),(r',u',t')\rp:r'\in|R'|,t'\in|T'|,u'\in|U'|\} \\
 % &\quad\comp\{\lp(r,t,u),(r',t',u')\rp:\lp r,r'\rp\in g, \lp t,t'\rp\in h, \lp u,u'\rp\in k\} \\
 \end{align*}
@@ -1103,12 +1102,11 @@ $\bU$ is a natural rewrite.
 \end{lemma}
 
 \begin{proof}
-We need to show that $f_{\bU}$ is a natural transformation.
-As above, the definition states that for all $g:R\multimap R'$ the following diagram must commute:
+Here, the definition states that for all $g:R\multimap R'$ the following diagram must commute:
 
 \[
 \begin{tikzcd}
-    \dag R \arrow[r,"\dag g"]\arrow[d,"f_{\bU}"]& \dag R' \arrow[d,"f_{\bU}"] \\
+    \dag R \arrow[r,"\dag g"]\arrow[d,"\bU_{R}"]& \dag R' \arrow[d,"\bU_{R'}"] \\
     \la R; \dag R\ra \arrow[r,"\la g;\dag g\ra"] & \la R';\dag R'\ra
 \end{tikzcd}
 \]
