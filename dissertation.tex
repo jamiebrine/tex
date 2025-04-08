@@ -1155,9 +1155,9 @@ which can be simplified to the following:
 Indeed,
 
 \begin{align*}
-    [g,id_{\overline{a}}]\comp\aiD_{a} &= ... \\
-    &= ... \\
-    &= ... \\
+    [g,id_{\overline{a}}]\comp\aiD_{a} &= \{\lp*,(\beta,\alpha)\rp:\lp*,(\alpha,\alpha)\rp\in \aiD_{a},\lp(\alpha,\alpha),(\beta,\alpha)\rp\in[g,id_{\overline{a}}]\} \\
+    &= \{\lp*,(\beta,\alpha)\rp:\lp\alpha,\beta\rp\in g\} \\
+    &= \{\lp*,(\beta,\alpha)\rp:\lp*,(\beta,\beta)\rp\in \aiD_{b},\lp(\beta,\beta),(\beta,\alpha)\rp\in[id_{b},\overline{g}]\}\\
     &= [id_b,\overline{g}]\comp\aiD_{b}
 \end{align*}
 \end{proof}
@@ -1166,7 +1166,16 @@ In fact, $\aiD$ and $\aiU$ are the only two dinatural rewrites of $\sSys$.
 We will now use this fact to prove a result about proofs in this system.
 
 \subsubsection{Proofs are Dinatural}
-- Explain graph notation
+As we know that all derivations in $\sSys$ can be modelled by composing a number of (di)natural transformations, we are able to represent them as simple box and line diagrams.
+Each argument of a functor is a box, and applications of the transformations are lines between them.
+In our case, white boxes represent objects of $\cohs$ while grey ones represent those in $\cohs^{op}$.
+The simple example below shows the correspondance between a derivation, its model in the category of coherence spaces, and finally this model's representation as a box and line diagram.
+
+
+
+This representation abstracts away many of the details of the transformations themselves, and McCusker proved that it also leads to a simple sufficient condition for a composition of dinatural transformations to be dinatural.
+
+
 
 Looking specifically at $\sSys$, noting that the only two dinatural rewrites are $\aiU$ and $\aiD$, we see that the only time a cycle could form would be if the conclusion of an $\aiD$ rewrite later became the premise of an $\aiU$.
 That is, if we were to construct a derivation like so:
@@ -1174,15 +1183,14 @@ That is, if we were to construct a derivation like so:
 \[
 \vlderivation{
 \vlin{\aiU}{}{S'\{\unit\}}{
-\vlin{}{}{S'(R,\overline{R})}{
+\vlin{}{}{S'(a,\overline{a})}{
 \vlin{}{}{...}{ 
-\vlin{\aiD}{}{S[R,\overline{R}]}{
+\vlin{\aiD}{}{S[a,\overline{a}]}{
 \vlhy{S\{\unit\}}
 }}}}}
 \]
 
-We are able to ignore the changes made to the context $S$; WHY?? JUSTIFY!
-We thus need only to show that we are not able to freely rewrite the copar substructure $[R,\overline{R}]$ into the par substructure $(R,\overline{R})$.
+We firstly need to show that we are not able to freely rewrite the copar substructure $[a,\overline{a}]$ into the par substructure $(a,\overline{a})$.
 By analysing the rewrite rules of the system, we can easily verify that this is the case.
 
 \begin{proposition}
@@ -1218,8 +1226,8 @@ The main technique used is to set certain structures in each rule's definition t
 
     \item
     $                \vlderivation{
-        \vlin{\qU}{}{S\la(R,U);(T,V)\ra}
-        {\vlhy{S(\la R;T\ra,\la U;V\ra)}}
+        \vlin{\qU}{}{\la(R,U);(T,V)\ra}
+        {\vlhy{(\la R;T\ra,\la U;V\ra)}}
         }$
 
     This is the dual of $\qD$; it is unsurprising that by taking the dual of each structure and swapping premise with conclusion, we can rewrite a par structure into a seq.
@@ -1227,12 +1235,12 @@ The main technique used is to set certain structures in each rule's definition t
 
     \item
     $\vlderivation{
-        \vlin{\pU}{}{S\{\hash(R,S)\}}
-        {\vlhy{S(\hash R,\dag S)}}
+        \vlin{\pU}{}{\hash(R,T)}
+        {\vlhy{(\hash R,\dag T)}}
         }$, 
     $\vlderivation{
-        \vlin{\pD}{}{S[\dag R, \hash T]}
-        {\vlhy{S\{\dag[R,T]\}}}
+        \vlin{\pD}{}{[\dag R, \hash T]}
+        {\vlhy{\dag[R,T]}}
         }$:
 
     While these do contain the structures of interest, they only introduce new unary connectives.
@@ -1258,6 +1266,44 @@ This is better demonstrated visually as a heirarchy of structure brackets, in wh
 This shows that the proposed rewrite is indeed impossible.
 \end{proof}
 
+For a full proof that we can freely chain rewrite rules and represent them as dinatural transformations, we must consider how the context $S\{\}$ may interact with the substructure.
+We must consider the case that context contains exponentials, and verify that duplication of structures does not lead to cycles.
+In certain similar logic systems with notions of duplication, this is a point of failure for such a representation.
+
+In $\SELS$ \cite{strassburger2003mell}, a simpler system than $\sSys$ with no notion of sequencing, structures duplicated with the \textit{of course} structure $!R$ are placed inside of a par structure by the $\bU$ rule:
+
+\[
+\vlderivation{
+    \vlin{\bU}{}{S(R,!R)}{
+    \vlhy{S\{!R\}}
+}}
+\]
+
+This allows us to construct the following derivation in $\SELS$:
+
+\[
+\vlderivation{
+    \vlin{\sw}{}{[(a,\overline{a}),a,\overline{a}]}{
+    \vlin{\sw}{}{[(a,[a,\overline{a}]),\overline{a}]}{
+    \vlin{\wU}{}{([a,\overline{a}],[a,\overline{a}])}{
+    \vlin{\bU}{}{([a,\overline{a}],[a,\overline{a}],![a,\overline{a}])}{
+    \vlin{\bU}{}{([a,\overline{a}],![a,\overline{a}])}{
+    \vlhy{![a,\overline{a}]}
+    }}}}}
+}
+\]
+
+That is, we have a derivation from $S[a,\overline{a}]$ to $S'(a,\overline{a})$, where $S=!\{\quad\}$ and $S'=[\{\quad\},a,\overline{a}]$.
+ORDERING OF OUR SYSTEM'S DUPLICATION HELPS???
+
+\begin{definition}
+For any application of a rewrite rule in $\sSys$, atoms in the conclusion are \textit{connected} in any of the following cases:
+\begin{itemize}
+    \item They are some pair $[a,\overline{a}]$ introduced by the rule $\aiD$
+    \item 
+\end{itemize}
+\end{definition}
+
 - Conclude that proofs are dinatural as they are compositions of naturals and dinaturals with no cycles
 \newpage
 \section{Some Big Result...}
@@ -1268,7 +1314,6 @@ This shows that the proposed rewrite is indeed impossible.
 TODO:
 
 - Check atomic flows (Alessio)
-- In NELL, duplication gives copars which leads to cycles; we have it giving seqs which we conjecture does not
 - MLL is known to give no cycles, we are somewhere inbetween
 
 \begin{proof}
