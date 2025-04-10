@@ -77,6 +77,25 @@
 
 - Brief background in modelling computation
 
+Proof theorists have developed countless proof systems as mechanisms with which to model computation.
+Each system has its own grammar and rules, aiming to capture a particular aspect of how a computer programs execute.
+They may choose to model resource sensitivity in producer/consumer relationships \cite{joshi1996partial}, shared-memory parallel code \cite{woodcock2002unifying}, or compiler optimisation techniques \cite{tate2010generating}.
+
+The key idea underpinning these representations is the Curry-Howard correspondance.
+This was first proposed by Haskell Curry in the 1940s, then explicitly formulated by William Alvin Howard in the 1960s.
+A typeset version of Howard's original hand-written notes have been published \cite{howard1980formulae}, or for a more modern and detailed explaination the reader is referred to a Master's thesis by Husna Farooqui \cite{farooqui2021curry}
+It can be distilled to the following simple phrase:
+
+\begin{center}
+"Propositions are types, and proofs are programs"
+\end{center}
+
+More formally, it is a framework in which constructing a proof represents the execution of a program.
+The type of the executed program is precisely the type which the proof's conclusion represents.
+It allows for programs to be more rigorously studied, particularly with regard to their correctness and termination; if the proof is valid in the given system, so is the program it represents.
+
+This idea has been further enriched with the advent of deep inference logic. 
+
 - Deep inference
 
 - BV, NEL
@@ -1349,7 +1368,7 @@ That is, we must show that for any context $S$ the following derivation cannot b
 }}}}}
 \]
 
-We firstly need to show that we are not able to freely rewrite the copar substructure $[a,\overline{a}]$ into the par substructure $(a,\overline{a})$.
+Firstly, we show that we are not able to freely rewrite the copar substructure $[a,\overline{a}]$ into the par substructure $(a,\overline{a})$.
 By analysing the rewrite rules of the system, we can easily verify that this is the case.
 
 \begin{proposition}
