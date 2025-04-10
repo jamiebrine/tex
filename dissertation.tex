@@ -1040,8 +1040,7 @@ $\psi_A:F(A,A)\to G(A,A)$, such that for any $f\in\text{Hom}_{\mathbb{C}}(A,B)$ 
 where $1$ is the identity morphism.
 \end{definition}
 
-Unlike natural transformations, dinatural transformations do not compose in general.
-However, we will later show that the specific dinatural transformations we are interested in can compose freely.
+Unlike natural transformations, dinatural transformations do not compose in general \cite{mccusker2018compositionality}.
 
 \subsection{Classifying Rewrite Rules}
 
@@ -1050,7 +1049,7 @@ We briefly introduce some new terminology with which to classify rewrite rules o
 We call a rewrite rule $\vlinf{\rho}{}{T}{R}$ of $\sSys$ a \textit{(di)natural rewrite} if its model as a family of linear maps $\rho_{\_}$ is a (di)natural transformation.
 \end{definition}
 
-We will classify all FINAL NUMBER rules of $\sSys$, but only give proofs for a select few.
+We will classify all rewrite rules of $\sSys$, but only give proofs for a select few, as they follow the same general structure.
 The following proposition also limits the amount of rules we need to classify.
 
 \begin{proposition}
@@ -1059,12 +1058,13 @@ An up-down pair of rewrite rules ${\mathsf{\rho}}{\uparrow},{\mathsf{\rho}}{\dow
 
 \begin{proof}
 We use a commuting diagram to show the (di)naturality of any rule $\rho$.
-As an up-down pair are, by definition, dual to eachother, we can simply reverse the arrows in the proof of ${\mathsf{\rho}}{\uparrow}$'s classification to get an equivalent one for ${\mathsf{\rho}}{\downarrow}$.
-THIS FEELS RIGHT BUT MAY BE INCOMPLETE.
+As an up-down pair are, by definition, dual to eachother, we can simply take duals and reverse the arrows in the proof of ${\mathsf{\rho}}{\uparrow}$'s classification to get an equivalent one for ${\mathsf{\rho}}{\downarrow}$.
 \end{proof}
 
-\subsubsection{Natural Rewrites}
-SAY SOMETHING HERE
+We find that all but $\aiD$ and $\aiU$ are natural rewrites.
+The intuition behind this is that they are the only ones which deal explicitly with negative structures, which correspond to the objects of $\cohs^{op}$ present in dinaural transformations.
+All other rewrites either shuffle substructures and exchange structure brackets, or duplicate/combine instances of the same substructure; in either case, the corresponding transformation is natural.
+We give proofs for 2 cases, noting that the others follow a similar format and so are left as an exercise to the reader.
 
 \begin{lemma}
 $\sw$ is a natural rewrite.
@@ -1120,8 +1120,9 @@ Indeed,
 \end{align*}
 \end{proof}
 
-\subsubsection{Dinatural Rewrites}
-
+We then turn our attention to the dinatural rewrites.
+A proof is given for the dinaturality of $\aiD$.
+The corresponding proof for $\aiU$ can be easily derived, as stated previously, by taking duals and reversing arrows.
 \begin{lemma}
 $\aiD$ is a dinatural rewrite.
 \end{lemma}
@@ -1159,16 +1160,19 @@ Indeed,
 \end{align*}
 \end{proof}
 
-In fact, $\aiD$ and $\aiU$ are the only two dinatural rewrites of $\sSys$.
-As they are the only two which make explicit use of the dual operator, this is to be expected.
-We will now use this fact to prove a result about proofs in this system.
+Now that all rewrite rules have been classified, we investigate how their naturality is preserved when they are composed to form derivations.
 
-\subsubsection{Proofs are Dinatural}
+\subsection{Preserving Dinaturality through Composition}
+
+\subsubsection{Graphical Representation of Derivations}
 As we know that all derivations in $\sSys$ can be modelled by composing a number of (di)natural transformations, we are able to represent them as simple graphs.
 Each argument of a functor is a box, and applications of the transformations are lines between them.
 In our case, white boxes represent objects of $\cohs$ and grey ones represent those of $\cohs^{op}$.
 These graphs are an extension of Kelly-Mac Lane graphs \cite{mac2013categories}, and are introduced formally by McCusker \cite{mccusker2018compositionality}.
 
+\begin{definition}
+We call a graph of this type \textit{well-formed} if it is the representative graph of a well formed derivation in $\sSys$.
+\end{definition}
 The example below shows the correspondance between a derivation and its representation as a graph:
 
 \begin{figure}[ht]
@@ -1225,6 +1229,7 @@ The example below shows the correspondance between a derivation and its represen
     \end{minipage}
 
     \caption{A derivation in $\sSys$ and its graph}
+    \label{fig:graph}
 \end{figure}
 
 This representation abstracts away many of the details of the transformations themselves, and McCusker proved that it also leads to a simple sufficient condition for a composition of dinatural transformations to be dinatural:
@@ -1233,7 +1238,7 @@ Note that at the top and bottom of any cycle is necessarily an arrow between a w
 THIS WORDING NEEDS TIDYING UP!!!!
 
 Looking specifically at $\sSys$, in which the only two dinatural rewrites are $\aiU$ and $\aiD$, the only possible interactions between a white and a grey box are shown in Figure \ref{fig:cycles}.
-We can deduce that a cycle could form if the conclusion of an $\aiD$ rewrite later became the premise of an $\aiU$.
+We can deduce that a cycle could form if the conclusion of an $\aiD$ rewrite became the premise of an $\aiU$.
 \begin{figure}[ht]
     \begin{minipage}[h]{0.3\textwidth}
         \centering
@@ -1278,10 +1283,10 @@ We can deduce that a cycle could form if the conclusion of an $\aiD$ rewrite lat
     \label{fig:cycles}
 \end{figure}
 
-This simple cycle can clearly never occur as the corresponding structure brackets do not match up ($\aiD$ produces a copar while $\aiU$ requires a par).
+This simple cycle can never occur as the corresponding structure brackets do not match up ($\aiD$ produces a copar conclusion, $\aiU$ requires a par premise, so the graph is not well-formed).
 Instead, a more complex cycle may form if we allow additional transformations inbetween the applications of $\aiU$ and $\aiD$.
-Looking back at the first example, we could concievably add an instance of $\aiU$ at the bottom.
-This would introduce an additional arrow (dotted), forming a longer cycle (bolded):
+Looking back at the graph in Figure \ref{fig:graph}, we could concievably add an instance of $\aiU$ at the bottom.
+This would introduce an additional arrow (dotted), forming a longer cycle (bolded), as shown in Figure \ref{fig:modification}.
 
 \begin{figure}[ht]
 \centering
@@ -1324,23 +1329,25 @@ This would introduce an additional arrow (dotted), forming a longer cycle (bolde
 
 \end{tikzpicture}
 
-\caption{A modification of a graph of a well-formed $\sSys$ derivation, with a cycle formed}
+\caption{A modification of a graph with a cycle formed}
+\label{fig:modification}
 \end{figure}
 
-We must now verify that this new graph is not itself the graph of a well-formed derivation.
-That is, we must show that there is no well-formed derivation of the following form:
+We must verify that this new graph, or any constructed in a similar fashion, is not well-formed.
+
+\subsubsection{Derivations are Acyclic}
+
+We will consider the equivalent notion when working purely with the logic.
+That is, we must show that for any context $S$ the following derivation cannot be well-formed:
 
 \[
 \vlderivation{
 \vlin{\aiU}{}{S'\{\unit\}}{
-\vlin{}{}{S'(a,\overline{a})}{
-\vlin{}{}{...}{ 
-\vlin{\aiD}{}{S[a,\overline{a}]}{
-\vlhy{S\{\unit\}}
+\vlde{\Gamma}{}
+{S'(a,\overline{a})}
+{\vlin{\aiD}{}{S[a,\overline{a}]}{\vlhy{S\{\unit\}
 }}}}}
 \]
-
-REWRITE THE MIDDLE BIT ABOVE AS DERIVATION NOT ELIPSES
 
 We firstly need to show that we are not able to freely rewrite the copar substructure $[a,\overline{a}]$ into the par substructure $(a,\overline{a})$.
 By analysing the rewrite rules of the system, we can easily verify that this is the case.
@@ -1418,11 +1425,11 @@ This is better demonstrated visually as a heirarchy of structure brackets, in wh
 This shows that the proposed rewrite is indeed impossible.
 \end{proof}
 
-A 
 For a full proof that we can freely chain rewrite rules and represent them as dinatural transformations, we must consider how the context $S\{\}$ may interact with the substructure.
-We must consider the case that context contains exponentials, and verify that duplication of structures does not lead to cycles.
+We must give particular care to the case that context contains exponentials, and verify that duplication of structures does not lead to cycles.
 In certain similar logic systems with notions of duplication, this is a point of failure for such a representation.
 
+\begin{example}
 In $\SELS$ \cite{strassburger2003mell}, a simpler system than $\sSys$ with no notion of sequencing, structures duplicated with the \textit{of course} structure $!R$ are placed inside of a par structure by the $\bU$ rule:
 
 \[
@@ -1432,7 +1439,7 @@ In $\SELS$ \cite{strassburger2003mell}, a simpler system than $\sSys$ with no no
 }}
 \]
 
-This allows us to construct the following derivation in $\SELS$:
+This allows us to construct the following derivation:
 
 \[
 \vlderivation{
@@ -1447,8 +1454,9 @@ This allows us to construct the following derivation in $\SELS$:
 \]
 
 That is, we have a derivation from $S[a,\overline{a}]$ to $S'(a,\overline{a})$, where $S=!\{\quad\}$ and $S'=[\{\quad\},a,\overline{a}]$.
-ORDERING OF OUR SYSTEM'S DUPLICATION HELPS???
+\end{example}
 
+WIP:
 \begin{definition}
 For any application of a rewrite rule in $\sSys$, atoms in the conclusion are \textit{connected} in any of the following cases:
 \begin{itemize}
@@ -1458,22 +1466,7 @@ For any application of a rewrite rule in $\sSys$, atoms in the conclusion are \t
 \end{definition}
 
 - Conclude that proofs are dinatural as they are compositions of naturals and dinaturals with no cycles
-\newpage
-\section{Some Big Result...}
-\begin{theorem}
-    Cor blimey look at the state of this stonking result!
-\end{theorem}
-
-TODO:
-
-- Check atomic flows (Alessio)
-- MLL is known to give no cycles, we are somewhere inbetween
-
-\begin{proof}
-    Bodge together all of the lemmas from the previous chapters and there you go.
-    Easy.
-    No bother at all.
-\end{proof}
+- Atomic flows????
 
 \newpage
 \section{Conclusion}
