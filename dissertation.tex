@@ -58,7 +58,7 @@
 \newcommand{\comp}{\mathbin{\circ}}
 \newcommand{\unit}{\circ}
 
-\title{A Coherence Space Model of Deep Inference}
+\title{A Deep Inference Model of State}
 \author{Jamie Brine}
 
 \begin{document}
@@ -74,37 +74,65 @@
 
 \newpage
 \section{Introduction}
-
-- Brief background in modelling computation
-
+\subsection{Modelling Computation}
 Proof theorists have developed countless proof systems as mechanisms with which to model computation.
 Each system has its own grammar and rules, aiming to capture a particular aspect of how a computer programs execute.
 They may choose to model resource sensitivity in producer/consumer relationships \cite{joshi1996partial}, shared-memory parallel code \cite{woodcock2002unifying}, or compiler optimisation techniques \cite{tate2010generating}.
 
-The key idea underpinning these representations is the Curry-Howard correspondance.
+The key idea underpinning these models is the Curry-Howard correspondance.
 This was first proposed by Haskell Curry in the 1940s, then explicitly formulated by William Alvin Howard in the 1960s.
-A typeset version of Howard's original hand-written notes have been published \cite{howard1980formulae}, or for a more modern and detailed explaination the reader is referred to a Master's thesis by Husna Farooqui \cite{farooqui2021curry}
-It can be distilled to the following simple phrase:
+A typeset version of Howard's original hand-written notes have been published \cite{howard1980formulae};
+for a more modern and detailed explaination, the reader is referred to a Master's thesis by Husna Farooqui \cite{farooqui2021curry}.
+The correspondence can be distilled to the following phrase:
 
 \begin{center}
 "Propositions are types, and proofs are programs"
 \end{center}
 
-More formally, it is a framework in which constructing a proof represents the execution of a program.
-The type of the executed program is precisely the type which the proof's conclusion represents.
-It allows for programs to be more rigorously studied, particularly with regard to their correctness and termination; if the proof is valid in the given system, so is the program it represents.
+More formally, it provides a framework in which constructing a proof corresponds to the execution of a program.
+The return type of the program is precisely the type that the conclusion of the proof represents.
+This connection allows for programs to studied through the lens of logic, particularly with respect to properties like correctness and termination;
+if a proof is valid in the underlying system, so too is the program it corresponds to.
 
-This idea has been further enriched with the advent of deep inference logic. 
+\subsection{Deep Inference}
+This foundational idea has been extended and enriched with the advent of deep inference, a relatively recent development in proof theory.
+Deep inference is a methodology that contrasts with traditional approaches such as natural deduction and the sequent calculus, in which inference rules are restricted to apply only at the outermost (or top-level) structure of formulae.
+In contrast, deep inference systems permit inference rules to be applied at any depth within a formula's structure.
+This increased freedom introduces new possibilities for proof compression, locality, and symmetry.
+In turn, the types and programs that can be encoded by these systems are more expressive and finely controlled, allowing for richer representations of computational processes and more efficient proof search.
 
-- Deep inference
+This flexibility is exemplified in deep inference systems such as BV and NEL.
+BV \cite{bruscoli2002purely} is a system based on multiplicative linear logic, where a self-dual non-commutative connective is treated using deep inference principles.
+NEL \cite{guglielmi2002non} further extends these ideas by incorporating self-duplicating structures.
+For a comprehensive explaination of deep inference, and how its relatively subtle differences to classical proof techniques allow for staggering improvements in efficiency, the reader is referred to Guglielmi \cite{guglielmi2015deep}.
+His pioneering work throughout the 2000s contributed greatly to the development of the methodology.
 
-- BV, NEL
+\subsection{How to Model State?}
+Simply put, the state of a program refers to the set of values or conditions that exist at any given point during its execution, encompassing variables, data structures, and other program-related information that influence its behavior.
+Modeling state is essential for understanding how programs evolve over time, tracking the effects of operations, and ensuring correctness in the program's execution.
 
-- Reddy's ideas
+Uday Reddy proposed the idea of modelling state with an extension of linear logic.
+In a 1993 paper \cite{reddy1993all}, he proposes a logical system which extends the well studied system of linear logic with two new operators:
+a connective "before" which is used to impose order on terms in a proposition, and a regenerative storage operator "dagger" which allows these ordered terms to produce "traces".
+He explains that "a trace denotes the information extracted from a storage object in one particular execution of a program".
+He calls this system the Linear Logic Model of State.
 
-- Why we need my system
+Reddy also gives semantics to his system using a coherence space model.
+Semantic models of logical systems are valuable, as their category-theoretic nature allows for a more abstract and structured understanding of the relationships between logical formulas and their proofs, enabling the exploration of proofs as morphisms within a category.
+This provides powerful tools for reasoning about logical systems, facilitating the comparison of different proof systems and allowing for the transfer of results across various areas of logic and computation.
 
-- Result we will prove
+\subsection{Motivation}
+In a preliminary version of this paper \cite{reddy1993linear}, Reddy acknowledges that "for the regenerative type system, we need a noncommutative tensor product which has all the properties of tensor except for the commutative property".
+This motivates a natural continuation of his work: can we add non-commutativity to the Linear Logic Model of State in order to more richly model program state?
+
+In this paper, we present a new logical system, $\sSys$, with which we attempt to answer this question.
+It is a deep inference system similar to those mentioned previously, which offers a more flexible framework for reasoning about noncommutative structures within logic.
+This is particularly useful for modeling complex interactions within program state, where the order of operations may be significant.
+
+We give a full coherence space model for the system, which allows us to study it mathematically and prove a number of useful facts about its nature.
+Crucially, we aim to show that the categorical model of any proof is a dinatural transformation.
+The equivalent notion in the logic is that no matter which pair of objects are being related, the structure of the relationship remains invariant, providing a deeper understanding of how proof transformations preserve logical properties.
+This is an important step in proving the consistency of the logic.
 
 \newpage
 \section{System $\sSys$}
