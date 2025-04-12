@@ -47,8 +47,7 @@
 \newcommand{\ra}{\rangle}
 \newcommand{\lp}{\llparenthesis}
 \newcommand{\rp}{\rrparenthesis}
-\newcommand{\sSys}{{\mathsf{sWIP}}}%
-\newcommand{\Sys}{{\mathsf{WIP}}}%
+\newcommand{\sSys}{{\mathsf{TREL}}}%
 \newcommand{\cohs}{{\mathsf{COHS}}}
 \newcommand{\coh}[1][]{\mathrel{\vcenter{\offinterlineskip\hbox{$\frown$}\vskip0.2ex\hbox{$\smile$}}_{\ifx\\#1\\\else#1\fi}}}
 \newcommand{\incoh}[1][]{\mathrel{\vcenter{\offinterlineskip\hbox{$\smile$}\vskip0.2ex\hbox{$\frown$}}_{\ifx\\#1\\\else#1\fi}}}
@@ -125,7 +124,7 @@ This provides powerful tools for reasoning about logical systems, facilitating t
 In a preliminary version of this paper \cite{reddy1993linear}, Reddy acknowledges that "for the regenerative type system, we need a noncommutative tensor product which has all the properties of tensor except for the commutative property".
 This motivates a natural continuation of his work: can we add non-commutativity to the Linear Logic Model of State in order to more richly model program state?
 
-In this paper, we present a new logical system, $\sSys$, with which we attempt to answer this question.
+In this paper, we present the system $\sSys$ ("Trace-Respecting Exponential Linear logic"), with which we attempt to answer this question.
 It is a deep inference system similar to those mentioned previously, which offers a more flexible framework for reasoning about noncommutative structures within logic.
 This is particularly useful for modeling complex interactions within program state, where the order of operations may be significant.
 
