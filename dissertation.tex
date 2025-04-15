@@ -40,7 +40,8 @@
 
 \let\originaldagger\dagger
 \renewcommand{\dag}{\mathord{\originaldagger}}
-\DeclareMathSymbol{\hash}{\mathord}{letters}{`#}
+\newcommand{\hash}{\mathord{\raisebox{0.3ex}{\scalebox{0.7}{$\mathstrut \# $}}}}
+%\DeclareMathSymbol{\hash}{\mathord}{letters}{`#}
 \DeclarePairedDelimiter\denote\llbracket\rrbracket
 
 \newcommand{\la}{\langle}
@@ -356,6 +357,10 @@ All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
     \caption{Rewrite Rules for System $\sSys$}
     \label{fig:rules}
 \end{figure}
+
+Particular emphasis is placed on the $\bU$ and $\bD$ rules.
+These rules exist in $\NEL$, but in a slightly different form, as shown in Figure ADD FIG REF.
+
 
 \begin{definition}
 A \textit{derivation} $\Delta$ from $R$ to $T$ is a finite chain of rewrites with premise $R$ and conclusion $T$, denoted $\vlderivation{\vlde{\Delta}{}{T}{\vlhy{R}}}$.
