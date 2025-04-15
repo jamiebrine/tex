@@ -74,21 +74,21 @@
 \newpage
 \section{Introduction}
 \subsection{Modelling Computation}
-Proof theorists have developed countless proof systems as mechanisms with which to model computation.
-Each system has its own grammar and rules, aiming to capture a particular aspect of how a computer programs execute.
+Proof theorists have developed countless proof systems as mechanisms with which to not only give proofs, but also model computation.
+Each system has its own grammar and rules, and can capture a particular aspect of how a computer programs execute.
 They may choose to model resource sensitivity in producer/consumer relationships \cite{joshi1996partial}, shared-memory parallel code \cite{woodcock2002unifying}, or compiler optimisation techniques \cite{tate2010generating}.
 
-The key idea underpinning these models is the Curry-Howard correspondance.
+The key idea underpinning these models is the Curry-Howard correspondence.
 This was first proposed by Haskell Curry in the 1940s, then explicitly formulated by William Alvin Howard in the 1960s.
 A typeset version of Howard's original hand-written notes have been published \cite{howard1980formulae};
-for a more modern and detailed explaination, the reader is referred to a Master's thesis by Husna Farooqui \cite{farooqui2021curry}.
+for a more modern and detailed explanation, the reader is referred to a Master's thesis by Husna Farooqui \cite{farooqui2021curry}.
 The correspondence can be distilled to the following phrase:
 
 \begin{center}
 "Propositions are types, and proofs are programs"
 \end{center}
 
-More formally, it provides a framework in which constructing a proof corresponds to the execution of a program.
+More formally, it provides a framework in which constructing a proof corresponds writing a program, and normalisation of that proof corresponds to the program's execution.
 The return type of the program is precisely the type that the conclusion of the proof represents.
 This connection allows for programs to studied through the lens of logic, particularly with respect to properties like correctness and termination;
 if a proof is valid in the underlying system, so too is the program it corresponds to.
@@ -102,13 +102,13 @@ In turn, the types and programs that can be encoded by these systems are more ex
 
 This flexibility is exemplified in deep inference systems such as BV and NEL.
 BV \cite{bruscoli2002purely} is a system based on multiplicative linear logic, where a self-dual non-commutative connective is treated using deep inference principles.
-NEL \cite{guglielmi2002non} further extends these ideas by incorporating self-duplicating structures.
-For a comprehensive explaination of deep inference, and how its relatively subtle differences to classical proof techniques allow for staggering improvements in efficiency, the reader is referred to Guglielmi \cite{guglielmi2015deep}.
+NEL \cite{guglielmi2002non} further extends these ideas by incorporating duplicable structures.
+For a comprehensive explanation of deep inference, and how its relatively subtle differences to classical proof techniques allow for staggering improvements in efficiency, the reader is referred to Guglielmi \cite{guglielmi2015deep}.
 His pioneering work throughout the 2000s contributed greatly to the development of the methodology.
 
 \subsection{How to Model State?}
 Simply put, the state of a program refers to the set of values or conditions that exist at any given point during its execution, encompassing variables, data structures, and other program-related information that influence its behavior.
-Modeling state is essential for understanding how programs evolve over time, tracking the effects of operations, and ensuring correctness in the program's execution.
+modelling state is essential for understanding how programs evolve over time, tracking the effects of operations, and ensuring correctness in the program's execution.
 
 Uday Reddy proposed the idea of modelling state with an extension of linear logic.
 In a 1993 paper \cite{reddy1993all}, he proposes a logical system which extends the well studied system of linear logic with two new operators:
@@ -121,16 +121,21 @@ Semantic models of logical systems are valuable, as their category-theoretic nat
 This provides powerful tools for reasoning about logical systems, facilitating the comparison of different proof systems and allowing for the transfer of results across various areas of logic and computation.
 
 \subsection{Motivation}
-In a preliminary version of this paper \cite{reddy1993linear}, Reddy acknowledges that "for the regenerative type system, we need a noncommutative tensor product which has all the properties of tensor except for the commutative property".
+In a preliminary version of this paper \cite{reddy1993linear}, Reddy acknowledges that "for the regenerative type system, we need a non-commutative tensor product which has all the properties of tensor except for the commutative property".
 This motivates a natural continuation of his work: can we add non-commutativity to the Linear Logic Model of State in order to more richly model program state?
 
 In this paper, we present the system $\sSys$ ("Trace-Respecting Exponential Linear logic"), with which we attempt to answer this question.
-It is a deep inference system similar to those mentioned previously, which offers a more flexible framework for reasoning about noncommutative structures within logic.
-This is particularly useful for modeling complex interactions within program state, where the order of operations may be significant.
+It is a deep inference system similar to those mentioned previously, which offers a more flexible framework for reasoning about non-commutative structures within logic.
+This is particularly useful for modelling complex interactions within program state, where the order of operations may be significant.
 
 We give a full coherence space model for the system, which allows us to study it mathematically and prove a number of useful facts about its nature.
+The model is an important tool which helps guide the design of the logic, ensuring that the rules we introduce behave in the way we require them to.
+By considering all decisions from both logical and categorical perspectives, we ensure the system remains both sound and semantically well-motivated.
+
 Crucially, we aim to show that the categorical model of any proof is a dinatural transformation.
 The equivalent notion in the logic is that no matter which pair of objects are being related, the structure of the relationship remains invariant, providing a deeper understanding of how proof transformations preserve logical properties.
+While we do not give a direct argument for this property in this paper, we conjecture that it is indeed true, giving a sequence of supporting lemmas.
+We also show contrasting cases from other systems which do not enjoy this property, highlighting the specific features of our logic that we believe prevent such failures.
 This is an important step in proving the consistency of the logic.
 
 \newpage
@@ -160,7 +165,7 @@ where
 \begin{definition}
 A structure with an empty hole, $S\{\,\,\}$, is called a \textit{context}.
 We say $R$ is a \textit{substructure} of $S\{R\}$.
-If structural parentheses fill the hole exactly, the curly braces will be ommitted, so for example $S\{[R,T]\}$ becomes $S[R,T]$.
+If structural parentheses fill the hole exactly, the curly braces will be omitted, so for example $S\{[R,T]\}$ becomes $S[R,T]$.
 \end{definition}
 
 \begin{definition}
@@ -232,6 +237,10 @@ A \textit{rewrite rule} is a rule $\rho$ with \textit{premise} T and \textit{con
 All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
 \end{definition}
 
+\begin{remark}
+    As $\sSys$ is a deep inference system, a rewrite rule can be applied at arbitrary depth within any structure.
+\end{remark}
+    
 \begin{figure}[ht!]
     \centering
     \setlength{\fboxsep}{5pt} % Padding inside the box
@@ -242,79 +251,22 @@ All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
                 \centering
                 \[
                 \vlderivation{
-                    \vlin{\aiD}{}{S[R,\overline{R}]}
+                    \vlin{\aiD}{}{S[a,\overline{a}]}
                     {\vlhy{S\{\unit\}}}
                     }
                 \] 
-                \\
-                \[
-                \vlderivation{
-                    \vlin{\sw}{}{S[(R,U),T]}
-                    {\vlhy{S([R,T],U)}}
-                    }  
-                \]
-                \\
-                \[
-                \vlderivation{
-                    \vlin{\qD}{}{S[\la R;U\ra,\la T;V\ra]}
-                    {\vlhy{S\la[R,T];[U,V]\ra}}
-                    }  
-                \]
-                \\
-                \[
-                \vlderivation{
-                    \vlin{\pD}{}{S[\dag R, \hash T]}
-                    {\vlhy{S\{\dag[R,T]\}}}
-                    }
-                \]
-                \\
-                \vspace{0.5em}
-            \end{minipage}
-            \hfill
-            \begin{minipage}{0.3\textwidth}
-                \centering
-                \[
-                    \vlderivation{
-                        \vlin{\dD}{}{S\{\dag\unit\}}
-                        {\vlhy{S\{\unit\}}}
-                        }
-                    \] 
-                \[
-                \vlderivation{
-                    \vlin{\wD}{}{S\{\hash R\}}
-                    {\vlhy{S\{\unit\}}}
-                    }
-                \] 
-                \\
-                \[
-                \vlderivation{
-                    \vlin{\bD}{}{S\{\hash R\}}
-                    {\vlhy{S\la R;\hash R\ra}}
-                    }  
-                \]
                 \\
                 \[
                 \vlderivation{
                     \vlin{\aiU}{}{S\{\unit\}}
-                    {\vlhy{S(R,\overline{R})}}
+                    {\vlhy{S(a,\overline{a})}}
                     }  
                 \]
                 \\
-                \vspace{0.5em}
-            \end{minipage}
-            \begin{minipage}{0.35\textwidth}
-                \centering
                 \[
                 \vlderivation{
-                    \vlin{\qU}{}{S\la(R,U);(T,V)\ra}
-                    {\vlhy{S(\la R;T\ra,\la U;V\ra)}}
-                    }
-                \]
-                \\
-                \[
-                \vlderivation{
-                    \vlin{\pU}{}{S\{\hash(R,S)\}}
-                    {\vlhy{S(\hash R,\dag S)}}
+                    \vlin{\wD}{}{S\{\hash R\}}
+                    {\vlhy{S\{\unit\}}}
                     }
                 \] 
                 \\
@@ -325,12 +277,77 @@ All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
                     }  
                 \]
                 \\
+                \vspace{0.5em}
+            \end{minipage}
+            \hfill
+            \begin{minipage}{0.3\textwidth}
+                \centering
+                \[
+                \vlderivation{
+                    \vlin{\dD}{}{S\{\dag\unit\}}
+                    {\vlhy{S\{\unit\}}}
+                    }
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\dU}{}{S\{\unit\}}
+                    {\vlhy{S\{\hash\unit\}}}
+                    }
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\bD}{}{S\{\hash R\}}
+                    {\vlhy{S\la R;\hash R\ra}}
+                    }  
+                \]
+                \\
                 \[
                 \vlderivation{
                     \vlin{\bU}{}{S\la R;\dag R\ra}
                     {\vlhy{S\{\dag R\}}}
                     }  
                 \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\sw}{}{S[(R,U),T]}
+                    {\vlhy{S([R,T],U)}}
+                    }  
+                \]
+                \\
+                \vspace{0.5em}
+            \end{minipage}
+            \begin{minipage}{0.35\textwidth}
+                \centering
+                \[
+                \vlderivation{
+                    \vlin{\qD}{}{S[\la R;U\ra,\la T;V\ra]}
+                    {\vlhy{S\la[R,T];[U,V]\ra}}
+                    }  
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\qU}{}{S\la(R,U);(T,V)\ra}
+                    {\vlhy{S(\la R;T\ra,\la U;V\ra)}}
+                    }
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\pD}{}{S[\dag R, \hash T]}
+                    {\vlhy{S\{\dag[R,T]\}}}
+                    }
+                \]
+                \\
+                \[
+                \vlderivation{
+                    \vlin{\pU}{}{S\{\hash(R,S)\}}
+                    {\vlhy{S(\hash R,\dag S)}}
+                    }
+                \] 
                 \\
                 \vspace{0.5em}
             \end{minipage}
@@ -346,15 +363,32 @@ A derivation whose premise is $\unit$ is called a \textit{proof}, to which we ca
 these are denoted $\vlderivation{\vlproof{\Delta}{}{T}}$.
 \end{definition}
 
-We can turn any derivation into a proof with the following proposition, whose proof uses standard proof theoretical notions common to many systems.
-
 \begin{proposition}\label{prop:DerivationToProof}
-If $\vlderivation{\vlde{\Delta}{}{T}{\vlhy{R}}}$ is a derivation, then there exists a proof $\vlderivation{\vlproof{\Delta}{}{(\overline{R},T)}}$.
+If $\vlderivation{\vlde{\Gamma}{}{T}{\vlhy{R}}}$ is a derivation, then there exists a proof $\vlderivation{\vlproof{\Delta}{}{[\overline{R},T]}}$.
 \end{proposition}
 
-\begin{remark}
-As $\sSys$ is a deep inference system, a rewrite rule can be applied at arbitrary depth within any structure.
-\end{remark}
+\begin{proof}
+In order to prove this, we use a generalised version of $\aiD$, which we call $\iD$:
+\[
+\vlderivation{
+    \vlin{\iD}{}{S[R,\overline{R}]}
+    {\vlhy{S\{\unit\}}}
+    }
+\] 
+
+This rule can introduce any dual pair of structures, as opposed to $\aiD$ which strictly introduces atoms.
+$\iD$ is adimissible in $\sSys$; any proof which uses it can be transformed into an equivalent (albeit more convoluted) one whose atoms are introduced sequentially with $\aiD$ (a key feature of deep inference) \cite{bruscoli2002purely}.
+We thus need only to wrap the existing proof in the context $[\overline{R},\{\quad\}]$:
+
+\[
+\vlderivation{
+    \vlde{[\overline{R},\Gamma]}{}{[\overline{R},T]}
+    {\vlin{\iD}{}{[\overline{R},R]}{\vlhy{\unit}}}
+}
+\]
+
+
+\end{proof}
 
 \begin{example}\label{example:DerivationExample}
 We give a derivation where, when read top down, the substructure on which the rule is being applied is bolded.
@@ -373,13 +407,13 @@ Note that this is not the simplest derivation from this premise to this conclusi
 \end{example}
 
 \begin{example}
-Negating the premise of the derivation from example \ref{example:DerivationExample}, and then use the equivalence relation defined in Figure \ref{fig:equivalence} to push negation to the level of atoms, we get the following:
+Negating the premise of the derivation from Example \ref{example:DerivationExample}, and then use the equivalence relation defined in Figure \ref{fig:equivalence} to push negation to the level of atoms, we get the following:
 $$\overline{\dag [R,T]} = \hash \overline{[R,T]} = \hash (\overline{R},\overline{T})$$
-Using Proposition \ref{prop:DerivationToProof}, we can hence guarantee that it is possible to contruct the following proof:
+Using Proposition \ref{prop:DerivationToProof}, we can hence guarantee that it is possible to construct the following proof:
 
 \[
 \vlproof{\Gamma}{}{
-(\hash (\overline{R},\overline{T}),[\la R;\dag R\ra,\hash T])}
+[\hash (\overline{R},\overline{T}),\la R;\dag R\ra,\hash T]}
 \]
 \end{example}
 
@@ -516,7 +550,7 @@ For the rest of this section, we abstract out the underlying structure of any gi
 We require that connectives in our model behave nicely when working in the category of coherence spaces.
 We will briefly define this category, and then show that we can model each of the unary and binary connectives as functors.
 
-Modelling connectives as functors allows rewrite rules to be applied within arbitrary contexts, by composing the rule's model with the functor representing the context.
+modelling connectives as functors allows rewrite rules to be applied within arbitrary contexts, by composing the rule's model with the functor representing the context.
 This abstraction simplifies deep inference by making rule application uniform and modular, ensuring necessary properties are preserved at all levels of nesting.
 Contexts can be constructed compositionally, providing a scalable and elegant framework for handling rules in arbitrary settings.
 
@@ -800,7 +834,7 @@ Deriving the actions of these functors is left as an exercise to the reader; the
 
 We do not have to prove that these are functors, as composition of functors always results in functors.
 
-With these final 2 functors, we now have a purely categorial model of any structure that could arise from the grammar of $\sSys$, which preserves all necessary properties no matter the choice of coherence space for atoms.
+With these final 2 functors, we now have a purely categorical model of any structure that could arise from the grammar of $\sSys$, which preserves all necessary properties no matter the choice of coherence space for atoms.
 
 \subsection{Rewrite Rules are Linear Maps} 
 For each rewrite rule of $\sSys$, we define a family of linear maps between coherence spaces to be its model.
@@ -1104,7 +1138,7 @@ An up-down pair of rewrite rules ${\mathsf{\rho}}{\uparrow},{\mathsf{\rho}}{\dow
 
 \begin{proof}
 We use a commuting diagram to show the (di)naturality of any rule $\rho$.
-As an up-down pair are, by definition, dual to eachother, we can simply take duals and reverse the arrows in the proof of ${\mathsf{\rho}}{\uparrow}$'s classification to get an equivalent one for ${\mathsf{\rho}}{\downarrow}$.
+As an up-down pair are, by definition, dual to each-other, we can simply take duals and reverse the arrows in the proof of ${\mathsf{\rho}}{\uparrow}$'s classification to get an equivalent one for ${\mathsf{\rho}}{\downarrow}$.
 \end{proof}
 
 We find that all but $\aiD$ and $\aiU$ are natural rewrites.
@@ -1173,7 +1207,7 @@ The corresponding proof for $\aiU$ can be easily derived, as stated previously, 
 $\aiD$ is a dinatural rewrite.
 \end{lemma}
 \begin{proof}
-Following the defintions, we find that the required $F$ is the trivial functor $\unit:\cohs\times\cohs^{op}\to\cohs$.
+Following the definitions, we find that the required $F$ is the trivial functor $\unit:\cohs\times\cohs^{op}\to\cohs$.
 This sends any pair of coherence spaces to the trivial coherence space $*$, and all linear maps to the identity.
 Then $G$ is
 $$[\_,\overline{\{\enspace\}}]:\cohs\times\cohs^{op}\to\cohs$$
@@ -1219,7 +1253,7 @@ These graphs are an extension of Kelly-Mac Lane graphs \cite{mac2013categories},
 \begin{definition}
 We call a graph of this type \textit{well-formed} if it is the representative graph of a well formed derivation in $\sSys$.
 \end{definition}
-The example below shows the correspondance between a derivation and its representation as a graph:
+The example below shows the correspondence between a derivation and its representation as a graph:
 
 \begin{figure}[ht]
     \centering
@@ -1330,8 +1364,8 @@ We can deduce that a cycle could form if the conclusion of an $\aiD$ rewrite bec
 \end{figure}
 
 This simple cycle can never occur as the corresponding structure brackets do not match up ($\aiD$ produces a copar conclusion, $\aiU$ requires a par premise, so the graph is not well-formed).
-Instead, a more complex cycle may form if we allow additional transformations inbetween the applications of $\aiU$ and $\aiD$.
-Looking back at the graph in Figure \ref{fig:graph}, we could concievably add an instance of $\aiU$ at the bottom.
+Instead, a more complex cycle may form if we allow additional transformations in-between the applications of $\aiU$ and $\aiD$.
+Looking back at the graph in Figure \ref{fig:graph}, we could conceivably add an instance of $\aiU$ at the bottom.
 This would introduce an additional arrow (dotted), forming a longer cycle (bolded), as shown in Figure \ref{fig:modification}.
 
 \begin{figure}[ht]
@@ -1454,7 +1488,7 @@ The main technique used is to set certain structures in each rule's definition t
 
 Of the 5 rewrites above, only 3 direct exchanges of structure brackets have been shown to be possible:
 $(...)\to[...]$, $\la ...\ra\to[...]$, and $(...)\to\la ...\ra$.
-This is better demonstrated visually as a heirarchy of structure brackets, in which we are free to move down the list but unable to climb back up:
+This is better demonstrated visually as a hierarchy of structure brackets, in which we are free to move down the list but unable to climb back up:
 
 \begin{center}
     \begin{tikzpicture}
