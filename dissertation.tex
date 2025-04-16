@@ -41,7 +41,6 @@
 \let\originaldagger\dagger
 \renewcommand{\dag}{\mathord{\originaldagger}}
 \newcommand{\hash}{\mathord{\raisebox{0.3ex}{\scalebox{0.7}{$\mathstrut \# $}}}}
-%\DeclareMathSymbol{\hash}{\mathord}{letters}{`#}
 \DeclarePairedDelimiter\denote\llbracket\rrbracket
 
 \newcommand{\la}{\langle}
@@ -54,7 +53,6 @@
 \newcommand{\incoh}[1][]{\mathrel{\vcenter{\offinterlineskip\hbox{$\smile$}\vskip0.2ex\hbox{$\frown$}}_{\ifx\\#1\\\else#1\fi}}}
 \newcommand{\notcoh}[1][]{\cancel{\coh}_{\ifx\\#1\\\else#1\fi}}
 \newcommand{\scoh}[1][]{\mathrel{\frown}_{\ifx\\#1\\\else#1\fi}}
-\newcommand{\notscoh}[1][]{\mathrel{\ooalign{$\frown$\cr\hidewidth$/$\hidewidth}}_{\ifx\\#1\\\else#1\fi}}
 \newcommand{\comp}{\mathbin{\circ}}
 \newcommand{\unit}{\circ}
 
@@ -359,8 +357,39 @@ All of the rewrite rules in $\sSys$ are given in Figure \ref{fig:rules}.
 \end{figure}
 
 Particular emphasis is placed on the $\bU$ and $\bD$ rules.
-These rules exist in $\NEL$, but in a slightly different form, as shown in Figure ADD FIG REF.
+These rules exist in $\NEL$, but in a slightly different form, as shown in Figure \ref{fig:nel-vs-trel-rules}.
+In $\sSys$, the duplicated version of a structure (in Reddy's terms, the "trace") that is produced by an application of $\bU$ is placed into a seq structure.
+This means that when repeatedly producing traces of the same structure, there is an order imposed on them; this matches our intuition of how programs execute, where each successive execution builds upon the previous one in a well-defined sequence, preserving the causal relationships between computational steps.
 
+\begin{figure}[ht]
+    \centering
+    \setlength{\tabcolsep}{2em} % spacing between columns
+    \renewcommand{\arraystretch}{1.5} % vertical spacing between rows
+    \begin{tabular}{c c}
+        $\NEL$: & $\sSys$: \\
+        $\vlderivation{
+            \vlin{\bU}{}{S(R,!R)}
+            {\vlhy{S\{!R\}}}
+        }$ 
+        &
+        $\vlderivation{ 
+            \vlin{\bU}{}{S\la R;\dag R\ra}
+            {\vlhy{S\{\dag R\}}}
+        } $
+        \\\\
+        $\vlderivation{ 
+            \vlin{\bD}{}{S\{?R\}}
+            {\vlhy{S[R,?R]}}
+        }$
+        &
+        $\vlderivation{ 
+            \vlin{\bD}{}{S\{\hash R\}}
+            {\vlhy{S\la R;\hash R\ra}}
+        }$
+    \end{tabular}
+    \caption{Comparison of the $\bU$ and $\bD$ rules in $\NEL$ (left) and $\sSys$ (right).}
+    \label{fig:nel-vs-trel-rules}
+\end{figure}
 
 \begin{definition}
 A \textit{derivation} $\Delta$ from $R$ to $T$ is a finite chain of rewrites with premise $R$ and conclusion $T$, denoted $\vlderivation{\vlde{\Delta}{}{T}{\vlhy{R}}}$.
@@ -445,12 +474,12 @@ For a more structured, category theoretic introduction to coherence spaces, the 
 
 \begin{definition}
     A \textit{coherence space} is a pair $(|A|,\coh[A])$, where $|A|$ is some underlying set and $\coh[A]$ is the \textit{coherence relation} defined on that set.
-    The relation is symmetric, reflexive, and transitive.
+    The relation is symmetric and reflexive but not necessarily transitive.
     We also define a strictly irreflexive version $\scoh[A]$ which we call \textit{strict coherence}, such that $a\scoh[A]a' \iff a\coh[A]a'$ and $a\not=a'$
 \end{definition}
 
 \begin{definition}
-    We say $a$ and $a'$ are \textit{incoherent}, written $a \incoh[A] a'$, if either $a \notscoh[A] a'$ or $a=a'$
+    We say $a$ and $a'$ are \textit{incoherent}, written $a \incoh[A] a'$, if either $a \notcoh[A] a'$ or $a=a'$
 \end{definition}
 
 \begin{remark}
@@ -461,10 +490,6 @@ For a more structured, category theoretic introduction to coherence spaces, the 
 \begin{definition}
     A \textit{clique} of a coherence space $A$ is some $C \subseteq |A|$, whose elements are all pairwise coherent.
 \end{definition}
-
-\begin{remark}
-    Note that as the clique is a set, the pairwise coherence is necessarily strict.
-\end{remark}
 
 \begin{definition}
     A \textit{linear map} between coherence spaces $A$ and $B$ is some relation $f$ on $|A|$ and $|B|$,
@@ -483,6 +508,7 @@ For a more structured, category theoretic introduction to coherence spaces, the 
 \end{definition}
 
 Armed with these definitions, we can begin to construct a semantic model of the system $\sSys$.
+We will define a category whose morphisms are precisely these linear maps, and show that we can interpret structures as its objects.
 
 \subsection{A Model for Structures of $\sSys$}
 
@@ -499,7 +525,7 @@ Here we will state the semantics that we would like for each structure, then, th
 
 \item
 \textbf{Unit}: $\denote{\unit} = (\{*\},\{(*,*)\})$, a trivial coherence space whose underlying set is a singleton, with that single element related to itself.
-Notice that $* \notscoh[] *$ as the relation is strictly irreflexive, so $\scoh[\denote{\unit}]=\emptyset$.
+Notice that $* \incoh[] *$ as the relation is strictly irreflexive, so $\scoh[\denote{\unit}]=\emptyset$.
 
 \item
 \textbf{Atom}: For each atom $a,b,..,z$ in a structure, we are able to choose any coherence space $A,B,..,Z$ to be the model $\denote{a},\denote{b},..,\denote{z}$.
@@ -511,11 +537,11 @@ For example, an atom $b$ representing the base type of booleans may have the sem
 \item
 \textbf{Copar}: $\denote{(R,T)} = (\denote{R}\times\denote{T},\coh[\denote{(R,T)}])$,
 such that:
-$$(r_1,t_1)\coh(r_2,t_2)\iff r_1\coh[\denote{R}]r_2, t_1\coh[\denote{T}]t_2$$
+$$(r_1,t_1)\coh(r_2,t_2)\iff r_1\coh[\denote{R}]r_2 \text{ and } t_1\coh[\denote{T}]t_2$$
 
 \item
 \textbf{Seq}: $\denote{\la R;T\ra} = (\denote{R}\times\denote{T},\coh[\denote{\la R;T\ra}])$, such that:
-$$(r_1,t_1)\coh(r_2,t_2) \iff r_1\scoh[\denote{R}]r_2 \text{ or } r_1 = r_2, t_1\coh[\denote{T}]t_2$$
+$$(r_1,t_1)\coh(r_2,t_2) \iff r_1\scoh[\denote{R}]r_2 \text{ or } (r_1 = r_2 \text{ and } t_1\coh[\denote{T}]t_2)$$
 
 \item
 \textbf{Par}: $\denote{[R,T]} = (\denote{R}\times\denote{T},\coh[\denote{[R,T]}])$, such that:
@@ -547,6 +573,10 @@ $$r_1...r_m \coh r'_1...r'_n \iff \text{one of:}$$
 
 \end{itemize}
 
+\begin{remark}
+    Later, structures will be interpreted as functors, with atoms acting as their inputs, so each structure can be seen as a kind of variable type.
+\end{remark}
+
 \subsection{Connectives are Functors}
 
 We will now take a step back from modelling the system $\sSys$, and view the coherence space model from a purely categorical perspective.
@@ -555,7 +585,7 @@ For the rest of this section, we abstract out the underlying structure of any gi
 We require that connectives in our model behave nicely when working in the category of coherence spaces.
 We will briefly define this category, and then show that we can model each of the unary and binary connectives as functors.
 
-modelling connectives as functors allows rewrite rules to be applied within arbitrary contexts, by composing the rule's model with the functor representing the context.
+Modelling connectives as functors allows rewrite rules to be applied within arbitrary contexts, by composing the rule's model with the functor representing the context.
 This abstraction simplifies deep inference by making rule application uniform and modular, ensuring necessary properties are preserved at all levels of nesting.
 Contexts can be constructed compositionally, providing a scalable and elegant framework for handling rules in arbitrary settings.
 
@@ -563,6 +593,7 @@ Contexts can be constructed compositionally, providing a scalable and elegant fr
     The \textit{category of coherence spaces} is written $\cohs$, with coherence spaces as objects and linear maps between them as morphisms.
 \end{definition}
 
+\begin{remark}
 In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of some map $f:A\multimap B$, we will show 2 things:
 \begin{enumerate}
     \item
@@ -572,6 +603,7 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 \end{enumerate}
 (1) directly shows preservation of strict coherence. As strict coherence is a stronger condition than coherence, it also shows preservation of coherence in all cases aside from that where $a=a'$;
 (2) verifies this case directly.
+\end{remark}
 
 \subsubsection{Copar}
 \begin{definition}
@@ -593,6 +625,22 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 \end{lemma}
 
 \begin{proof}
+
+    $(\_,\_)$ preserves coherence:
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:R\multimap T$, $g:U\multimap V$.
+
+        First assume that $(r,u)\scoh[(R,U)](r',u')$, and consider pairs $\lp(r,u),(t,v)\rp$, $\lp(r',u'),(t',v')\rp\in(f,g)$.
+        Without loss of generality, assume that $r\scoh[R]r'$ and $u\coh[U]u'$.
+        Linearity of $f$ and $g$ implies that $t\scoh[T]t'$ and $v\coh[V]v'$.
+        This gives us $(t,v)\coh[(T,V)](t',v')$, and as $t\neq t'$ we find that the coherence is strict as required.
+
+        Now consider pairs $\lp(r,u),(t,v)\rp,\lp(r,u),(t',v')\rp\in(f,g)$.
+        Linearity of $f$ and $g$ implies that $t\coh[T]t'$ and $v\coh[V]v'$.
+        This gives us $(t,v)\coh[(T,V)](t',v')$ as required.
+
+    \end{adjustwidth}
+
     $(\_,\_)$ preserves identity:
     \begin{align*}
         (id_R,id_T) &= \{
@@ -604,7 +652,6 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
     \end{align*}
 
     $(\_,\_)$ preserves composition:
-    
     \begin{adjustwidth}{1.5em}{}
         Define 4 linear maps
         $f : R\multimap T$,
@@ -629,22 +676,6 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
         &= (h\comp f,k\comp g)
     \end{align*}
 
-    $(\_,\_)$ preserves coherence:
-
-    \begin{adjustwidth}{1.5em}{}
-        Define $f:R\multimap T$, $g:U\multimap V$.
-
-        First assume that $(r,u)\scoh[(R,U)](r',u')$, and consider pairs $\lp(r,u),(t,v)\rp$, $\lp(r',u'),(t',v')\rp\in(f,g)$.
-        Without loss of generality, assume that $r\scoh[R]r'$ and $u\coh[U]u'$.
-        Linearity of $f$ and $g$ implies that $t\scoh[T]t'$ and $v\coh[V]v'$.
-        This gives us $(t,v)\coh[(T,V)](t',v')$, and as $t\neq t'$ we find that the coherence is strict as required.
-
-        Now consider pairs $\lp(r,u),(t,v)\rp,\lp(r,u),(t',v')\rp\in(f,g)$.
-        Linearity of $f$ and $g$ implies that $t\coh[T]t'$ and $v\coh[V]v'$.
-        This gives us $(t,v)\coh[(T,V)](t',v')$ as required.
-
-    \end{adjustwidth}
-
 \end{proof}
 
 \subsubsection{Seq}
@@ -667,8 +698,6 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 \end{lemma}
 
 \begin{proof}
-    $\la\_;\_\ra$ preserves identity and composition;
-    the argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,T)$ replaced by $\la R;T\ra$.\\
 
     $\la\_;\_\ra$ preserves coherence:
     \begin{adjustwidth}{1.5em}{}
@@ -684,6 +713,9 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
         We have that either $t\neq t'$, in which case $t\scoh[T]t'$, or that $t=t'$.
         Combining the second case with the linearity of $g$ gives that $t=t'$ and $v\coh[V]v'$, so either case gives us $(t,v)\coh[(T,V)](t',v')$ as required.
     \end{adjustwidth}
+
+    $\la\_;\_\ra$ preserves identity and composition;
+    the argument is the same as that from the proof of Lemma \ref{lem:CoparIsFunctor}, with any coherence space $(R,T)$ replaced by $\la R;T\ra$.\\
 \end{proof}
 
 \subsubsection{Dual}
@@ -704,6 +736,20 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 \end{lemma}
 
 \begin{proof}
+
+    $\overline{\{\quad\}}$ preserves coherence:
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:R\multimap T$
+
+        Take $t,t'\in|T|$ such that $t\scoh[\overline{T}]t'$, that is, $t\incoh[T]t'$.
+        Consider pairs $\lp t,r\rp,\lp t',r'\rp\in\overline{f}$, so we have pairs $\lp r,t\rp,\lp r',t'\rp\in f$.
+        As $t\incoh[T]t'$, the contrapositive to the linearity of $f$ gives that $r\incoh[R]r'$, and thus $r\scoh[\overline{R}]r'$ as required.
+
+        If we instead consider pairs $\lp t,r\rp,\lp t,r'\rp\in\overline{f}$, we have pairs $\lp r,t\rp,\lp r',t\rp\in f$.
+        Then $t=t'\implies t\incoh[T]t'$, and again the contrapositive of linearity of $f$ gives $r\incoh[R]r'$, thus $r\coh[\overline{R}]r'$ as required.
+
+    \end{adjustwidth}
+
     $\overline{\{\quad\}}$ preserves identity trivially, as the underlying set of $\overline{R}$ is the same as that of $R$:
 
     $\overline{\{\quad\}}$ preserves composition:
@@ -716,19 +762,6 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
         &= \{\lp u,r\rp:\lp r,u\rp\in g\comp f\} \\
         &= \overline{g\comp f}
     \end{align*}
-
-    $\overline{\{\quad\}}$ preserves coherence:
-    \begin{adjustwidth}{1.5em}{}
-        Define $f:R\multimap T$
-
-        Take $t,t'\in|T|$ such that $t\scoh[\overline{T}]t'$, that is, $t\notscoh[T]t'$.
-        Consider pairs $\lp t,r\rp,\lp t',r'\rp\in\overline{f}$, so we have pairs $\lp r,t\rp,\lp r',t'\rp\in f$.
-        As $t\notscoh[T]t'$, the contrapositive to the linearity of $f$ gives that $r\notscoh[R]r'$, and thus $r\scoh[\overline{R}]r'$ as required.
-
-        If we instead consider pairs $\lp t,r\rp,\lp t,r'\rp\in\overline{f}$, we have pairs $\lp r,t\rp,\lp r',t\rp\in f$.
-        Then $t=t'\implies t\incoh[T]t'$, and again the contrapositive of linearity of $f$ gives $r\incoh[R]r'$, thus $r\coh[\overline{R}]r'$ as required.
-
-    \end{adjustwidth}
 
 \end{proof}
 
@@ -762,6 +795,24 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
 \end{lemma}
 
 \begin{proof}
+
+    $\dag\_$ preserves coherence:
+    \begin{adjustwidth}{1.5em}{}
+        Define $f:R\multimap T$.
+
+        First assume that $r_1...r_n\scoh[\dag R]r'_1...r'_n$, and consider pairs $\lp r_1...r_n,t_1...t_n\rp$, $\lp r'_1...r'_n,t'_1...t'_n\rp\in\dag f$.
+        $\exists 1\le j\le n$ where $j$ is the smallest index such that $r_j\scoh[R]r'_j$.
+        Linearity of $f$ then gives that $t_i\coh[T]t'_i\enspace\forall 1\le i\le j$, so in the first position that they differ they must do so coherently 
+        (even if all of $t_i=t'_i$, linearity of $f$ ensures that $t_j\scoh[T]t'_j$).
+        This gives $t_1...t_n\scoh[\dag T]t'_1...t'_n$ as required.
+
+        Now consider pairs $\lp r_1...r_n,t_1...t_n\rp$, $\lp r_1...r_n,t'_1...t'_n\rp\in\dag f$.
+        Linearity of $f$ gives that $t_i\coh[T]t'_i\enspace\forall1\le i\le n$.
+        If $t_1...t_n=t'_1...t'_n$ then the proof is trivial, so assume they are not equal.
+        $\exists 1\le j\le n$ where $j$ is the smallest index such that $t_j\neq t'_j$.
+        However, as $t_j\coh[T]t'_j$, we must have that $t_j\scoh[T]t'_j$, giving $t_1...t_n\coh[\dag T]t'_1...t'_n$ as required.
+    \end{adjustwidth}
+
     $\dag\_$ preserves identity:
     \begin{align*}
         \dag id_{R} &= \{\lp r_1...r_n,r_1...r_n\rp:\lp r_i,r_i\rp\in id_R\enspace\forall 1\le i\le n\} \\
@@ -782,22 +833,6 @@ In order to prove that the some functor $F:\cohs\to\cohs$ preserves coherence of
         &= \dag(g\comp f)
     \end{align*}
 
-    $\dag\_$ preserves coherence:
-    \begin{adjustwidth}{1.5em}{}
-        Define $f:R\multimap T$.
-
-        First assume that $r_1...r_n\scoh[\dag R]r'_1...r'_n$, and consider pairs $\lp r_1...r_n,t_1...t_n\rp$, $\lp r'_1...r'_n,t'_1...t'_n\rp\in\dag f$.
-        $\exists 1\le j\le n$ where $j$ is the smallest index such that $r_j\scoh[R]r'_j$.
-        Linearity of $f$ then gives that $t_i\coh[T]t'_i\enspace\forall 1\le i\le j$, so in the first position that they differ they must do so coherently 
-        (even if all of $t_i=t'_i$, linearity of $f$ ensures that $t_j\scoh[T]t'_j$).
-        This gives $t_1...t_n\scoh[\dag T]t'_1...t'_n$ as required.
-
-        Now consider pairs $\lp r_1...r_n,t_1...t_n\rp$, $\lp r_1...r_n,t'_1...t'_n\rp\in\dag f$.
-        Linearity of $f$ gives that $t_i\coh[T]t'_i\enspace\forall1\le i\le n$.
-        If $t_1...t_n=t'_1...t'_n$ then the proof is trivial, so assume they are not equal.
-        $\exists 1\le j\le n$ where $j$ is the smallest index such that $t_j\neq t'_j$.
-        However, as $t_j\coh[T]t'_j$, we must have that $t_j\scoh[T]t'_j$, giving $t_1...t_n\coh[\dag T]t'_1...t'_n$ as required.
-    \end{adjustwidth}
 \end{proof}
 
 \subsubsection{Par and Hash}
@@ -883,11 +918,11 @@ Crucially, we must first show that each of these maps preserve coherence (and th
 \end{lemma}
 
 \begin{proof}
-    As $*\notscoh[\unit]*$, preservation of strict coherence is vacuously true.
+    As $*\incoh[\unit]*$, preservation of strict coherence is vacuously true.
     Now consider pairs $\lp*,(\alpha,\alpha)\rp,\lp*,(\beta,\beta)\rp\in \aiD_{\unit}$.
     As $*=*$ and thus $*\coh*$, we must show that $(\alpha,\alpha)\coh[{[a,\overline{a}]}](\beta,\beta)$.
     If $\alpha=\beta$ the coherence is trivial, so suppose that $\alpha\neq\beta$.
-    We either have that $\alpha\scoh[a]\beta$, in which case we get $(\alpha,\alpha)\coh[{[a,\overline{a}]}](\beta,\beta)$, or that $\alpha\notscoh[a]\beta$.
+    We either have that $\alpha\scoh[a]\beta$, in which case we get $(\alpha,\alpha)\coh[{[a,\overline{a}]}](\beta,\beta)$, or that $\alpha\incoh[a]\beta$.
     In the latter case, we get that $\alpha\scoh[\overline{a}]\beta$, and so $(\alpha,\alpha)\coh[{[a,\overline{a}]}](\beta,\beta)$.
 \end{proof}
 \subsubsection{$\wD$}
@@ -932,7 +967,7 @@ Crucially, we must first show that each of these maps preserve coherence (and th
 \end{lemma}
 
 \begin{proof}
-    Trivial, as $*^n$ is a prefix of $*$ for $n\in\{0,1\}$, while $*$ is a prefix of $*^n$ for any $n\ge 2$.
+    Trivial, as $*^m$ prefixes $*^n$ for $m\le n$, while $*^n$ prefixes $*^m$ for $n<m$.
 \end{proof}
 
 \subsubsection{$\sw$}
@@ -1096,7 +1131,7 @@ This required property of rewrite rules, when considered as linear maps of coher
 
 We first give formal definitions of the category theoretic concepts at play, namely natural and dinatural transformations. 
 Then, we show a few key examples of rewrites behaving in the intended way, and classify each rewrite rule's map as one of these types.
-Finally, we use a key result proved by McCusker to show that we can compose arbitrarily many rewrites into a derivation and still enjoy the same properties.
+Finally, we use a key result proved by McCusker and Santamaria to show that we can compose arbitrarily many rewrites into a derivation and still enjoy the same properties.
 
 \subsection{Natural and Dinatural Transformations}
 \begin{definition}
@@ -1253,7 +1288,7 @@ Now that all rewrite rules have been classified, we investigate how their natura
 As we know that all derivations in $\sSys$ can be modelled by composing a number of (di)natural transformations, we are able to represent them as simple graphs.
 Each argument of a functor is a box, and applications of the transformations are lines between them.
 In our case, white boxes represent objects of $\cohs$ and grey ones represent those of $\cohs^{op}$.
-These graphs are an extension of Kelly-Mac Lane graphs \cite{mac2013categories}, and are introduced formally by McCusker \cite{mccusker2018compositionality}.
+These graphs are an extension of Kelly-Mac Lane graphs \cite{mac2013categories}, and are introduced formally by McCusker and Santamaria \cite{mccusker2018compositionality}.
 
 \begin{definition}
 We call a graph of this type \textit{well-formed} if it is the representative graph of a well formed derivation in $\sSys$.
@@ -1317,7 +1352,8 @@ The example below shows the correspondence between a derivation and its represen
     \label{fig:graph}
 \end{figure}
 
-This representation abstracts away many of the details of the transformations themselves, and McCusker proved that it also leads to a simple sufficient condition for a composition of dinatural transformations to be dinatural:
+This representation abstracts away many of the details of the transformations themselves.
+McCusker and Santamaria proved that it also leads to a simple sufficient condition for a composition of dinatural transformations to be dinatural:
 Any composition of dinatural transformations whose graph is acyclic is itself a dinatural transformation \cite{mccusker2018compositionality}.
 Note that at the top and bottom of any cycle is necessarily an arrow between a white and a grey box, pointing in opposite directions. 
 THIS WORDING NEEDS TIDYING UP!!!!
