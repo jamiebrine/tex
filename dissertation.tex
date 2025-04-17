@@ -29,7 +29,8 @@
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section] 
 \newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{lemma}[theorem]{Lemma} 
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture} 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem*{remark}{Remark}
@@ -133,7 +134,8 @@ By considering all decisions from both logical and categorical perspectives, we 
 
 Crucially, we aim to show that the categorical model of any proof is a dinatural transformation.
 The equivalent notion in the logic is that no matter which pair of objects are being related, the structure of the relationship remains invariant, providing a deeper understanding of how proof transformations preserve logical properties.
-While we do not give a direct argument for this property in this paper, we conjecture that it is indeed true, giving a sequence of supporting lemmas.
+While we do not give a direct argument for this property in this paper, we conjecture that it is indeed true
+We give a sequence of supporting lemmas and theorems, including a slightly weaker argument which proves the result for a subset of derivations, namely those which are cut free.
 We also show contrasting cases from other systems which do not enjoy this property, highlighting the specific features of our logic that we believe prevent such failures.
 This is an important step in proving the consistency of the logic.
 
@@ -1130,17 +1132,27 @@ Verifying that the resulting linear maps do behave as intended is left as an exe
 
 \subsection{Proofs are Cliques}
 PUT SOME STUFF HERE, TALK MAINLY ABOUT HOW WE COULD MAKE THIS BETTER WITH TOTALITY SPACES.
+
 \newpage
 \section{Dinaturality of Derivations}
+Some pairs of proofs, though syntactically different, clearly represent the same idea and so should be considered equal.
+The broader question of proof identity is central in proof theory, much like the question of program equivalence in programming languages.
 
-REDO THIS WORDING.
-In order to correctly model derivations, we require a certain freedom regarding the order that we can apply rewrite rules and context functors.
-As mentioned previously, applying a context to a both sides of a rewrite should yield the same result as applying the context to the rewritten structure.
-This required property of rewrite rules, when considered as linear maps of coherence spaces, is naturality.
+One simple class of such equalities comes from independent rewrites.
+Suppose we have the following derivations:
+$$\vlderivation{\vlde{\Gamma}{}{R'}{\vlhy{R}}}\quad\quad\vlderivation{\vlde{\Delta}{}{T'}{\vlhy{T'}}}$$
+We can compose them in 2 different ways to get the following derivations:
+$$\vlderivation{\vlde{[R',\Delta]}{}{[R',T']}{\vlde{[\Gamma,T]}{}{[R',T]}{\vlhy{[R,T]}}}}\quad\quad\vlderivation{\vlde{[\Gamma,T']}{}{[R',T']}{\vlde{[R,\Delta]}{}{[R,T']}{\vlhy{[R,T]}}}}$$
+It seems clear that these should be equal, and indeed in $\sSys$ they are.
+
+We wish to prove that this property holds in general using the model.
+That is, applying a context to both sides of a rewrite should yield the same result as applying the context after the rewrite.
+When rewrite rules are seen as linear maps between coherence spaces, this property is known as dinaturality.
+While dinaturality isn't strictly required for correctness, it captures this kind of uniform behaviour across contexts, and helps ensure that the rewriting system respects the structure of proofs.
 
 We first give formal definitions of the category theoretic concepts at play, namely natural and dinatural transformations. 
 Then, we show a few key examples of rewrites behaving in the intended way, and classify each rewrite rule's map as one of these types.
-Finally, we use a key result proved by McCusker and Santamaria to show that we can compose arbitrarily many rewrites into a derivation and still enjoy the same properties.
+Finally, we use a key result proved by McCusker and Santamaria to show that if we restrict ourselves to derivations that do not use the $\aiD$ rule, we can compose arbitrarily many rewrites and still enjoy the same properties.
 
 \subsection{Natural and Dinatural Transformations}
 \begin{definition}
@@ -1177,7 +1189,7 @@ Every natural transformation is a dinatural transformation
 \end{proposition}
 
 \begin{proof}
-The proof is left as an exercise in applying the definitions, showing that if we define $F'(A,B) \coloneq F(A)$ and $G'(A,B) \coloneq G(B)$, the dinaturality diagram collapses into the naturality one.
+The proof is left as an exercise in applying the definitions, showing that if we define $F'(A,B) \coloneq F(A)$ and $G'(A,B) \coloneq G(B)$, the required dinaturality diagram collapses into the naturality one.
 I THINK??????
 \end{proof}
 
@@ -1200,7 +1212,7 @@ An up-down pair of rewrite rules ${\mathsf{\rho}}{\uparrow},{\mathsf{\rho}}{\dow
 \end{proposition}
 
 \begin{proof}
-We use a commuting diagram to show the (di)naturality of any rule $\rho$.
+We use a commuting diagram to show the dinaturality of any rule $\rho$.
 As an up-down pair are, by definition, dual to each-other, we can simply take duals and reverse the arrows in the proof of ${\mathsf{\rho}}{\uparrow}$'s classification to get an equivalent one for ${\mathsf{\rho}}{\downarrow}$.
 \end{proof}
 
@@ -1309,8 +1321,6 @@ Indeed,
 Now that all rewrite rules have been classified, we investigate how their dinaturality is preserved when they are composed to form derivations.
 
 \subsection{Preserving Dinaturality through Composition}
-
-\subsubsection{Graphical Representation of Derivations}
 As we know that all derivations in $\sSys$ can be modelled by composing a number of dinatural transformations, we are able to represent them as simple graphs.
 Each argument of a functor is a box, and applications of the transformations are lines between them.
 In our case, white boxes represent objects of $\cohs$ and grey ones represent those of $\cohs^{op}$.
@@ -1441,7 +1451,7 @@ We can deduce that a cycle could form if the conclusion of an $\aiD$ rewrite bec
 We immediately obtain the following result about cut-free proofs, that is, proofs that do not contain any instance of $\aiU$:
 
 \begin{theorem}
-Any cut-free derivation in $\sSys$ can be modelled by a dinatural transformation.
+Every cut-free derivation in $\sSys$ can be modelled by a dinatural transformation.
 \end{theorem}
 
 \begin{proof}
@@ -1501,9 +1511,6 @@ This would introduce an additional arrow (dotted), forming a longer cycle (bolde
 \end{figure}
 
 We must verify that this new graph, or any constructed in a similar fashion, is not well-formed.
-
-\subsubsection{Derivations are Acyclic}
-
 We will consider the equivalent notion when working purely with the logic.
 That is, we must show that for any context $S$ the following derivation cannot be well-formed:
 
@@ -1526,7 +1533,7 @@ $$\vlderivation{\vlde{\Delta}{}{(R,T)}{\vlhy{[R,T]}}}$$
 \end{proposition}
 
 \begin{proof}
-There are 5 rewrites (besides $\aiU$and $\aiD$) containing either a copar in the premise or a par in the conclusion.
+There are 5 rewrites (besides $\aiU$ and $\aiD$) containing either a copar in the premise or a par in the conclusion.
 We now analyse each of them individually, deduce which structures can be freely transformed into others, and ultimately show that the copar to par rewrite is impossible in a well-formed structure.
 The main technique used is to set certain structures in each rule's definition to the unit, to see how the simplified version of the rule can be applied in more general situations.
 
@@ -1589,7 +1596,8 @@ This is better demonstrated visually as a hierarchy of structure brackets, in wh
     \end{tikzpicture}
 \end{center}
 
-This shows that the proposed rewrite is indeed impossible.
+An exhaustive search shows that these are indeed the only possible direct exchanges.
+This shows that the proposed rewrite is impossible.
 \end{proof}
 
 For a full proof that we can freely chain rewrite rules and represent them as dinatural transformations, we must consider how the context $S\{\}$ may interact with the substructure.
@@ -1623,38 +1631,55 @@ This allows us to construct the following derivation:
 That is, we have a derivation from $S[a,\overline{a}]$ to $S'(a,\overline{a})$, where $S=!\{\quad\}$ and $S'=[\{\quad\},a,\overline{a}]$.
 \end{example}
 
-WIP:
-\begin{definition}
-For any application of a rewrite rule in $\sSys$, atoms in the conclusion are \textit{connected} in any of the following cases:
-\begin{itemize}
-    \item They are some pair $[a,\overline{a}]$ introduced by the rule $\aiD$
-    \item 
-\end{itemize}
-\end{definition}
+\begin{conjecture}
+Every derivation in $\sSys$ can be modelled by a dinatural transformation.
+\end{conjecture}
 
-- Conclude that proofs are dinatural as they are compositions of naturals and dinaturals with no cycles
-- Atomic flows????
+We believe that the above result is true, but as of yet have been unable to formulate a formal argument.
 
 \newpage
 \section{Conclusion and Future Work}
 
 \subsection{$\sSys$ and its Model}
-We have shown the 
+We have presented the system $\sSys$ 
 
 \subsection{Dinaturality of General Derivations}
+\textit{The next semantic thing we'd like is of course the dinaturality of all proofs, which involves proving acyclicity of all proofs as you know.
+Again this could be included as a conjecture if we don't crack it.}
 
 \subsection{Consistency}
-\textit{"There are several things we would like to have in addition.
+\textit{There are several things we would like to have in addition.
 On the semantics side, it would be good to show that every proof is interpreted as a non-empty relation.
 One limitation of coherence space semantics is that every hom-set in the category has at least one element, the empty relation.
 If we could show that every proof is a non-empty relation then I believe we could deduce that the logic is “consistent” i.e. there are some formulas that cannot be proved, because there are no non-empty natural transformations to serve as their interpretation.
 (I'll try to come up with an example you could include.)
 The way to prove this non-emptiness is to add a “totality” predicate to the coherence spaces and show that every proof takes total elements to total elements;
-this is Loader’s totality spaces idea and I think it would be fine to throw in a conjecture that every proof is non-empty and say that this is how you would approach the proof."}
+this is Loader’s totality spaces idea and I think it would be fine to throw in a conjecture that every proof is non-empty and say that this is how you would approach the proof.}
 
 \subsection{Cut Elimination}
+As with many proof systems, particularly those which leverage deep inference, it is desirable that $\sSys$ enjoys the cut elimination property \cite{brunnler2006cut}.
+This is the property that any proof which contains instances of $\aiU$ can be transformed mechanically into one which does not.
+If this is the case, automatic proof search becomes much easier, as it greatly restricts the search space for any proposition.
+When building proofs from the bottom up, $\aiU$ can introduce atoms which were not present in the proposition, leading an algorithm to have to "guess" if any additional atoms are required.
 
+A stronger version of cut elimination is also desirable.
+This says that not only can any proof be transformed into an equivalent one with no cuts, but that the resulting proof has the same semantics of the original.
+In this case, we would have automatically that any proof can be interpreted as a dinatural transformation, as this has already been shown to be true for cut free proofs.
 
+\begin{conjecture}
+Any $\vlderivation{\vlde{\Gamma}{}{T}{\vlhy{R}}}$ can be transformed into an equivalent $\vlderivation{\vlde{\Delta}{}{T}{\vlhy{R}}}$ such that:
+\begin{itemize}
+\item $\Delta$ is cut free
+\item $\denote{\Gamma} = \denote{\Delta}$
+\end{itemize}
+\end{conjecture}
+
+The proof can likely be approached in a number of ways.
+For $\NEL$, Guglielmi and Straßburger \cite{guglielmi2002non} prove cut elimination by perform a very thorough case analysis;
+they use a novel approach which they call "splitting".
+Alternatively, Atkey proves that $\MAV$, another extension of $\BV$, enjoys the same property.
+His proof is written in terms of a semantic model, and shows rather concisely that proofs can be reduced to a normal form with no cuts in a mechanical way.
+He also then encodes this normalisation procedure in the Agda proof assistant.
 \newpage
 \bibliographystyle{plain}
 \bibliography{references}
