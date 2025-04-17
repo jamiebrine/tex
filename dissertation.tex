@@ -397,6 +397,11 @@ A derivation whose premise is $\unit$ is called a \textit{proof}, to which we ca
 these are denoted $\vlderivation{\vlproof{\Delta}{}{T}}$.
 \end{definition}
 
+\begin{remark}
+Throughout this paper, we will state many results about derivations.
+It is often the case that the corresponding result about proofs is in fact more useful to us in the context of modelling state, but we choose to give the more general result in most cases.
+\end{remark}
+
 \begin{proposition}\label{prop:DerivationToProof}
 If $\vlderivation{\vlde{\Gamma}{}{T}{\vlhy{R}}}$ is a derivation, then there exists a proof $\vlderivation{\vlproof{\Delta}{}{[\overline{R},T]}}$.
 \end{proposition}
@@ -1123,8 +1128,12 @@ We can once again leverage the idea of duality to construct models the remaining
 By applying the $\overline{\{\quad\}}$ functor to the model for any "down" rule, we get the model for the corresponding "up" rule.
 Verifying that the resulting linear maps do behave as intended is left as an exercise to the reader.
 
+\subsection{Proofs are Cliques}
+PUT SOME STUFF HERE, TALK MAINLY ABOUT HOW WE COULD MAKE THIS BETTER WITH TOTALITY SPACES.
 \newpage
-\section{Naturality of Rewrites}
+\section{Dinaturality of Derivations}
+
+REDO THIS WORDING.
 In order to correctly model derivations, we require a certain freedom regarding the order that we can apply rewrite rules and context functors.
 As mentioned previously, applying a context to a both sides of a rewrite should yield the same result as applying the context to the rewritten structure.
 This required property of rewrite rules, when considered as linear maps of coherence spaces, is naturality.
@@ -1145,7 +1154,6 @@ Given functors $F,G:\mathbb{C}\to\mathbb{D}$, a \textit{natural transformation} 
 \end{definition}
 
 It is a standard result that the composition of two natural transformations is itself a natural transformation \cite{leinster2016basic}.
-We will thus use this fact without proof.
 
 \begin{definition}
 Given functors $F,G:\mathbb{C}\times\mathbb{C}^{op}\to\mathbb{D}$, a \textit{dinatural transformation} $\psi:F\to G$ is a family of morphisms
@@ -1161,6 +1169,21 @@ where $1$ is the identity morphism.
 \end{definition}
 
 Unlike natural transformations, dinatural transformations do not compose in general \cite{mccusker2018compositionality}.
+We will spend the rest of this section discussing the specific situations in which the transformations representing our rewrites can compose.
+The following proposition allows us to speak more generally about the two classes of transformations, and state results only in terms of dinatural transformations.
+
+\begin{proposition}
+Every natural transformation is a dinatural transformation
+\end{proposition}
+
+\begin{proof}
+The proof is left as an exercise in applying the definitions, showing that if we define $F'(A,B) \coloneq F(A)$ and $G'(A,B) \coloneq G(B)$, the dinaturality diagram collapses into the naturality one.
+I THINK??????
+\end{proof}
+
+\begin{remark}
+We will thus occasionally refer to \textit{strictly dinatural transformations}, meaning those which are dinatural but not natural, in cases where the distinction is necessary.
+\end{remark}
 
 \subsection{Classifying Rewrite Rules}
 
@@ -1181,8 +1204,8 @@ We use a commuting diagram to show the (di)naturality of any rule $\rho$.
 As an up-down pair are, by definition, dual to each-other, we can simply take duals and reverse the arrows in the proof of ${\mathsf{\rho}}{\uparrow}$'s classification to get an equivalent one for ${\mathsf{\rho}}{\downarrow}$.
 \end{proof}
 
-We find that all but $\aiD$ and $\aiU$ are natural rewrites.
-The intuition behind this is that they are the only ones which deal explicitly with negative structures, which correspond to the objects of $\cohs^{op}$ present in dinaural transformations.
+We find that all rewrite rules in $\sSys$ are dinatural, and that all but $\aiD$ and $\aiU$ are in fact natural.
+The intuition behind this is that $\aiD$  and $\aiU$ are the only rewrites which deal explicitly with negative structures, which correspond to the objects of $\cohs^{op}$ present in strictly dinaural transformations.
 All other rewrites either shuffle substructures and exchange structure brackets, or duplicate/combine instances of the same substructure; in either case, the corresponding transformation is natural.
 We give proofs for 2 cases, noting that the others follow a similar format and so are left as an exercise to the reader.
 
@@ -1191,7 +1214,8 @@ $\sw$ is a natural rewrite.
 \end{lemma}
 
 \begin{proof}
-Following the definitions, we see that the required $F$ and $G$ are
+Following the definitions, we see that the required $F$ and $G$ are as follows:
+
 $$([\_,\_],\_),[(\_,\_),\_]:\cohs\times\cohs\times\cohs\to\cohs$$
 We thus need to show that for any $g:R\multimap R'$, $h:T\multimap T'$, and $k:U\multimap U'$, the following diagram commutes:
 
@@ -1240,12 +1264,14 @@ Indeed,
 \end{align*}
 \end{proof}
 
-We then turn our attention to the dinatural rewrites.
+We then turn our attention to the strictly dinatural rewrites.
 A proof is given for the dinaturality of $\aiD$.
 The corresponding proof for $\aiU$ can be easily derived, as stated previously, by taking duals and reversing arrows.
+
 \begin{lemma}
 $\aiD$ is a dinatural rewrite.
 \end{lemma}
+
 \begin{proof}
 Following the definitions, we find that the required $F$ is the trivial functor $\unit:\cohs\times\cohs^{op}\to\cohs$.
 This sends any pair of coherence spaces to the trivial coherence space $*$, and all linear maps to the identity.
@@ -1280,12 +1306,12 @@ Indeed,
 \end{align*}
 \end{proof}
 
-Now that all rewrite rules have been classified, we investigate how their naturality is preserved when they are composed to form derivations.
+Now that all rewrite rules have been classified, we investigate how their dinaturality is preserved when they are composed to form derivations.
 
 \subsection{Preserving Dinaturality through Composition}
 
 \subsubsection{Graphical Representation of Derivations}
-As we know that all derivations in $\sSys$ can be modelled by composing a number of (di)natural transformations, we are able to represent them as simple graphs.
+As we know that all derivations in $\sSys$ can be modelled by composing a number of dinatural transformations, we are able to represent them as simple graphs.
 Each argument of a functor is a box, and applications of the transformations are lines between them.
 In our case, white boxes represent objects of $\cohs$ and grey ones represent those of $\cohs^{op}$.
 These graphs are an extension of Kelly-Mac Lane graphs \cite{mac2013categories}, and are introduced formally by McCusker and Santamaria \cite{mccusker2018compositionality}.
@@ -1293,6 +1319,7 @@ These graphs are an extension of Kelly-Mac Lane graphs \cite{mac2013categories},
 \begin{definition}
 We call a graph of this type \textit{well-formed} if it is the representative graph of a well formed derivation in $\sSys$.
 \end{definition}
+
 The example below shows the correspondence between a derivation and its representation as a graph:
 
 \begin{figure}[ht]
@@ -1353,13 +1380,20 @@ The example below shows the correspondence between a derivation and its represen
 \end{figure}
 
 This representation abstracts away many of the details of the transformations themselves.
-McCusker and Santamaria proved that it also leads to a simple sufficient condition for a composition of dinatural transformations to be dinatural:
-Any composition of dinatural transformations whose graph is acyclic is itself a dinatural transformation \cite{mccusker2018compositionality}.
-Note that at the top and bottom of any cycle is necessarily an arrow between a white and a grey box, pointing in opposite directions. 
-THIS WORDING NEEDS TIDYING UP!!!!
+It also leads to a simple sufficient condition for a composition of dinatural transformations to be dinatural:
 
+\begin{theorem}\label{thm:acyclic-dinatural}
+Any composition of dinatural transformations whose graph is acyclic is itself dinatural.
+\end{theorem}
+
+\begin{proof}
+The proof is given by McCusker and Santamaria \cite{mccusker2018compositionality}.
+\end{proof}
+
+Note that at the top and bottom of any cycle is necessarily an arrow between a white and a grey box, pointing in opposite directions. 
 Looking specifically at $\sSys$, in which the only two dinatural rewrites are $\aiU$ and $\aiD$, the only possible interactions between a white and a grey box are shown in Figure \ref{fig:cycles}.
 We can deduce that a cycle could form if the conclusion of an $\aiD$ rewrite became the premise of an $\aiU$.
+
 \begin{figure}[ht]
     \begin{minipage}[h]{0.3\textwidth}
         \centering
@@ -1404,6 +1438,18 @@ We can deduce that a cycle could form if the conclusion of an $\aiD$ rewrite bec
     \label{fig:cycles}
 \end{figure}
 
+We immediately obtain the following result about cut-free proofs, that is, proofs that do not contain any instance of $\aiU$:
+
+\begin{theorem}
+Any cut-free derivation in $\sSys$ can be modelled by a dinatural transformation.
+\end{theorem}
+
+\begin{proof}
+The graph of a cut-free derivation is necessarily acyclic, as there are no instances of $\aiU$ which could provide a "smile" arrow to match up with any "frown".
+We then apply Theorem \ref{thm:acyclic-dinatural} to get the desired result.
+\end{proof}
+
+Bringing our attention back to general derivations, we look back at Figure \ref{fig:cycles}.
 This simple cycle can never occur as the corresponding structure brackets do not match up ($\aiD$ produces a copar conclusion, $\aiU$ requires a par premise, so the graph is not well-formed).
 Instead, a more complex cycle may form if we allow additional transformations in-between the applications of $\aiU$ and $\aiD$.
 Looking back at the graph in Figure \ref{fig:graph}, we could conceivably add an instance of $\aiU$ at the bottom.
@@ -1590,7 +1636,24 @@ For any application of a rewrite rule in $\sSys$, atoms in the conclusion are \t
 - Atomic flows????
 
 \newpage
-\section{Conclusion}
+\section{Conclusion and Future Work}
+
+\subsection{$\sSys$ and its Model}
+We have shown the 
+
+\subsection{Dinaturality of General Derivations}
+
+\subsection{Consistency}
+\textit{"There are several things we would like to have in addition.
+On the semantics side, it would be good to show that every proof is interpreted as a non-empty relation.
+One limitation of coherence space semantics is that every hom-set in the category has at least one element, the empty relation.
+If we could show that every proof is a non-empty relation then I believe we could deduce that the logic is “consistent” i.e. there are some formulas that cannot be proved, because there are no non-empty natural transformations to serve as their interpretation.
+(I'll try to come up with an example you could include.)
+The way to prove this non-emptiness is to add a “totality” predicate to the coherence spaces and show that every proof takes total elements to total elements;
+this is Loader’s totality spaces idea and I think it would be fine to throw in a conjecture that every proof is non-empty and say that this is how you would approach the proof."}
+
+\subsection{Cut Elimination}
+
 
 \newpage
 \bibliographystyle{plain}
