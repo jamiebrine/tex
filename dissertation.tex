@@ -1131,7 +1131,21 @@ By applying the $\overline{\{\quad\}}$ functor to the model for any "down" rule,
 Verifying that the resulting linear maps do behave as intended is left as an exercise to the reader.
 
 \subsection{Proofs are Cliques}
-PUT SOME STUFF HERE, TALK MAINLY ABOUT HOW WE COULD MAKE THIS BETTER WITH TOTALITY SPACES.
+We are now able to define a coherence space $\denote{R}$ for any structure $R$ of $\sSys$.
+Moreover, we can transform $\denote{R}$ using the linear maps corresponding to rewrite rules, such that coherence is preserved throughout.
+This gives us the following result:
+
+\begin{theorem}
+Given some proof $\vlderivation{\vlproof{\Gamma}{}{R}}$, there is a unique clique of $\denote{R}$ representing this proof
+\end{theorem}
+
+\begin{proof}
+By Lemmas REF START to REF END, we know that $\denote{R}\in Ob(\cohs)$.
+Then, Lemmas REF START to REF END tell us that the derivation from $\unit$ to $R$ can be modelled a composition of linear maps, whose result is some map of the form $f:\unit\multimap\denote{R}$.
+We know that as linear maps preserve coherence, they must also preserve cliques by definition.
+The only clique in $\unit$ is the empty clique, which must be mapped to a unique clique in $\denote{R}$.
+This resulting clique is the semantic image of the proof; it represents the coherent interpretation of the entire derivation, and is the object of interest.
+\end{proof}
 
 \newpage
 \section{Dinaturality of Derivations}
@@ -1635,7 +1649,7 @@ That is, we have a derivation from $S[a,\overline{a}]$ to $S'(a,\overline{a})$, 
 Every derivation in $\sSys$ can be modelled by a dinatural transformation.
 \end{conjecture}
 
-We believe that the above result is true, but as of yet have been unable to formulate a formal argument.
+We believe that the above result is true, but as of yet have been unable to formulate a full proof.
 
 \newpage
 \section{Conclusion and Future Work}
